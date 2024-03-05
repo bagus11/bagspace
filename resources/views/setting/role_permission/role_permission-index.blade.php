@@ -7,7 +7,7 @@
                 <div class="card-header pb-0">
                   <div class="row">
                     <div class="col-3">
-                      <p>Role</p>
+                      <p class="title-head">Role</p>
                     </div>
                     <div class="col-9">
                       <button class="btn btn-sm btn-success" id="btn_add_role" style="float: right"   data-toggle="modal" data-target="#addRoleModal">
@@ -17,7 +17,7 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <table class="table align-items-center" id="roles_table">
+                  <table class="datatable-stepper" id="roles_table">
                     <thead class="thead-light">
                         <tr>
                             <th scope="col" class="sort" data-sort="name">Name</th>
@@ -33,17 +33,17 @@
                 <div class="card-header pb-0">
                   <div class="row">
                     <div class="col-3">
-                      <p>Permission</p>
+                      <p class="title-head">Permission</p>
                     </div>
                     <div class="col-9">
-                      <button class="btn btn-sm btn-success" id="btn_add_permission" style="float: right">
+                      <button class="btn btn-sm btn-success" id="btn_add_permission" style="float: right"   data-toggle="modal" data-target="#addPermissionModal">
                         <i class="fas fa-plus"></i>
                       </button>
                     </div>
                   </div>
                 </div>
                   <div class="card-body">
-                    <table class="table align-items-center" id="permission_table">
+                    <table class="datatable-stepper" id="permission_table">
                       <thead class="thead-light">
                           <tr>
                               <th scope="col" class="sort" data-sort="name">Name</th>

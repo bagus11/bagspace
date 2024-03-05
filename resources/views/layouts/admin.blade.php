@@ -11,9 +11,8 @@
   <link rel="icon" href="{{asset('assets/img/brand/favicon.png')}}" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
   <link rel="stylesheet" href="{{asset('assets/vendor/nucleo/css/nucleo.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
   <link rel="stylesheet" href="{{asset('assets/css/argon.css?v=1.2.0')}}" type="text/css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   {{-- Customization --}}
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -22,11 +21,90 @@
   <style>
     @import url('https://fonts.cdnfonts.com/css/poppins');
     html {
-        font-family: 'Poppins' !important;
+        font-family: Poppins !important;
         line-height: 1.15;
         -webkit-text-size-adjust: 100%;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
+        .datatable-stepper{
+        font-family: Poppins;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 9px;
+        width: 100% !important;
+        /* border: 1px solid #ddd; */
+        }
+        .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
+
+        .datatable-stepper tr:hover {background-color: #ddd;}
+
+        .datatable-stepper th {
+        /* border: 1px solid #ddd; */
+        padding-top: 10px;
+        padding-bottom: 10px;
+        text-align: center;
+        
+        color: black;
+        overflow-x:auto !important;
+        }
+        .datatable-stepper td, .datatable-stepper th {
+              /* border: 1px solid #ddd; */
+              padding: 8px;
+          }
+          p{
+            font-size: 9px !important;
+          }
+          .form-control{
+            height: 30px;
+            font-size: 9px !important;
+          }
+          .select2{
+              width: 100% !important;
+              font-size:9px;
+          }
+          .select2-selection__rendered {
+              line-height: 30px !important;
+              margin-top:-7px;
+              font-size:9px;
+          }
+          .select2-container .select2-selection--single {
+              height: 35px !important;
+              font-size:9px;
+          }
+          .modal {
+            overflow-y:auto !important;
+          }
+          .select2-selection__arrow {
+              height: 34px !important;
+              font-size:9px;
+          }
+          .dataTables_length, .dataTables_length select{ font-size: 9px !important;}
+          .dataTables_info{
+            font-size: 9px !important;
+          }
+          .dataTables_filter{
+            font-size: 9px !important;
+          }
+          .select2-dropdown{
+            font-size: 9px !important;
+          }
+          .selectOption2{
+            font-size: 9px !important;
+          }
+          .select2-dropdown--below{
+            font-size: 9px !important;
+          }
+          .select2-results__option{
+            font-size: 9px !important;
+          }
+          .select2-search__field{
+            height: 35px !important;
+            font-size: 9px !important;
+          }
+          .title-head{
+            font-size: 14px !important;
+            font-weight:bold
+          }
 
   </style>
 </head>

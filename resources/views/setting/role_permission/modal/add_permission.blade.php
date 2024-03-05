@@ -28,16 +28,15 @@
                     <input type="hidden" class="form-control" id="permission_name" >
                     <span  style="color:red;" class="message_error text-red block permission_name_error"></span>
                 </div>
-            </div>
-            <div class="form-group row">
                 <div class="col-md-3 mt-2">
-                 <p>Menus</p>
-                </div>
-                <div class="col-md-8">
-                    <select name="menus_name" class="menus_name select2" style="width:100%" id="menus_name">
-                    </select>
-                </div>
+                  <p>Menus</p>
+                 </div>
+                 <div class="col-md-8">
+                     <select name="menus_name" class="menus_name select2" style="width:100%" id="menus_name">
+                     </select>
+                 </div>
             </div>
+        
         </div>
         <div class="modal-footer">
             <button id="btn_save_permission" type="button" class="btn btn-sm btn-success">

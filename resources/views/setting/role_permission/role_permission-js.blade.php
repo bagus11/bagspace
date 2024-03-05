@@ -11,7 +11,6 @@
                 $('.message_error').html('')
             })
             $('#btn_save_role').on('click', function(){
-                alert('test')
                 var data={
                     'roles_name':$('#roles_name').val()
                 }
@@ -171,6 +170,13 @@
                         $('#roles_table > tbody:first').html(data);
                         $('#roles_table').DataTable({
                             scrollX  : true,
+                            searching  :true,
+                            language: {
+                                'paginate': {
+                                'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                }
+                            },
                             scrollY  :230
                         }).columns.adjust()
                 },
@@ -214,6 +220,13 @@
                         $('#permission_table > tbody:first').html(data);
                         $('#permission_table').DataTable({
                             scrollX  : true,
+                            searching  :true,
+                            language: {
+                                'paginate': {
+                                'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                }
+                            },
                             scrollY  :230
                         }).columns.adjust()
                 },
