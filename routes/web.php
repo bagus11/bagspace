@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Setting\RolePermissionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,5 +19,23 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::group(['middleware' => ['auth']], function() {
+    Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    // Setting
+        // Role Permission  
+        Route::get('role_permission', [RolePermissionController::class, 'index'])->name('role_permission');
+        Route::get('getRole', [RolePermissionController::class, 'getRole'])->name('getRole');
+        Route::get('getPermission', [RolePermissionController::class, 'getPermission'])->name('getPermission');
+        Route::get('deleteRole', [RolePermissionController::class, 'deleteRole'])->name('deleteRole');
+        Route::post('addRole', [RolePermissionController::class, 'addRole'])->name('addRole');
+        Route::get('detailRole', [RolePermissionController::class, 'detailRole'])->name('detailRole');
+        Route::post('updateRole', [RolePermissionController::class, 'updateRole'])->name('updateRole');
+        Route::get('permissionMenus', [RolePermissionController::class, 'permissionMenus'])->name('permissionMenus');
+        Route::post('savePermission', [RolePermissionController::class, 'savePermission'])->name('savePermission');
+        Route::get('deletePermission', [RolePermissionController::class, 'deletePermission'])->name('deletePermission');
+        // Role Permission
+    // Setting
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+  
+
+});
