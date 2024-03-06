@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     // Setting
         // Role Permission  
         Route::get('role_permission', [RolePermissionController::class, 'index'])->name('role_permission');

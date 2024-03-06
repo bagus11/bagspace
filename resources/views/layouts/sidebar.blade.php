@@ -11,29 +11,63 @@
           <!-- Collapse -->
           <div class="collapse navbar-collapse" id="sidenav-collapse-main">
               <ul class="navbar-nav">
-                  <!-- Dashboard Link -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-dashboards">
-                      <i class="ni ni-shop text-primary"></i>
-                          <span class="nav-link-text">Dashboards</span>
+                @php
+                $menus = DB::table('menu')
+                    // ->join('permissions', 'permissions.name','=','menu.permission_name')
+                    // ->join('role_has_permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
+                    // ->join('roles', 'roles.id','role_has_permissions.role_id')
+                    // ->join('model_has_roles', 'model_has_roles.role_id', 'roles.id')
+                    ->select('menu.*')
+                    ->where('status',1)
+                    // ->where('model_has_roles.model_id', auth()->user()->id)
+                    ->orderBy('order','asc')
+                    ->get();
+            @endphp
+
+            @foreach ($menus as $item)
+                @if($item->type == 1)
+                   
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{$item->link}}">
+                        <i class="{{$item->icon}}"></i>
+                        <span class="nav-link-text" style="font-family: Poppins;font-size:11px;margin-top:10px">{{$item->name}}</span>
                       </a>
-                    <div class="collapse" id="navbar-dashboards">
-                      <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                        <a href="../../pages/dashboards/dashboard.html" class="nav-link">
-                          <i class="ni ni-tv-2 text-primary"></i>
-                        <span class="sidenav-normal"> Dashboard </span>
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                          <a href="role_permission" class="nav-link">
-                            <i class="ni ni-single-02 text-yellow"></i>
-                          <span class="sidenav-normal"> Alternative </span>
+                    </li>
+                @else
+                
+                  <li class="nav-item">
+                        @php
+                            $submenus = DB::table('submenu')->select('submenu.*')
+                                    // ->join('permissions','permissions.name','=','submenu.permission_name')
+                                    // ->join('role_has_permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
+                                    // ->join('roles', 'roles.id','role_has_permissions.role_id')
+                                    // ->join('model_has_roles', 'model_has_roles.role_id', 'roles.id')
+                                    ->where('submenu.id_menu', $item->id)
+                                    ->where('submenu.status', 1)
+                                    // ->where('model_has_roles.model_id', auth()->user()->id)
+                                    ->orderBy('order','asc')
+                                    ->get();
+                        @endphp
+                          <a class="nav-link" href="#navbar-{{$item->link}}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-{{$item->link}}">
+                          <i class="{{$item->icon}}"></i>
+                              <span class="nav-link-text" style="font-family: Poppins;font-size:11px;margin-top:10px">{{$item->name}}</span>
                           </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
+                        <div class="collapse" id="navbar-{{$item->link}}">
+                          <ul class="nav nav-sm flex-column">
+                            @foreach ($submenus as $row)
+                              <li class="nav-item">
+                                <a href="{{$row->link}}" class="nav-link">
+                                  <i class="ni ni-{{$row->icon}}"></i>
+                                <span class="sidenav-normal" style="font-family: Poppins;font-size:11px;margin-top:10px"> {{$row->name}} </span>
+                                </a>
+                              </li>
+                            @endforeach
+                          </ul>
+                        </div>
+                    </li>   
+                @endif
+            @endforeach
+                  <!-- Dashboard Link -->
                   <!-- End Dropdown Example -->
               </ul>
           </div>

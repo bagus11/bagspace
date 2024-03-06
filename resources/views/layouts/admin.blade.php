@@ -195,7 +195,7 @@
               return Swal.fire({
                   title: title,
                   html: html,
-            customClass: 'swal-wide',
+                  customClass: 'swal-wide',
                   timerProgressBar: true,
                   allowOutsideClick: false,
                   didOpen: () => {
