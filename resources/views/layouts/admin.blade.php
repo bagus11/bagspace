@@ -162,19 +162,17 @@
                 //     fontSizes: ['11']
                 // });
 
-                $('#collapse_id').on('click', function(){
-                
-                  var x = document.getElementById("logo_container");
-                  var y = document.getElementById("60_container");
-                  if(window.getComputedStyle(y).display === "none"){
-                    $('#60_container').prop('hidden', false);
-                    $('#logo_container').prop('hidden', true);
-                  }else{
-                    $('#60_container').prop('hidden', true);
-                    $('#logo_container').prop('hidden', false);
-
-                  }
-                })
+                var url = window.location;
+              // for sidebar menu entirely but not cover treeview
+              $('ul.navbar-nav a').filter(function() {
+                  return this.href == url;
+              }).addClass('active');
+          
+              // for treeview
+              $('ul.nav-sm a').filter(function() {
+                  return this.href == url;
+              }).parentsUntil(".nav-sidebar > .navbar-nav").addClass('show').prev('a').addClass('active');
+          
             });
             toastr.options = {
               "closeButton": false,

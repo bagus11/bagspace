@@ -13,27 +13,27 @@
               <ul class="navbar-nav">
                   <!-- Dashboard Link -->
                   <li class="nav-item">
-                    <a class="nav-link" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-dashboards">
-                    <i class="ni ni-shop text-primary"></i>
-                    <span class="nav-link-text">Dashboards</span>
-                    </a>
+                      <a class="nav-link" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-dashboards">
+                      <i class="ni ni-shop text-primary"></i>
+                          <span class="nav-link-text">Dashboards</span>
+                      </a>
                     <div class="collapse" id="navbar-dashboards">
-                    <ul class="nav nav-sm flex-column">
-                    <li class="nav-item">
-                    <a href="../../pages/dashboards/dashboard.html" class="nav-link">
-                      <i class="ni ni-tv-2 text-primary"></i>
-                    <span class="sidenav-normal"> Dashboard </span>
-                    </a>
-                    </li>
-                    <li class="nav-item">
-                    <a href="../../pages/dashboards/alternative.html" class="nav-link">
-                      <i class="ni ni-single-02 text-yellow"></i>
-                    <span class="sidenav-normal"> Alternative </span>
-                    </a>
-                    </li>
-                    </ul>
+                      <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                        <a href="../../pages/dashboards/dashboard.html" class="nav-link">
+                          <i class="ni ni-tv-2 text-primary"></i>
+                        <span class="sidenav-normal"> Dashboard </span>
+                        </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="role_permission" class="nav-link">
+                            <i class="ni ni-single-02 text-yellow"></i>
+                          <span class="sidenav-normal"> Alternative </span>
+                          </a>
+                        </li>
+                      </ul>
                     </div>
-                    </li>
+                  </li>
                   <!-- End Dropdown Example -->
               </ul>
           </div>
