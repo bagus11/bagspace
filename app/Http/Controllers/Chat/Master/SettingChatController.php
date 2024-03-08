@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Chat\Master;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\addGroupChatRequest;
+use App\Http\Requests\updateGroupRequest;
 use App\Models\Chat\ChatDetailGroupModel;
 use App\Models\Chat\ChatGroupModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use NumConvert;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class SettingChatController extends Controller
 {
@@ -112,6 +115,43 @@ class SettingChatController extends Controller
         return response()->json([
             'detail'=>$detail,
         ]);   
+    }
+    function updateGroup(Request $request, updateGroupRequest $updateGroupRequest ){
+        try{
+            $updateGroupRequest->validated();
+            $fileName ='';
+            $explode = str_replace('/','-',$request->group_code);
+
+            
+            if ($request->hasFile('attachment')) {
+                $file = $request->file('attachment');
+                $fileName = Str::slug($explode) . '.' . $file->getClientOriginalExtension();
+        
+                // Move the uploaded file to the storage path
+                $grouModel = ChatGroupModel::where("group_code", $request->group_code)->first();
+                if($grouModel->attachment ==null || $grouModel->attachment == ''){
+                    Storage::delete('public/GroupModel/' . basename($grouModel->attachment));
+                }
+                $file->storeAs('public/GroupModel', $fileName);
+            }
+            $post =[
+                'group_name'        => $request->name_edit,
+                'description'       => $request->description_edit,
+                'attachment'        => $fileName != null ? 'storage/GroupModel/'.$fileName.'.png' : ''
+            ];
+
+            ChatGroupModel::where('group_code', $request->group_code)->update($post);
+            return ResponseFormatter::success(   
+                $post,                              
+                'Group chat successfully added'
+            );            
+    } catch (\Throwable $th) {
+        return ResponseFormatter::error(
+            $th,
+            'Transaction failed to update',
+            500
+        );
+    }  
     }
 
 }

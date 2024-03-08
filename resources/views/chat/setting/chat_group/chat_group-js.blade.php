@@ -4,6 +4,11 @@
         mappingTable(response.data)
     })
     // Operation
+        $('#btn_add_group').on('click', function(){
+            
+            $('#name').val('');
+            $('#description').val('');
+        })
         $('#btn_save_group').on('click', function(){
             var data ={
                 'name'          : $('#name').val(),

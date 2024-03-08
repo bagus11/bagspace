@@ -16,7 +16,7 @@
                       <p class="title-head">List Group</p>
                     </div>
                     <div class="col-9">
-                      <button class="btn btn-sm btn-success" id="btn_add_role" style="float: right"   data-toggle="modal" data-target="#addGroupModal">
+                      <button class="btn btn-sm btn-success" id="btn_add_group" style="float: right"   data-toggle="modal" data-target="#addGroupModal">
                         <i class="fas fa-plus"></i>
                       </button>
                     </div>
