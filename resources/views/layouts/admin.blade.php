@@ -105,7 +105,27 @@
             font-size: 14px !important;
             font-weight:bold
           }
+          #toast-container{
+            font-size: 9px !important;
+            font-family: Poppins !important;
+            font-weight: bold !important
+          }
+          fieldset {
+              border: 1px solid#ddd;
+              font-family: Poppins !important;
+             
+              padding: 10px;
+          }
 
+          legend {
+              font-size: 12px;
+              padding: 0 10px;
+          }
+          .dataTables_wrapper .dataTables_paginate .paginate_button
+            {
+                width: 40px !important;
+                font-size: 9px !important;
+            }
   </style>
 </head>
 
@@ -117,7 +137,7 @@
     <!-- Topnav -->
     @include('layouts.navbar')
     <!-- Main Content -->
-    <div class="mt-4">
+    <div class="mt-2">
         @yield('content')
     </div>
     <!-- Main Content -->

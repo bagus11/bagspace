@@ -13,13 +13,13 @@
               <ul class="navbar-nav">
                 @php
                 $menus = DB::table('menu')
-                    // ->join('permissions', 'permissions.name','=','menu.permission_name')
-                    // ->join('role_has_permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
-                    // ->join('roles', 'roles.id','role_has_permissions.role_id')
-                    // ->join('model_has_roles', 'model_has_roles.role_id', 'roles.id')
+                    ->join('permissions', 'permissions.name','=','menu.permission_name')
+                    ->join('role_has_permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
+                    ->join('roles', 'roles.id','role_has_permissions.role_id')
+                    ->join('model_has_roles', 'model_has_roles.role_id', 'roles.id')
                     ->select('menu.*')
                     ->where('status',1)
-                    // ->where('model_has_roles.model_id', auth()->user()->id)
+                    ->where('model_has_roles.model_id', auth()->user()->id)
                     ->orderBy('order','asc')
                     ->get();
             @endphp
@@ -38,13 +38,13 @@
                   <li class="nav-item">
                         @php
                             $submenus = DB::table('submenu')->select('submenu.*')
-                                    // ->join('permissions','permissions.name','=','submenu.permission_name')
-                                    // ->join('role_has_permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
-                                    // ->join('roles', 'roles.id','role_has_permissions.role_id')
-                                    // ->join('model_has_roles', 'model_has_roles.role_id', 'roles.id')
+                                    ->join('permissions','permissions.name','=','submenu.permission_name')
+                                    ->join('role_has_permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
+                                    ->join('roles', 'roles.id','role_has_permissions.role_id')
+                                    ->join('model_has_roles', 'model_has_roles.role_id', 'roles.id')
                                     ->where('submenu.id_menu', $item->id)
                                     ->where('submenu.status', 1)
-                                    // ->where('model_has_roles.model_id', auth()->user()->id)
+                                    ->where('model_has_roles.model_id', auth()->user()->id)
                                     ->orderBy('order','asc')
                                     ->get();
                         @endphp

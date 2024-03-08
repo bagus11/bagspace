@@ -1,5 +1,12 @@
 @extends('layouts.admin')
 @section('content')
+
+<nav aria-label="breadcrumb" class="mx-3" style="font-size: 12px !important;">
+  <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+  <li class="breadcrumb-item"> <i class="ni ni-settings text-warning"></i> Setting</li>
+  <li class="breadcrumb-item" aria-current="page"><i class="ni ni-lock-circle-open"></i> User Access</li>
+  </ol>
+</nav>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">

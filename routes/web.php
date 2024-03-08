@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Chat\Master\SettingChatController;
 use App\Http\Controllers\Setting\RolePermissionController;
 use App\Http\Controllers\Setting\UserAccessController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,19 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('destroyRolePermission', [UserAccessController::class, 'destroyRolePermission'])->name('destroyRolePermission');
         // User Access
     // Setting
+            
+        // Chat
+        // Setting Chat
+            Route::get('setting_chat_menus', [SettingChatController::class, 'index'])->name('setting_chat_menus');
+            Route::get('getGroup', [SettingChatController::class, 'getGroup'])->name('getGroup');
+            Route::get('detailGroup', [SettingChatController::class, 'detailGroup'])->name('detailGroup');
+            Route::post('addGroup', [SettingChatController::class, 'addGroup'])->name('addGroup');
+            Route::post('updateDetailGroup', [SettingChatController::class, 'updateDetailGroup'])->name('updateDetailGroup');
+            Route::get('getDetailGroup', [SettingChatController::class, 'getDetailGroup'])->name('getDetailGroup');
+            Route::post('updateGroup', [SettingChatController::class, 'updateGroup'])->name('updateGroup');
+
+        // Setting Chat
+    // Chat
 
   
 
