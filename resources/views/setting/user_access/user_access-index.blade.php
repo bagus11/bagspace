@@ -23,13 +23,13 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <table class="datatable-stepper" id="role_user_table">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col" class="sort" data-sort="name">Name</th>
-                                <th scope="col" class="sort" data-sort="role">Role</th>
-                                <th scope="col" class="sort" data-sort="action">Action</th>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="name">Name</th>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="role">Role</th>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="action">Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -47,12 +47,12 @@
                     </div>
                   </div>
                 </div>
-                  <div class="card-body">
+                  <div class="card-body p-0">
                     <table class="datatable-stepper" id="role_permission_table">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Action</th>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Action</th>
                             </tr>
                         </thead>
                     </table>

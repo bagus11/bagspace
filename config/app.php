@@ -122,6 +122,9 @@ return [
     'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
+    'timezone' => 'Asia/Jakarta',
+    'locale' => 'id',
+    'faker_locale' => 'id_ID',
 
     /*
     |--------------------------------------------------------------------------

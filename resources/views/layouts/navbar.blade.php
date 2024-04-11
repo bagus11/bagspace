@@ -138,7 +138,10 @@
             <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <div class="media align-items-center">
                 <span class="avatar avatar-sm rounded-circle">
-                  <img alt="Image placeholder" src="../assets/img/theme/team-4.jpg">
+                 @php
+                     $auth= auth()->user()->avatar;
+                 @endphp
+                  <img alt="Image placeholder" src="{{asset('storage/users-avatar/'.$auth)}}">
                 </span>
                 <div class="media-body  ml-2  d-none d-lg-block">
               
@@ -162,10 +165,16 @@
                 <span>Activity</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a href="#!" class="dropdown-item">
-                <i class="ni ni-user-run"></i>
-                <span>Logout</span>
-              </a>
+              
+         
+              <form id="logout-form" method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class="ni ni-user-run"></i>
+                  <span>Logout</span>
+                </a>
+                <button type="submit" style="display: none;"></button>
+            </form>
             </div>
           </li>
         </ul>

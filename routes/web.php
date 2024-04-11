@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\Booking\BookingController;
+use App\Http\Controllers\Booking\MasterApprovalController;
+use App\Http\Controllers\Booking\MasterRoomController;
 use App\Http\Controllers\Chat\Master\SettingChatController;
+use App\Http\Controllers\Chat\Transaction\ChatController;
 use App\Http\Controllers\Setting\RolePermissionController;
 use App\Http\Controllers\Setting\UserAccessController;
 use Illuminate\Support\Facades\Route;
@@ -16,9 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('/');
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function() {
@@ -60,9 +62,43 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('updateDetailGroup', [SettingChatController::class, 'updateDetailGroup'])->name('updateDetailGroup');
             Route::get('getDetailGroup', [SettingChatController::class, 'getDetailGroup'])->name('getDetailGroup');
             Route::post('updateGroup', [SettingChatController::class, 'updateGroup'])->name('updateGroup');
-
         // Setting Chat
+       
     // Chat
+
+    // Booking Room
+        // Master Room
+            Route::get('master_room', [MasterRoomController::class, 'index'])->name('master_room');
+            Route::get('getRoom', [MasterRoomController::class, 'getRoom'])->name('getRoom');
+            Route::get('getLocation', [MasterRoomController::class, 'getLocation'])->name('getLocation');
+            Route::post('addRoom', [MasterRoomController::class, 'addRoom'])->name('addRoom');
+            Route::get('detailRoom', [MasterRoomController::class, 'detailRoom'])->name('detailRoom');
+            Route::post('updateRoom', [MasterRoomController::class, 'updateRoom'])->name('updateRoom');
+        // Master Room
+
+        // Booking Room 
+            Route::get('booking_room', [BookingController::class, 'index'])->name('booking_room');
+            Route::get('getTicket', [BookingController::class, 'getTicket'])->name('getTicket');
+            Route::get('detailTicket', [BookingController::class, 'detailTicket'])->name('detailTicket');
+            Route::get('getActiveRoom', [BookingController::class, 'getActiveRoom'])->name('getActiveRoom');
+            Route::post('createTicket', [BookingController::class, 'createTicket'])->name('createTicket');
+            Route::post('updateApprovalTicket', [BookingController::class, 'updateApprovalTicket'])->name('updateApprovalTicket');
+            
+        // Booking Room
+            
+        // Approval
+            Route::get('approval', [MasterApprovalController::class, 'index'])->name('approval');
+            Route::get('getApproval', [MasterApprovalController::class, 'getApproval'])->name('getApproval');
+            Route::post('addMasterApproval', [MasterApprovalController::class, 'addMasterApproval'])->name('addMasterApproval');
+            Route::get('getStepApproval', [MasterApprovalController::class, 'getStepApproval'])->name('getStepApproval');
+            Route::get('detailMasterApproval', [MasterApprovalController::class, 'detailMasterApproval'])->name('detailMasterApproval');
+            Route::post('updateApproval', [MasterApprovalController::class, 'updateApproval'])->name('updateApproval');
+            Route::post('editMasterApproval', [MasterApprovalController::class, 'editMasterApproval'])->name('editMasterApproval');
+       
+            Route::get('getApprover', [MasterApprovalController::class, 'getApprover'])->name('getApprover');
+
+        // Approval
+    // Booking Room
 
   
 

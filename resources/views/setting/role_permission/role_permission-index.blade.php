@@ -22,7 +22,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                   <table class="datatable-stepper" id="roles_table">
                     <thead class="thead-light">
                         <tr>
@@ -48,7 +48,7 @@
                     </div>
                   </div>
                 </div>
-                  <div class="card-body">
+                  <div class="card-body p-0">
                     <table class="datatable-stepper" id="permission_table">
                       <thead class="thead-light">
                           <tr>

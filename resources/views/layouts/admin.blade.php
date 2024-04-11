@@ -20,6 +20,26 @@
   {{-- Customization --}}
   <style>
     @import url('https://fonts.cdnfonts.com/css/poppins');
+    fieldset
+    {
+      /* max-width:500px; */
+      padding:500px;	
+    }
+    .legend1
+    {
+      margin-bottom:0px;
+      margin-left:16px;
+    }
+    label{
+      font-family: Poppins !important;
+      font-size: 12px !important;
+    }
+    .card{
+      border-radius: 20px !important;
+    }
+    .card-header{
+      border-radius: 20px 20px 0px 0px !important; 
+    }
     html {
         font-family: Poppins !important;
         line-height: 1.15;
@@ -40,16 +60,17 @@
 
         .datatable-stepper th {
         /* border: 1px solid #ddd; */
-        padding-top: 10px;
-        padding-bottom: 10px;
         text-align: center;
-        
-        color: black;
+        color: white;
+        /* color: black; */
         overflow-x:auto !important;
-        }
-        .datatable-stepper td, .datatable-stepper th {
+        background-color: #F6995C !important;
+        padding: 10px;
+          font-weight: bold;
+        } 
+        .datatable-stepper td {
               /* border: 1px solid #ddd; */
-              padding: 8px;
+              padding: 5px;
           }
           p{
             font-size: 9px !important;
@@ -116,7 +137,7 @@
              
               padding: 10px;
           }
-
+       
           legend {
               font-size: 12px;
               padding: 0 10px;
@@ -126,10 +147,21 @@
                 width: 40px !important;
                 font-size: 9px !important;
             }
+            .dataTables_scroll{
+              width: 100% !important;
+            }
+            .fa-arrow-right{
+              color: #008DDA;
+            }
+            .fa-arrow-left{
+              color: #008DDA;
+            }
+           
+            
   </style>
 </head>
 
-<body>
+<body class="g-sidenav-show nav-open g-sidenav-pinned">
   <!-- Sidenav -->
     @include('layouts.sidebar')
   <!-- Main content -->
@@ -138,6 +170,8 @@
     @include('layouts.navbar')
     <!-- Main Content -->
     <div class="mt-2">
+      <input type="hidden" id="authId" value="{{auth()->user()->id}}">
+      <input type="hidden" id="nameAuth" value="{{auth()->user()->name}}">
         @yield('content')
     </div>
     <!-- Main Content -->
@@ -160,6 +194,7 @@
     <!-- Core -->
   <!-- Argon JS -->
   <script src="{{asset('assets/js/argon.js?v=1.2.0')}}"></script>
+
   <script>
      $(document).ready(function(){
                 $(".select2").select2();

@@ -1,5 +1,6 @@
 <script>
-    
+    let authId = $('#authId').val();
+    let nameAuth = $('#nameAuth').val();
     function saveHelper(url,data,route){
         $.ajax({
             headers: {
@@ -464,4 +465,19 @@
 
         return [year, month, day].join('-');
     }
+    function autoAdjustColumns(table) {
+        var container = table.table().container();
+        var resizeObserver = new ResizeObserver(function () {
+            table.columns.adjust();
+        });
+        resizeObserver.observe(container);
+    }
+    function findIndexByProperty(array, property, value) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i][property] === value) {
+            return i;
+        }
+    }
+    return -1; // Return -1 if not found
+}
 </script>
