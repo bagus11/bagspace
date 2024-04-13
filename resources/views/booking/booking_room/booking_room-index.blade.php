@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('title', 'Booking Room')
 @section('content')
 <nav aria-label="breadcrumb" class="mx-3" style="font-size: 12px !important;">
   <ol class="breadcrumb breadcrumb-links breadcrumb-dark">

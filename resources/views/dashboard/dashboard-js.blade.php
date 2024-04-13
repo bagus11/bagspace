@@ -57,6 +57,7 @@
     })
     onChange('selectApproval','approval_id')
     onChange('select_option_meet','option_meet_id')
+    onChange('select_option_type','option_type_id')
     $("#btn_save_approval").on('click', function(){
         var data ={
             'meeting_id'        : $('#meetingId').val(),

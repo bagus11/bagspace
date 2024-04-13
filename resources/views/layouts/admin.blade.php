@@ -7,8 +7,8 @@
   <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
   <meta name="author" content="Creative Tim">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Argon Dashboard - Free Dashboard for Bootstrap 4</title>
-  <link rel="icon" href="{{asset('assets/img/brand/favicon.png')}}" type="image/png">
+  <title>Pralon - @yield('title', 'Admin')</title>
+  <link rel="icon" href="{{asset('60.png')}}" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
   <link rel="stylesheet" href="{{asset('assets/vendor/nucleo/css/nucleo.css')}}" type="text/css">
   <link rel="stylesheet" href="{{asset('assets/css/argon.css?v=1.2.0')}}" type="text/css">

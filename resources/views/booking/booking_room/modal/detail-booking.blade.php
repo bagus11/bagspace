@@ -67,15 +67,28 @@
                     <div class="col-6 col-sm-6 col-md-4 mt-2">
                         <p id="room_label"></p>
                     </div>
+                                    
+                </div>
+                <div class="row mx-2" id="last_booking_container">
+                    <div class="col-6 col-sm-6 col-md-2 mt-2">
+                        <p>Need Meeting Link</p>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-4 mt-2">
+                        <p id="meeting_link_type_label"></p>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-2 mt-2">
+                        <p>Meeting Type</p>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-4 mt-2">
+                        <p id="meeting_type_label"></p>
+                    </div>
                     <div class="col-6 col-sm-6 col-md-2 mt-2">
                         <p>Meeting Link</p>
                     </div>
                     <div class="col-6 col-sm-6 col-md-4 mt-2">
                         <p id="meeting_link_label"></p>
                     </div>
-    
-                    
-                </div>
+                </div>   
             </fieldset>
          
             <fieldset class="legend1 mt-2">
@@ -96,7 +109,7 @@
                 <div class="row mx-2 mt-0">
                     <div class="col-12">
                         <div class="btn-group" style="float:right">
-                            <button type="button" class="btn btn-tool btn-info dropdown-toggle" id="btn_history_remark" title="Remark History" style="margin-top:3px" data-toggle="dropdown">
+                            <button type="button" class="btn btn-tool btn-info dropdown-toggle" id="btn_history_remark" title="Approver List" style="margin-top:3px" data-toggle="dropdown">
                                 <i class="fa-solid fa-users"></i>
                             </button>
                             <input type="hidden" name="pc_code_id" id="pc_code_id">

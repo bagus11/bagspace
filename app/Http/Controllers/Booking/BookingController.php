@@ -67,6 +67,7 @@ class BookingController extends Controller
                 'title'             => $request->title,
                 'description'       => $request->description,
                 'meeting_code'      =>'-',
+                'meeting_link'      =>'',
                 'location_id'       => $request->location_id,
                 'room_id'           => $request->type_id == 1 ? $request->room_id : 0,
                 'type'              => $request->type_id,
@@ -116,100 +117,113 @@ class BookingController extends Controller
             'approvalRelation'
         ])->where('location_id', $detail->location_id)->get();
         $user = User::where('flg_aktif', 1)->get();
+        $private = MeetingLink::where('meeting_id', $detail->meeting_id)->get();
         
         return response()->json([
             'detail'=>$detail,  
             'data'=>$data,  
             'user'=>$user,  
             'approval'=>$approval,  
+            'private'=>$private,  
         ]);  
     }
     function updateApprovalTicket(Request $request, UpdateApprovalTicketRequest $updateApprovalTicketRequest) {
-           // try {
-            $updateApprovalTicketRequest->validated();
-            $bookingHeader              = BookingHeader::where('meeting_id', $request->meeting_id)->first();
-            $countApproval              = ApprovalModel::where('location_id', $bookingHeader->location_id)->count();
-            $stepApproval               = $bookingHeader->step == 0 ? $bookingHeader->step + 1 :  $bookingHeader->step + 1;
-            $nextApproval               = ApprovalModel::where('location_id', $bookingHeader->location_id)->where('step', $stepApproval)->first();
-            $lastApprover               = ApprovalModel::where('location_id', $bookingHeader->location_id)->orderBy('id', 'desc')->first();
-           
-            $status                     =0;
-            if($request->selectApproval == 1){
-                if($bookingHeader->status == 1){
-                    $status     = $bookingHeader->status;
-                    if($nextApproval == null){
+        //    try {
+                $updateApprovalTicketRequest->validated();
+                $bookingHeader              = BookingHeader::where('meeting_id', $request->meeting_id)->first();
+                $countApproval              = ApprovalModel::where('location_id', $bookingHeader->location_id)->count();
+                $stepApproval               = $bookingHeader->step == 0 ? $bookingHeader->step + 1 :  $bookingHeader->step + 1;
+                $nextApproval               = ApprovalModel::where('location_id', $bookingHeader->location_id)->where('step', $stepApproval)->first();
+                $lastApprover               = ApprovalModel::where('location_id', $bookingHeader->location_id)->orderBy('id', 'desc')->first();
+                $randomString               ='';
+                $status                     =0;
+                if($request->selectApproval == 1){
+                    if($bookingHeader->status == 1){
+                        $status     = $bookingHeader->status;
+                        if($nextApproval == null){
+                            $status     = $bookingHeader->status + 1;
+                        }
+                    }else{
                         $status     = $bookingHeader->status + 1;
                     }
-                }else{
-                    $status     = $bookingHeader->status + 1;
-                }
-                $arrayPostLink =[];
-                if($request->option_meet_id){
-                    foreach($request->array_list_user as $row){
-                        // if get last approver
-                            $meetingIdReplace = str_replace('/','',$request->meeting_id);
-                            if($lastApprover->user_id == auth()->user()->id){
-                                $length = 32; // panjang string yang diinginkan
-                                $randomString =$meetingIdReplace. bin2hex(random_bytes($length));
-                            }
-                            // dd($request);
-                            $meetingPost =[
-                                'meeting_id'    => $request->meeting_id,
-                                'link'          => $randomString,
-                                'user_id'       => $row['value'],
-                                'status'        => 0,
-                                'type'          => $request->option_meet_id,
-                            ];
-                            
-                        // if get last approver
+                    $arrayPostLink =[];
+                    $meetingIdReplace = str_replace('/','',$request->meeting_id);
+                    if($lastApprover->user_id == auth()->user()->id){
+                        $length = 32; // panjang string yang diinginkan
+                        $randomString =$meetingIdReplace. bin2hex(random_bytes($length));
+                    }
+
+                    if($request->option_type_id == 2){
+                        foreach($request->array_list_user as $row){
+                            // if get last approver
+                                // dd($request);
+                                $meetingPost =[
+                                    'meeting_id'    => $request->meeting_id,
+                                    'link'          => $randomString,
+                                    'user_id'       => $row['value'],
+                                    'status'        => 0,
+                                    'type'          => $request->option_type_id,
+                                    'created_at'    => date('Y-m-d H:i:s')
+                                ];
+                                
+                            // if get last approver
+                            array_push($arrayPostLink,$meetingPost);
+                        }
+                    }else{
+                        $meetingPost =[
+                            'meeting_id'    => $request->meeting_id,
+                            'link'          => $randomString,
+                            'user_id'       => 0,
+                            'status'        => 0,
+                            'type'          => $request->option_type_id,
+                            'created_at'    => date('Y-m-d H:i:s')
+                        ];
                         array_push($arrayPostLink,$meetingPost);
                     }
-                }
-                // Last Before Upload Data
+                    // Last Before Upload Data
+                        $postHeader                       =[
+                                                                'step'              => $nextApproval === null ? 0 : $bookingHeader->step + 1,
+                                                                'status'            => $status,
+                                                                'meeting_link'      => $randomString,
+                                                                'approval_id'       => $nextApproval === null ? 0 : $nextApproval->user_id,
+                                                                'updated_at'        => date('Y-m-d H:i:s'),
+                                                                'meeting_code'      => $request->option_meet_id == null ? '-':$request->option_meet_id
+                                                            ];
+                        $post_log                        =[
+                                                            'meeting_id'        => $request->meeting_id,
+                                                            'user_id'           => auth()->user()->id,
+                                                            'step'              => $bookingHeader->step,
+                                                            'remark'            => $request->remark_approval,
+                                                            'status'            => $status
+                                                        ];
+                    // Last Before Upload Data
+
+                }else{
                     $postHeader                       =[
-                                                    'step'              => $nextApproval === null ? 0 : $bookingHeader->step + 1,
-                                                    'status'            => $status,
-                                                    'approval_id'       => $nextApproval === null ? 0 : $nextApproval->user_id,
-                                                    'updated_at'        => date('Y-m-d H:i:s')
-                                                ];
-                    $post_log                   =[
-                                                    'meeting_id'        => $request->meeting_id,
-                                                    'user_id'           => auth()->user()->id,
-                                                    'step'              => $bookingHeader->step,
-                                                    'remark'            => $request->remark_approval,
-                                                    'status'            => $status
-                                                ];
-                // Last Before Upload Data
-
-            }else{
-                $postHeader                       =[
-                                                'step'              => 0,
-                                                'status'            => 9,
-                                                'approval_id'       => 0,
-                                                'updated_at'        => date('Y-m-d H:i:s')
-                                            ];
-                $post_log                   =[
-                                                'meeting_id'        => $request->meeting_id,
-                                                'user_id'           => auth()->user()->id,
-                                                'step'              => $bookingHeader->step,
-                                                'remark'            => $request->remark_approval,
-                                                'status'            => 9
-                                            ];
-            }
-            dd($request);
-            DB::transaction(function() use($request,$postHeader,$post_log,$arrayPostLink) {
-               $test = BookingHeader::where('meeting_id', $request->meeting_id)->update($postHeader);
-                
-               BookingDetail::create($post_log);
-               if($request->selectApproval == 1  && count($arrayPostLink) > 0){
-                    MeetingLink::insert($arrayPostLink);
-               }
-
-            });
-            return ResponseFormatter::success(   
-                $postHeader,                              
-                'Ticket successfully updated'
-            );            
+                                                        'step'              => 0,
+                                                        'status'            => 9,
+                                                        'approval_id'       => 0,
+                                                        'updated_at'        => date('Y-m-d H:i:s')
+                                                        ];
+                    $post_log                           =[
+                                                            'meeting_id'        => $request->meeting_id,
+                                                            'user_id'           => auth()->user()->id,
+                                                            'step'              => $bookingHeader->step,
+                                                            'remark'            => $request->remark_approval,
+                                                            'status'            => 9
+                                                        ];
+                }
+                DB::transaction(function() use($request,$postHeader,$post_log,$arrayPostLink, $nextApproval) {
+                    BookingHeader::where('meeting_id', $request->meeting_id)->update($postHeader);   
+                    BookingDetail::create($post_log);
+                    if($request->selectApproval == 1 && $nextApproval == null){
+                            MeetingLink::insert($arrayPostLink);
+                    }
+                });
+                return ResponseFormatter::success(   
+                    $postHeader,                              
+                    'Ticket successfully updated'
+                );            
         // } catch (\Throwable $th) {
         //     return ResponseFormatter::error(
         //         $th,

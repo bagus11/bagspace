@@ -61,6 +61,7 @@
             })
         })
         $('#booking_table').on('click', '.detail', function(){
+            $('#last_booking_container').prop('hidden','true')
             var id = $(this).data('id')
             var data ={
                 'id' : id
@@ -88,6 +89,9 @@
                                 break;
                             default:
                         }
+                if(response.detail.approval_id == 0){
+                    $('#last_booking_container').prop('hidden',false)
+                }
                 $('#meeting_id_label').html(': ' + response.detail.meeting_id)
                 $('#type_label').html(response.detail.type == 1 ? ': OFFLINE' : ': ONLINE')
                 $('#start_date_label').val(response.detail.date_start)
@@ -97,7 +101,9 @@
                 $('#status_label').html(`:  <span class="badge badge-${color}" style="font-weight:bold !important;dont-size:14px!important">${status}</span>`)
                 $('#location_label').html(': '+ response.detail.location_relation.name)
                 $('#room_label').html(response.detail.room_relation == null ? ': -' : ': '+response.detail.room_relation.name)
-                $('#meeting_link_label').html(response.detail.meeting_code == null ?': -': ': ' + response.detail.meeting_code)
+                $('#meeting_link_label').html(response.detail.meeting_code == 2 ?': -': ': <a target="_blank" href="'+response.detail.meeting_link+'" class="ml-3" style="color:blue;"> Click here</a>')
+                $('#meeting_link_type_label').html(response.detail.meeting_code == 1 ?': Yes' : ': No')
+                $('#meeting_type_label').html(response.private.length > 0 ?': Private' : ': Public')
                 mappingTableActivity(response.data)
                 mappingPIC(response.approval)
             })
