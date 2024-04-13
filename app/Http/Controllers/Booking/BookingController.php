@@ -11,6 +11,7 @@ use App\Models\Booking\BookingDetail;
 use App\Models\Booking\BookingHeader;
 use App\Models\Booking\MasterApproval;
 use App\Models\Booking\MasterRoomModel;
+use App\Models\Booking\MeetingLink;
 use App\Models\Setting\MasterLocation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -143,31 +144,33 @@ class BookingController extends Controller
                     $status     = $bookingHeader->status + 1;
                 }
                 $arrayPostLink =[];
-                foreach($request->array_list_user as $row){
-                    // if get last approver
-                        $meetingIdReplace = str_replace('/','',$request->meeting_id);
-                        if($lastApprover->user_id == auth()->user()->id){
-                            $length = 32; // panjang string yang diinginkan
-                            $randomString =$meetingIdReplace. bin2hex(random_bytes($length));
-                        }
-                        // dd($row);
-                        $meetingPost =[
-                            'meeting_id'    => $request->meeting_id,
-                            'link'          => $randomString,
-                            'user_id'       => $row['value'],
-                            'status'        => 0,
-                        ];
-                        
-                    // if get last approver
-                    array_push($arrayPostLink,$meetingPost);
+                if($request->option_meet_id){
+                    foreach($request->array_list_user as $row){
+                        // if get last approver
+                            $meetingIdReplace = str_replace('/','',$request->meeting_id);
+                            if($lastApprover->user_id == auth()->user()->id){
+                                $length = 32; // panjang string yang diinginkan
+                                $randomString =$meetingIdReplace. bin2hex(random_bytes($length));
+                            }
+                            // dd($request);
+                            $meetingPost =[
+                                'meeting_id'    => $request->meeting_id,
+                                'link'          => $randomString,
+                                'user_id'       => $row['value'],
+                                'status'        => 0,
+                                'type'          => $request->option_meet_id,
+                            ];
+                            
+                        // if get last approver
+                        array_push($arrayPostLink,$meetingPost);
+                    }
                 }
-                dd($arrayPostLink);
-
                 // Last Before Upload Data
-                    $post                       =[
+                    $postHeader                       =[
                                                     'step'              => $nextApproval === null ? 0 : $bookingHeader->step + 1,
                                                     'status'            => $status,
                                                     'approval_id'       => $nextApproval === null ? 0 : $nextApproval->user_id,
+                                                    'updated_at'        => date('Y-m-d H:i:s')
                                                 ];
                     $post_log                   =[
                                                     'meeting_id'        => $request->meeting_id,
@@ -179,10 +182,11 @@ class BookingController extends Controller
                 // Last Before Upload Data
 
             }else{
-                $post                       =[
+                $postHeader                       =[
                                                 'step'              => 0,
                                                 'status'            => 9,
                                                 'approval_id'       => 0,
+                                                'updated_at'        => date('Y-m-d H:i:s')
                                             ];
                 $post_log                   =[
                                                 'meeting_id'        => $request->meeting_id,
@@ -192,14 +196,18 @@ class BookingController extends Controller
                                                 'status'            => 9
                                             ];
             }
-           
-            DB::transaction(function() use($request,$post,$post_log) {
+            dd($request);
+            DB::transaction(function() use($request,$postHeader,$post_log,$arrayPostLink) {
+               $test = BookingHeader::where('meeting_id', $request->meeting_id)->update($postHeader);
+                
                BookingDetail::create($post_log);
-               BookingHeader::where('meeting_id', $request->meeting_id)->update($post);
+               if($request->selectApproval == 1  && count($arrayPostLink) > 0){
+                    MeetingLink::insert($arrayPostLink);
+               }
 
             });
             return ResponseFormatter::success(   
-                $post,                              
+                $postHeader,                              
                 'Ticket successfully updated'
             );            
         // } catch (\Throwable $th) {

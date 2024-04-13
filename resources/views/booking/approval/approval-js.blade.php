@@ -16,6 +16,7 @@
         })
     })
     onChange('select_location','location_id')
+    onChange('select_option_type','option_type_id')
     $('#btn_save_approval').on('click', function(){
                 var data ={
                     'step':$('#step').val(),

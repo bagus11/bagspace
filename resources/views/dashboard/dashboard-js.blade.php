@@ -64,7 +64,8 @@
             'remark_approval'   : $('#remark_approval').val(),
             'option_meet_id'    : $('#option_meet_id').val(),
             'selectApproval'    : $('#selectApproval').val(),
-            'array_list_user'   : array_list_user
+            'array_list_user'   : array_list_user,
+            'option_type_id'    : $('#option_type_id').val()
         }
 
         postCallback('updateApprovalTicket',data, function(response){
