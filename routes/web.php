@@ -96,8 +96,12 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('editMasterApproval', [MasterApprovalController::class, 'editMasterApproval'])->name('editMasterApproval');
        
             Route::get('getApprover', [MasterApprovalController::class, 'getApprover'])->name('getApprover');
-
         // Approval
+
+
+        // Meeting Online
+            Route::get('meetingRoom/{meetingLink}',[BookingController::class, 'meetingRoom']); 
+        // Meeting Online
     // Booking Room
 
   

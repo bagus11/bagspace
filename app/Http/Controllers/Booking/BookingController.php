@@ -187,7 +187,7 @@ class BookingController extends Controller
                                                                 'meeting_link'      => $randomString,
                                                                 'approval_id'       => $nextApproval === null ? 0 : $nextApproval->user_id,
                                                                 'updated_at'        => date('Y-m-d H:i:s'),
-                                                                'meeting_code'      => $request->option_meet_id == null ? '-':$request->option_meet_id
+                                                                'meeting_code'      => $request->option_type_id == null ? '-':$request->option_type_id
                                                             ];
                         $post_log                        =[
                                                             'meeting_id'        => $request->meeting_id,
@@ -231,5 +231,22 @@ class BookingController extends Controller
         //         500
         //     );
         // }
+    }
+    function meetingRoom($id) {
+        // First Validation, set type, if type == 1, is public. without validation, else if the type is private next validation
+            $validation1 = BookingHeader::where('meeting_link',$id)->first();
+            if($validation1->meeting_code == 1){
+                dd('ok test');
+            }else{
+                // Second validation, if user not registerd, 403
+                    $validation2 = MeetingLink::where('meeting_id', $validation1->meeting_id)->where('user_id',auth()->user()->id)->first();
+                    if($validation2){
+                        
+                    }else{
+                        return view('validation.403');
+                    }
+                // Second validation, if user not registerd, 403
+            }
+        // First Validation, set type, if type == 1, is public. without validation, else if the type is private next validation
     }
 }
