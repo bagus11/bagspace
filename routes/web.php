@@ -7,6 +7,9 @@ use App\Http\Controllers\Chat\Master\SettingChatController;
 use App\Http\Controllers\Chat\Transaction\ChatController;
 use App\Http\Controllers\Setting\RolePermissionController;
 use App\Http\Controllers\Setting\UserAccessController;
+use App\Http\Controllers\Timeline\KanbanController;
+use App\Http\Controllers\Timeline\MasterTeamTimelineController;
+use App\Http\Controllers\Timeline\MonitoringTimelineController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -102,6 +105,42 @@ Route::group(['middleware' => ['auth']], function() {
         // Meeting Online
             Route::get('meetingRoom/{meetingLink}',[BookingController::class, 'meetingRoom']); 
         // Meeting Online
+
+        // Master Team Timeline
+            Route::get('master_team_timeline', [MasterTeamTimelineController::class, 'index'])->name('master_team_timeline');
+            Route::get('getTeamTimeline', [MasterTeamTimelineController::class, 'getTeamTimeline'])->name('getTeamTimeline');
+            Route::post('updateStatusMasterTeamTimeline', [MasterTeamTimelineController::class, 'updateStatusMasterTeamTimeline'])->name('updateStatusMasterTeamTimeline');
+            Route::get('getDetailTeam', [MasterTeamTimelineController::class, 'getDetailTeam'])->name('getDetailTeam');
+            Route::get('getMasterTeamDetail', [MasterTeamTimelineController::class, 'getMasterTeamDetail'])->name('getMasterTeamDetail');
+            Route::get('getActiveTeam', [MasterTeamTimelineController::class, 'getActiveTeam'])->name('getActiveTeam');
+            Route::post('addDetailTeam', [MasterTeamTimelineController::class, 'addDetailTeam'])->name('addDetailTeam');
+            Route::post('updateDetailTeam', [MasterTeamTimelineController::class, 'updateDetailTeam'])->name('updateDetailTeam');
+            Route::post('saveTeam', [MasterTeamTimelineController::class, 'saveTeam'])->name('saveTeam');
+            Route::post('updateMasterTeam', [MasterTeamTimelineController::class, 'updateMasterTeam'])->name('updateMasterTeam');
+        // Master Team Timeline 
+        // Monitoring Timeline
+            Route::get('monitoring_timeline', [MonitoringTimelineController::class, 'index'])->name('monitoring_timeline');
+            Route::get('getTimelineHeader', [MonitoringTimelineController::class, 'getTimelineHeader'])->name('getTimelineHeader');
+            Route::post('saveTimelineHeader', [MonitoringTimelineController::class, 'saveTimelineHeader'])->name('saveTimelineHeader');
+            Route::get('detailTimeline', [MonitoringTimelineController::class, 'detailTimeline'])->name('detailTimeline');
+            Route::post('updateLogTimelineHeaderDate', [MonitoringTimelineController::class, 'updateLogTimelineHeaderDate'])->name('updateLogTimelineHeaderDate');
+
+                // Kanban
+                    Route::get('project/{id}',[KanbanController::class, 'index']);
+                    Route::get('getTimelineDetail', [KanbanController::class, 'getTimelineDetail'])->name('getTimelineDetail');
+                    Route::get('getSubDetailKanban', [KanbanController::class, 'getSubDetailKanban'])->name('getSubDetailKanban');
+                    Route::post('sendChat', [KanbanController::class, 'sendChat'])->name('sendChat');
+                    Route::get('getChat', [KanbanController::class, 'getChat'])->name('getChat');
+                    Route::post('createModule', [KanbanController::class, 'createModule'])->name('createModule');
+                    Route::post('addTask', [KanbanController::class, 'addTask'])->name('addTask');
+                    Route::get('getTeam', [KanbanController::class, 'getTeam'])->name('getTeam');
+                    Route::post('updateStatusTask', [KanbanController::class, 'updateStatusTask'])->name('updateStatusTask');
+                    
+                // Kanban
+        // Monitoring Timeline
+
+        
+
     // Booking Room
 
   

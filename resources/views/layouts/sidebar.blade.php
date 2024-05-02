@@ -57,6 +57,7 @@
                                     ->orderBy('order','asc')
                                     ->get();
                         @endphp
+                         
                           <a class="nav-link" href="#navbar-{{$item->link}}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-{{$item->link}}">
                           <i class="{{$item->icon}}"></i>
                               <span class="nav-link-text" style="font-family: Poppins;font-size:11px;margin-top:10px">{{$item->name}}</span>
@@ -76,6 +77,7 @@
                     </li>   
                 @endif
             @endforeach
+          
                   <!-- Dashboard Link -->
                   <!-- End Dropdown Example -->
               </ul>

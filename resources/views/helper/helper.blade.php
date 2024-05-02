@@ -1,6 +1,7 @@
 <script>
     let authId = $('#authId').val();
     let nameAuth = $('#nameAuth').val();
+    
     function saveHelper(url,data,route){
         $.ajax({
             headers: {
@@ -40,6 +41,36 @@
             }
         });
     }
+    function saveRepo(url,data,route){
+            $.ajax({
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: url,
+                type: "post",
+                dataType: 'json',
+                async: true,
+                data: data,
+                beforeSend: function() {
+                    SwalLoading('Please wait ...');
+                },
+                success: function(response) {
+                    swal.close();
+                    if(response.status==500){
+                        toastr['warning'](response.message);
+                    }
+                    else{
+                        toastr['success'](response.message);
+                        window.location = route;
+                    }
+                    
+                },
+                error: function(xhr, status, error) {
+                    swal.close();
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            });
+        }
     function onChange(selectId, id){
         $('#'+selectId).on('change', function(){
             var x = $('#'+ selectId).val()
@@ -479,5 +510,25 @@
         }
     }
     return -1; // Return -1 if not found
+}
+function convertDate(inputDate) {
+    // Parse the input date string
+    const dateParts = inputDate.split("-");
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]);
+    const day = parseInt(dateParts[2]);
+
+    // Create a Date object
+    const date = new Date(year, month - 1, day);
+
+    // Define month names
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Format the date
+    const formattedDate = day + " " + monthNames[month - 1] + " " + year;
+
+    return formattedDate;
 }
 </script>

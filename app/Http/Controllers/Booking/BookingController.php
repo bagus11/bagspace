@@ -241,9 +241,9 @@ class BookingController extends Controller
                 // Second validation, if user not registerd, 403
                     $validation2 = MeetingLink::where('meeting_id', $validation1->meeting_id)->where('user_id',auth()->user()->id)->first();
                     if($validation2){
-                        
+                        return view('meetingPage.meeting_page-index');
                     }else{
-                        return view('validation.403');
+                        return view('meetingPage.403');
                     }
                 // Second validation, if user not registerd, 403
             }

@@ -184,12 +184,16 @@
   <script src="{{asset('assets/vendor/js-cookie/js.cookie.js')}}"></script>
   <script src="{{asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js')}}"></script>
   <script src="{{asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
+  <script src="{{asset('assets/sweetalert2/sweetalert2.all.js')}}"></script>
+  <script src="{{asset('assets/sweetalert2/sweetalert2.all.min.js')}}"></script>
+  <script src="{{asset('assets/sweetalert2/sweetalert2.js')}}"></script>
+  <script src="{{asset('assets/sweetalert2/sweetalert2.min.js')}}"></script>
 
     <!-- Core -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>  --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!-- Core -->
   <!-- Argon JS -->
