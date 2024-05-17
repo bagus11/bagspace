@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreRoleUserRequest;
 use App\Http\Requests\UpdateRolesRequest;
 use App\Http\Requests\UpdateRoleUserRequest;
+use App\Models\MasterDepartment;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -141,5 +142,12 @@ class UserAccessController extends Controller
             'message'=>$message,
         ]);
        
+    }
+
+    function getDepartment() {
+        $data = MasterDepartment::all();
+        return response()->json([
+            'data'=>$data,
+        ]); 
     }
 }

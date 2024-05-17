@@ -33,6 +33,15 @@
                         <span  style="color:red;" class="message_error text-red block name_module_error"></span>
                     </div>
                 </div>
+                <div class="row" id="purchase_container">
+                        <div class="col-2 mt-2">
+                            <p>Plan</p>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control" id="plan_amount">
+                            <span  style="color:red;" class="message_error text-red block plan_amount_error"></span>
+                        </div>
+                </div>
                 <div class="row">
                     <div class="col-2 mt-2">
                         <p>Description</p>

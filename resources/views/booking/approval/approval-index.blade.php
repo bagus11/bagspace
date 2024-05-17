@@ -6,8 +6,8 @@
   <li class="breadcrumb-item" aria-current="page"><i class="ni ni-circle-08"></i> Master Approval</li>
   </ol>
 </nav>
-<div class="container">
-    <div class="row justify-content-center">
+
+    <div class="row justify-content-center mx-2">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header pb-0">
@@ -41,7 +41,6 @@
             </div>
         </div>
     </div>
-</div>
 
 @include('booking.approval.modal.edit-approval')
 @include('booking.approval.modal.add-approval')

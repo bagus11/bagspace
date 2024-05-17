@@ -174,12 +174,13 @@
                     }
             $('#approver_table > tbody:first').html(data);
             $('#approver_table').DataTable({
-                scrollX  : true,
+                scrollX     : true,
                 searching   :false,
-                info   :false,
-                searching :false,
-                pagingType: "simple",
-                language: {
+                scrollY     :135,
+                info        :false,
+                searching   :false,
+                pagingType  : "simple",
+                language    : {
                                     'paginate': {
                                     'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
                                     'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'

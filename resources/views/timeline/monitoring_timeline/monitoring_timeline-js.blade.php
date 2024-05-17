@@ -3,17 +3,26 @@
         swal.close()
         mappingTable(response.data)
     })
+    $('#btnRefresh').on('click',function(){
+        getCallback('getTimelineHeader',null, function(response){
+        swal.close()
+        mappingTable(response.data)
+    })
+    })
     $('#btn_add_ticket').on("click", function(){
         $('#detail_team_container').prop('hidden', true)
         getActiveItems('getLocation',null,'select_office','Location')
+        getActiveItems('getActiveTimelineType',null,'select_type','Type')
         getActiveItems('getActiveTeam',null,'select_team','Team')
         $('#name').val('')
         $('#office_id').val('')
         $('#description').val('')
         $('#team_id').val('')
+        $('.message_error').html('')
     })
     onChange('select_office','office_id')
     onChange('select_team','team_id')
+    onChange('select_type','type_id')
     $('#select_team').on('change',function(){
         var id = $('#select_team').val()
         var data ={
@@ -33,7 +42,9 @@
             'office_id':$('#office_id').val(),
             'start_date':$('#start_date').val(),
             'end_date':$('#end_date').val(),
+            'type_id':$('#type_id').val(),
         }
+       
         postCallback('saveTimelineHeader', data, function(response){
             swal.close()
             $('#select_team').val('')
@@ -86,6 +97,7 @@
             $('#team_name_label').html(': ' + response.detail.team_relation.name)
             $('#pic_label').html(': ' + response.detail.pic_relation.name)
             $('#location_label').html(': ' + response.detail.office_relation.name)
+            $('#link_label').html(': <a target=”_blank” href="' + response.detail.link + '"> Click here </a>')
             $('#start_date_label').val(response.detail.start_date)
             $('#end_date_label').val(response.detail.end_date)
             $('#status_label').html(`:  <span class="badge badge-${color}" style="font-weight:bold !important;dont-size:14px!important">${status}</span>`)
@@ -112,9 +124,36 @@
     })
     $('#timeline_header_table').on('click','.project', function(){
         var id = $(this).data('id')
+        var link = $(this).data('link')
         var request = $(this).data('request')
             replace = request.replaceAll('/','_');
-            window.open(`project/${replace}`,'_blank');
+            if(link != ''){
+                window.open(`project/${replace}`,'_blank');
+            }else{
+                toastr['warning']('BOT is not already, please contact ICT Dev to create this BOT :), Thank you');
+            }
+    })
+    $('#timeline_header_table').on('click','.bot', function(){
+        var id = $(this).data('id')
+        $('.message_error').html('')
+        $('#editId').val(id)
+        $('#channel').val('')
+        $('#link').val('')
+    })
+    $('#btn_summon_bot').on('click', function(){
+        var data ={
+            'channel' : $("#channel").val(),
+            'link' : $("#link").val(),
+            'id' : $("#editId").val(),
+        }
+        postCallback('summonBot', data, function(response){
+            swal.close()
+            $('#botTimelineModal').modal('hide')
+            toastr['success'](response.meta.message);
+            getCallbackNoSwal('getTimelineHeader',null, function(response){
+                mappingTable(response.data)
+            })
+        })
     })
     $('#btn_update_timeline_header').on('click',function(){
         var data ={
@@ -122,6 +161,7 @@
             'end_date_edit' :$('#end_date_edit').val(),
             'request_code_edit' :$('#request_code_edit').val(),
             'team_id_edit' :$('#team_id_edit').val(),
+            'description_edit' :$('#description_edit').val(),
         }
         postCallbackNoSwal('updateLogTimelineHeaderDate',data,function(response){
             toastr['success'](response.meta.message);
@@ -175,9 +215,9 @@
                         }
                             data += `<tr style="text-align: center;">
                                         <td style="text-align: center;width:15%">${response[i].request_code}</td>
-                                        <td style="text-align: left;width:10%">${response[i].office_relation.name}</td>
-                                        <td style="text-align: left;width:10%">${response[i].team_relation.name}</td>
-                                        <td style="text-align: center;width:40%">
+                                        <td style="text-align: left;width:10%">${response[i].type_relation.name}</td>
+                                        <td style="text-align: left;width:15%">${response[i].team_relation.name}</td>
+                                        <td style="text-align: center;width:30%">
                                             <div class="progress-group">
                                                 <div class="progress-group">
                                                     ${response[i].name}
@@ -188,19 +228,25 @@
                                                 </div>
                                             </div>
                                             </td>
-                                        <td style="text-align: center;width:10%;margin:auto">
+                                        <td style="text-align: center;width:5%;margin:auto">
                                             <span class="badge badge-${color}" style="font-weight:bold !important;dont-size:14px!important">${status}</span>    
                                         </td>
                                         
-                                        <td style="width:15%">
+                                        <td style="width:25%">
                                                 <button title="Detail" class="detail btn btn-sm btn-info rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#detailTimelineHeader">
                                                     <i class="fas fa-solid fa-eye"></i>
+                                                </button>   
+                                                <button title="Create Telegram BOT" class="bot btn btn-sm btn-primary rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#botTimelineModal" ${response[i].status_bot != 0 ? 'hidden' : ''}>
+                                                    <i class="fa-solid fa-robot"></i>
                                                 </button>   
                                                 <button title="Detail" class="edit btn btn-sm btn-warning rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#editTimelineHeader">
                                                     <i class="fas fa-solid fa-edit"></i>
                                                 </button>   
-                                                <button title="Go To Project" class="project btn btn-sm btn-dark rounded"data-id="${response[i]['id']}" data-toggle="modal" data-request="${response[i]['request_code']}" data-target="#addTeamDetail">
+                                                <button title="Go To Project" class="project btn btn-sm btn-dark rounded"data-id="${response[i]['id']}" data-toggle="modal" data-request="${response[i]['request_code']}" data-target="#addTeamDetail" ${response[i].link =='' ? 'disabled' :''} data-link ="${response[i].link}">
                                                     <i class="fa-solid fa-diagram-project"></i>
+                                                </button>
+                                                <button title="Export GanttChart" class="export btn btn-sm btn-success rounded" data-id="${response[i]['id']}" data-request="${response[i]['request_code']}">
+                                                    <i class="fa-solid fa-chart-gantt"></i>
                                                 </button>
                                         </td>
                                 </tr>
@@ -270,9 +316,10 @@
                 const time = d.toTimeString().split(' ')[0];
                         data += `<tr style="text-align: center;">
                                     <td style="text-align: center;width:15%">${date} ${time}</td>
-                                    <td style="text-align: left;width:10%">${response[i].pic_relation.name}</td>
-                                    <td style="text-align: center;width:10%">${response[i].start_date}</td>
-                                    <td style="text-align: center;width:10%">${response[i].end_date}</td>
+                                    <td style="text-align: left;width:25%">${response[i].pic_relation.name}</td>
+                                    <td style="text-align: center;width:15%">${response[i].start_date}</td>
+                                    <td style="text-align: center;width:15%">${response[i].end_date}</td>
+                                    <td style="text-align: left;width:30%">${response[i].remark}</td>
                                     
                             </tr>
                             `;
@@ -281,7 +328,7 @@
         $('#log_history_update').DataTable({
             scrollX  : true,
             searching :false,
-            order: [[1, 'desc']],
+            order: [[0, 'desc']],
             language: {
                                 'paginate': {
                                         'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',

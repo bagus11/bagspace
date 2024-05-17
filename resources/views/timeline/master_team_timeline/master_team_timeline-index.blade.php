@@ -8,41 +8,37 @@
     <li class="breadcrumb-item" aria-current="page"><i class="ni ni-badge"></i> Master Team</li>
   </ol>
 </nav>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card p-0">
-                <div class="card-header">
-                  <div class="row">
-                    <div class="col-3">
-                      <p class="title-head">Team List</p>
-                    </div>
-                    <div class="col-9">
-                      <button class="btn btn-sm btn-success" id="btn_add_role_user" style="float: right"   data-toggle="modal" data-target="#addTeamModal">
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body p-0">
-                    <table class="datatable-stepper" id="team_table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col" class="sort" style="text-align: center" data-sort="role"></th>
-                                <th scope="col" class="sort" style="text-align: center" data-sort="role">Status</th>
-                                <th scope="col" class="sort" style="text-align: center" data-sort="name">Name</th>
-                                <th scope="col" class="sort" style="text-align: center" data-sort="action">Action</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <div class="card-footer">
-
-                </div>
+<div class="row justify-content-center mx-2">
+  <div class="col-md-12">
+      <div class="card p-0">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-3">
+                <p class="title-head">Team List</p>
               </div>
+              <div class="col-9">
+                <button class="btn btn-sm btn-success" id="btn_add_role_user" style="float: right"   data-toggle="modal" data-target="#addTeamModal">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0 mb-2">
+              <table class="datatable-stepper" id="team_table">
+                  <thead class="thead-light">
+                      <tr>
+                          <th scope="col" class="sort" style="text-align: center" data-sort="role"></th>
+                          <th scope="col" class="sort" style="text-align: center" data-sort="role">Status</th>
+                          <th scope="col" class="sort" style="text-align: center" data-sort="name">Name</th>
+                          <th scope="col" class="sort" style="text-align: center" data-sort="action">Action</th>
+                      </tr>
+                  </thead>
+              </table>
+          </div>
+        
         </div>
-      
-    </div>
+  </div>
+
 </div>
 @include('timeline.master_team_timeline.modal.add-team')
 @include('timeline.master_team_timeline.modal.edit-team')

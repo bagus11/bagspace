@@ -15,6 +15,12 @@ class TimelineSubDetail extends Model
     function userRelation(){
         return $this->hasOne(User::class, 'id','pic');
     }
+    function detailRelation() {
+        return $this->hasOne(TimelineDetail::class,'detail_code','detail_code');
+    }
+    function headerRelation() {
+        return $this->hasOne(TimelineHeader::class,'request_code','request_code');
+    }
 
 
 }

@@ -10,67 +10,70 @@
             <div class="modal-body p-1">
                 <input type="hidden" id="detail_code_chat">
                 <input type="hidden" id="request_code_chat">
-               <fieldset class="legend1">
+               {{-- <fieldset class="legend1">
                             <legend style="text-align: left;" class="p-0">General Module</legend>
-                                <div class="row mx-2">
-                                    <div class="col-2 mt-2">
-                                        <p>Request Code</p>
-                                    </div>
-                                    <div class="col-4 mt-2">
-                                        <p id="module_request_code_label"></p>
-                                    </div>
-                                    <div class="col-2 mt-2">
-                                        <p>Detail Code</p>
-                                    </div>
-                                    <div class="col-4 mt-2">
-                                        <p id="module_detail_code_label"></p>
-                                    </div> 
-                                    <div class="col-2 mt-2">
-                                        <p>Module Name</p>
-                                    </div>
-                                    <div class="col-4 mt-2">
-                                        <p id="module_name_label"></p>
-                                    </div>
-                                    <div class="col-2 mt-2">
-                                        <p>Status</p>
-                                    </div>
-                                    <div class="col-4 mt-2">
-                                        <p id="module_status_label"></p>
-                                    </div>
-                                    <div class="col-2 mt-2">
-                                        <p>Start Date</p>
-                                    </div>
-                                    <div class="col-4 ">
-                                        <input type="date" class="form-control" id="module_start_date_label" >
-                                    </div>
-                                    <div class="col-2 mt-2">
-                                        <p>End Date</p>
-                                    </div>
-                                    <div class="col-4">
-                                        <input type="date" class="form-control" id="module_end_date_label" >
-                                    </div>
-                                </div>
-                                <div class="row mx-2">
-                                    <div class="col-2 mt-2">
-                                        <p>Description</p>
-                                    </div>
-                                    <div class="col-10 mt-2">
-                                        <p id="module_description_label"></p>
-                                    </div>
-                                </div>
-                                
-              </fieldset>
+                              
+              </fieldset> --}}
                 
               <fieldset class="legend1">
-                <legend>Sub Detail Module</legend>
+                <legend>General Module</legend>
                 <div class="row">
-                    <div class="col-sm-2">
-                        <div class="flex-wrapper" id="percentage_task_container" style="margin-top:50%"> 
+                    <div class="col-md-3">
+                        <div class="flex-wrapper" id="percentage_task_container" style="margin: auto !important;margin-top:10px !important  "> 
                           
                         </div>
-                   
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-md-9">
+                        <div class="row mx-2">
+                            <div class="col-3 mt-2">
+                                <p>Request Code</p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p id="module_request_code_label"></p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p>Detail Code</p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p id="module_detail_code_label"></p>
+                            </div> 
+                            <div class="col-3 mt-2">
+                                <p>Module Name</p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p id="module_name_label"></p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p>Status</p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p id="module_status_label"></p>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p>Start Date</p>
+                            </div>
+                            <div class="col-3 ">
+                                <input type="date" class="form-control" id="module_start_date_label" >
+                            </div>
+                            <div class="col-3 mt-2">
+                                <p>End Date</p>
+                            </div>
+                            <div class="col-3">
+                                <input type="date" class="form-control" id="module_end_date_label" >
+                            </div>
+                        </div>
+                        <div class="row mx-2">
+                            <div class="col-3 mt-2">
+                                <p>Description</p>
+                            </div>
+                            <div class="col-9 mt-2">
+                                <p id="module_description_label"></p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="col-md-12">
+                        
                       <div class="row">
                         <div class="col-12">
                             <button class="btn btn-sm btn-dark rounded-circle" id="btn_add_task" style="float: right;margin-top:-12px;margin-bottom:5px" data-toggle="modal" data-target="#addTaskModal" title="Create Task Here">
@@ -83,10 +86,13 @@
                             <table class="datatable-stepper" id="task_subdetail_table">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="name"></th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="name">Task</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="name">PIC</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="name">Dateline</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort=""></th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Start Date</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="task">Task</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="pic">PIC</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="dateline">Dateline</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="updated_at">Updated At</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="action">Action</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -111,7 +117,7 @@
                             <textarea class="form-control" id="remark_chat" rows="2"></textarea>
                             <span  style="color:red;font-size:9px" class="message_error text-red block remark_chat_error"></span>
                         </div>
-                        <div class="col-1">
+                        <div class="col-1 pr-4">
                             <button class="btn btn-slack btn-icon" id="send_chat">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
@@ -171,5 +177,11 @@ body{
   margin-right:.8em;
   position:relative;
 }
-
+.circular-chart{
+    width : 500px !important;
+    height: 100% !important;
+}
+#percentage_task_container{
+    width: 100% !important;
+}
 </style>

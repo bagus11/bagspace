@@ -148,30 +148,23 @@
                 </div>
               </div>
             </a>
-            <div class="dropdown-menu  dropdown-menu-right ">
+            <div class="dropdown-menu  dropdown-menu-right">
               <div class="dropdown-header noti-title">
-                <h6 class="text-overflow m-0">Welcome!</h6>
+                <h6 class="text-overflow m-0">Welcome <b>{{auth()->user()->name}}</b></h6>
               </div>
-              <a href="#!" class="dropdown-item">
-                <i class="ni ni-single-02"></i>
-                <span>My profile</span>
-              </a>
-              <a href="#!" class="dropdown-item">
+              <a href="setting_account" class="dropdown-item" style="font-size: 10px !important">
                 <i class="ni ni-settings-gear-65"></i>
                 <span>Settings</span>
               </a>
-              <a href="#!" class="dropdown-item">
+              <a href="#1" class="dropdown-item" style="font-size: 10px !important">
                 <i class="ni ni-calendar-grid-58"></i>
                 <span>Activity</span>
               </a>
-              <div class="dropdown-divider"></div>
-              
-         
               <form id="logout-form" method="POST" action="{{ route('logout') }}">
                 @csrf
                 <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                   <i class="ni ni-user-run"></i>
-                  <span>Logout</span>
+                  <span style="font-size: 10px !important">Logout</span>
                 </a>
                 <button type="submit" style="display: none;"></button>
             </form>

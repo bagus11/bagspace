@@ -61,6 +61,12 @@
                     <div class="col-6 col-sm-6 col-md-4 mt-2">
                         <p id="team_name_label"></p>
                     </div>          
+                    <div class="col-6 col-sm-6 col-md-2 mt-2">
+                        <p>BOT Link</p>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-4 mt-2">
+                        <p id="link_label"></p>
+                    </div>          
                 </div>
                 <div class="row mx-2">
                     <div class="col-2 col-sm-2 col-md-2 mt-2">

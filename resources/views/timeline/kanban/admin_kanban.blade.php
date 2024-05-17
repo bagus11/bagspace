@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    @include('layouts.navbar')
+    @include('timeline.kanban.navbar')
     <input type="hidden" id="authId" value="{{auth()->user()->id}}">
     @yield('content')
  
@@ -155,6 +155,10 @@
     .card-parent-footer{
         border-radius: 0px 0px 20px 20px !important;
         color: white;
+    }
+    .kanban-cards{
+      max-height: 500px !important;
+      overflow-y: auto !important; 
     }
 </style>
 
@@ -643,5 +647,16 @@
 #addCardModal{
   overflow-y : auto;
 }
+.custom-select{
+  width: 50px !important;
+  /* margin-top:10px !important; */
+}
+.dataTables_length label{
+  margin-top:10px !important;
+}
+.paging_simple_numbers{
+  float: right !important;
+}
+
 </style>
   </html>

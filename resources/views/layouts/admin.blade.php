@@ -8,7 +8,7 @@
   <meta name="author" content="Creative Tim">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Pralon - @yield('title', 'Admin')</title>
-  <link rel="icon" href="{{asset('60.png')}}" type="image/png">
+  <link rel="icon" href="{{asset('61.png')}}" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
   <link rel="stylesheet" href="{{asset('assets/vendor/nucleo/css/nucleo.css')}}" type="text/css">
   <link rel="stylesheet" href="{{asset('assets/css/argon.css?v=1.2.0')}}" type="text/css">
@@ -16,10 +16,19 @@
   {{-- Customization --}}
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('assets/select2/select2.min.css') }}" rel="stylesheet">
+  {{-- <link href="{{ asset('assets/sweetalert2/sweetalert2.css') }}" rel="stylesheet"> --}}
   {{-- Customization --}}
   <style>
     @import url('https://fonts.cdnfonts.com/css/poppins');
+    .message_error{
+      font-size: 9px !important;
+      color: red !important;
+    }
+    .card-footer{
+      border-bottom-right-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
     fieldset
     {
       /* max-width:500px; */
@@ -150,13 +159,26 @@
             .dataTables_scroll{
               width: 100% !important;
             }
-            .fa-arrow-right{
-              color: #008DDA;
+            .card.card-tabs .card-tools {
+              margin: .3rem .5rem;
             }
-            .fa-arrow-left{
-              color: #008DDA;
+            .card.card-outline-tabs .card-tools {
+              margin: .5rem .5rem .3rem;
             }
-           
+            .card-header > .card-tools {
+              float: right;
+              margin-right: -0.625rem;
+            }
+            .card-header > .card-tools .input-group,
+            .card-header > .card-tools .nav,
+            .card-header > .card-tools .pagination {
+              margin-bottom: -0.3rem;
+              margin-top: -0.3rem;
+            }
+            .card-header > .card-tools [data-toggle='tooltip'] {
+              position: relative;
+            }
+                    
             
   </style>
 </head>
@@ -184,10 +206,11 @@
   <script src="{{asset('assets/vendor/js-cookie/js.cookie.js')}}"></script>
   <script src="{{asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js')}}"></script>
   <script src="{{asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
-  <script src="{{asset('assets/sweetalert2/sweetalert2.all.js')}}"></script>
-  <script src="{{asset('assets/sweetalert2/sweetalert2.all.min.js')}}"></script>
-  <script src="{{asset('assets/sweetalert2/sweetalert2.js')}}"></script>
-  <script src="{{asset('assets/sweetalert2/sweetalert2.min.js')}}"></script>
+  <script src="{{ asset('assets/sweetalert2/sweetalert.min.js') }}"></script>
+  <script src="{{ asset('assets/select2/select2.full.min.js') }}"></script>
+  {{-- <script src="{{ asset('assets/select2/select2.min.js') }}"></script> --}}
+  <script src="{{ asset('assets/select2/select2.full.min.js') }}"></script>
+
 
     <!-- Core -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>

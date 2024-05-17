@@ -30,6 +30,8 @@ class storeTimelineHeaderRequest extends FormRequest
             'office_id'=>'required',
             'start_date'=>'required',
             'end_date'=>'required',
+            'type_id'=>'required',
+            
         ];
     }
 }

@@ -5,10 +5,14 @@ use App\Http\Controllers\Booking\MasterApprovalController;
 use App\Http\Controllers\Booking\MasterRoomController;
 use App\Http\Controllers\Chat\Master\SettingChatController;
 use App\Http\Controllers\Chat\Transaction\ChatController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Setting\RolePermissionController;
+use App\Http\Controllers\Setting\SettingAccountController;
 use App\Http\Controllers\Setting\UserAccessController;
 use App\Http\Controllers\Timeline\KanbanController;
 use App\Http\Controllers\Timeline\MasterTeamTimelineController;
+use App\Http\Controllers\Timeline\MasterTimelineCategory;
+use App\Http\Controllers\Timeline\MasterTypeController;
 use App\Http\Controllers\Timeline\MonitoringTimelineController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +51,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('getRoleUser', [UserAccessController::class, 'getRoleUser'])->name('getRoleUser');
             Route::get('getUser', [UserAccessController::class, 'getUser'])->name('getUser');
             Route::get('getUserDepartment', [UserAccessController::class, 'getUserDepartment'])->name('getUserDepartment');
+            Route::get('getDepartment', [UserAccessController::class, 'getDepartment'])->name('getDepartment');
             Route::post('addRoleUser', [UserAccessController::class, 'addRoleUser'])->name('addRoleUser');
             Route::get('detailRoleUser', [UserAccessController::class, 'detailRoleUser'])->name('detailRoleUser');
             Route::post('updateRoleUser', [UserAccessController::class, 'updateRoleUser'])->name('updateRoleUser');
@@ -105,26 +110,28 @@ Route::group(['middleware' => ['auth']], function() {
         // Meeting Online
             Route::get('meetingRoom/{meetingLink}',[BookingController::class, 'meetingRoom']); 
         // Meeting Online
-
-        // Master Team Timeline
-            Route::get('master_team_timeline', [MasterTeamTimelineController::class, 'index'])->name('master_team_timeline');
-            Route::get('getTeamTimeline', [MasterTeamTimelineController::class, 'getTeamTimeline'])->name('getTeamTimeline');
-            Route::post('updateStatusMasterTeamTimeline', [MasterTeamTimelineController::class, 'updateStatusMasterTeamTimeline'])->name('updateStatusMasterTeamTimeline');
-            Route::get('getDetailTeam', [MasterTeamTimelineController::class, 'getDetailTeam'])->name('getDetailTeam');
-            Route::get('getMasterTeamDetail', [MasterTeamTimelineController::class, 'getMasterTeamDetail'])->name('getMasterTeamDetail');
-            Route::get('getActiveTeam', [MasterTeamTimelineController::class, 'getActiveTeam'])->name('getActiveTeam');
-            Route::post('addDetailTeam', [MasterTeamTimelineController::class, 'addDetailTeam'])->name('addDetailTeam');
-            Route::post('updateDetailTeam', [MasterTeamTimelineController::class, 'updateDetailTeam'])->name('updateDetailTeam');
-            Route::post('saveTeam', [MasterTeamTimelineController::class, 'saveTeam'])->name('saveTeam');
-            Route::post('updateMasterTeam', [MasterTeamTimelineController::class, 'updateMasterTeam'])->name('updateMasterTeam');
-        // Master Team Timeline 
-        // Monitoring Timeline
-            Route::get('monitoring_timeline', [MonitoringTimelineController::class, 'index'])->name('monitoring_timeline');
-            Route::get('getTimelineHeader', [MonitoringTimelineController::class, 'getTimelineHeader'])->name('getTimelineHeader');
-            Route::post('saveTimelineHeader', [MonitoringTimelineController::class, 'saveTimelineHeader'])->name('saveTimelineHeader');
-            Route::get('detailTimeline', [MonitoringTimelineController::class, 'detailTimeline'])->name('detailTimeline');
-            Route::post('updateLogTimelineHeaderDate', [MonitoringTimelineController::class, 'updateLogTimelineHeaderDate'])->name('updateLogTimelineHeaderDate');
-
+        // Timeline Project
+            // Master Team Timeline
+                Route::get('master_team_timeline', [MasterTeamTimelineController::class, 'index'])->name('master_team_timeline');
+                Route::get('getTeamTimeline', [MasterTeamTimelineController::class, 'getTeamTimeline'])->name('getTeamTimeline');
+                Route::post('updateStatusMasterTeamTimeline', [MasterTeamTimelineController::class, 'updateStatusMasterTeamTimeline'])->name('updateStatusMasterTeamTimeline');
+                Route::get('getDetailTeam', [MasterTeamTimelineController::class, 'getDetailTeam'])->name('getDetailTeam');
+                Route::get('getMasterTeamDetail', [MasterTeamTimelineController::class, 'getMasterTeamDetail'])->name('getMasterTeamDetail');
+                Route::get('getActiveTeam', [MasterTeamTimelineController::class, 'getActiveTeam'])->name('getActiveTeam');
+                Route::post('addDetailTeam', [MasterTeamTimelineController::class, 'addDetailTeam'])->name('addDetailTeam');
+                Route::post('updateDetailTeam', [MasterTeamTimelineController::class, 'updateDetailTeam'])->name('updateDetailTeam');
+                Route::post('saveTeam', [MasterTeamTimelineController::class, 'saveTeam'])->name('saveTeam');
+                Route::post('updateMasterTeam', [MasterTeamTimelineController::class, 'updateMasterTeam'])->name('updateMasterTeam');
+            // Master Team Timeline 
+            // Monitoring Timeline
+                Route::get('monitoring_timeline', [MonitoringTimelineController::class, 'index'])->name('monitoring_timeline');
+                Route::get('getTimelineHeader', [MonitoringTimelineController::class, 'getTimelineHeader'])->name('getTimelineHeader');
+                Route::get('getTimelineHeaderUser', [MonitoringTimelineController::class, 'getTimelineHeaderUser'])->name('getTimelineHeaderUser');
+                Route::post('saveTimelineHeader', [MonitoringTimelineController::class, 'saveTimelineHeader'])->name('saveTimelineHeader');
+                Route::get('detailTimeline', [MonitoringTimelineController::class, 'detailTimeline'])->name('detailTimeline');
+                Route::post('updateLogTimelineHeaderDate', [MonitoringTimelineController::class, 'updateLogTimelineHeaderDate'])->name('updateLogTimelineHeaderDate');
+                Route::post('summonBot', [MonitoringTimelineController::class, 'summonBot'])->name('summonBot');
+                Route::get('getTimelineHeaderDetail', [MonitoringTimelineController::class, 'getTimelineHeaderDetail'])->name('getTimelineHeaderDetail');
                 // Kanban
                     Route::get('project/{id}',[KanbanController::class, 'index']);
                     Route::get('getTimelineDetail', [KanbanController::class, 'getTimelineDetail'])->name('getTimelineDetail');
@@ -134,14 +141,45 @@ Route::group(['middleware' => ['auth']], function() {
                     Route::post('createModule', [KanbanController::class, 'createModule'])->name('createModule');
                     Route::post('addTask', [KanbanController::class, 'addTask'])->name('addTask');
                     Route::get('getTeam', [KanbanController::class, 'getTeam'])->name('getTeam');
+                    Route::get('postBot', [KanbanController::class, 'postBot'])->name('postBot');
+                    Route::get('getSubDetailTimeline', [KanbanController::class, 'getSubDetailTimeline'])->name('getSubDetailTimeline');
                     Route::post('updateStatusTask', [KanbanController::class, 'updateStatusTask'])->name('updateStatusTask');
-                    
+                    Route::post('updateTimelineDetailStatus', [KanbanController::class, 'updateTimelineDetailStatus'])->name('updateTimelineDetailStatus');
                 // Kanban
-        // Monitoring Timeline
+            // Monitoring Timeline
+            // Master Type
+                Route::get('master_type_timeline', [MasterTypeController::class, 'index'])->name('master_type_timeline');
+                Route::get('getTimelineType', [MasterTypeController::class, 'getTimelineType'])->name('getTimelineType');
+                Route::get('getActiveTimelineType', [MasterTypeController::class, 'getActiveTimelineType'])->name('getActiveTimelineType');
+                Route::post('saveTimelineType', [MasterTypeController::class, 'saveTimelineType'])->name('saveTimelineType');
+                Route::post('updateTimelineType', [MasterTypeController::class, 'updateTimelineType'])->name('updateTimelineType');
+                Route::post('updateStatusType', [MasterTypeController::class, 'updateStatusType'])->name('updateStatusType');
+            // Master Type
+            // Master Category
+            
+                Route::get('master_category_timeline', [MasterTimelineCategory::class, 'index'])->name('master_category_timeline');
+                Route::get('getTimelineCategory', [MasterTimelineCategory::class, 'getTimelineCategory'])->name('getTimelineCategory');
+                Route::post('saveTimelineCategory', [MasterTimelineCategory::class, 'saveTimelineCategory'])->name('saveTimelineCategory');
+                Route::post('updateStatusCategory', [MasterTimelineCategory::class, 'updateStatusCategory'])->name('updateStatusCategory');
+                Route::post('updateTimelineCategory', [MasterTimelineCategory::class, 'updateTimelineCategory'])->name('updateTimelineCategory');
+            // Master Category
+        // Timeline Project
 
         
+        // Booking Room
+        // Library
+                Route::get('library', [LibraryController::class, 'index'])->name('library');
+                Route::get('getLibrary', [LibraryController::class, 'getLibrary'])->name('getLibrary');
+                Route::post('addLibrary', [LibraryController::class, 'addLibrary'])->name('addLibrary');
+                Route::get('detailLibrary', [LibraryController::class, 'detailLibrary'])->name('detailLibrary');
+                Route::post('updateLibrary', [LibraryController::class, 'updateLibrary'])->name('updateLibrary');
+        // Library
 
-    // Booking Room
+        // Setting
+                Route::get('setting_account', [SettingAccountController::class, 'index'])->name('setting_account');
+        // Setting
+
+
 
   
 

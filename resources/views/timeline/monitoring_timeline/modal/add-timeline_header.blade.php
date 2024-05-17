@@ -57,6 +57,14 @@
                     <input type="hidden" class="form-control" id="team_id">
                     <span  style="color:red;" class="message_error text-red block team_id_error"></span>
                 </div>
+                <div class="col-2 mt-2">
+                    <p>Type</p>
+                </div>
+                <div class="col-4">
+                    <select name="select_type" class="select2" id="select_type"></select>
+                    <input type="hidden" class="form-control" id="type_id">
+                    <span  style="color:red;" class="message_error text-red block type_id_error"></span>
+                </div>
                </div>
                <div class="row mt-2" id="detail_team_container">
                 <div class="col-12">

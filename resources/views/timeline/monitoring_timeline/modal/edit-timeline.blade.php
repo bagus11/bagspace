@@ -40,7 +40,14 @@
                     <div class="col-6 col-sm-6 col-md-4">
                         <input type="date" id="end_date_edit" class="form-control">
                     </div>  
-                    <div class="col-12">
+                    <div class="col-2 mt-2">
+                        <p>Remark</p>
+                    </div>
+                    <div class="col-10">
+                        <textarea class="form-control" id="description_edit" rows="3"></textarea>
+                        <span  style="color:red;" class="message_error text-red block description_edit_error"></span>  
+                    </div>
+                    <div class="col-12 mt-2">
                         <button id="btn_update_timeline_header" type="button" style="float: right" title="update date" class="btn btn-sm btn-success">
                             <i class="fa-solid fa-check"></i>
                         </button>
@@ -58,6 +65,7 @@
                                         <th scope="col" style="text-align: center" class="sort" data-sort="name">Name</th>
                                         <th scope="col" style="text-align: center" class="sort" data-sort="name">Start Date</th>
                                         <th scope="col" style="text-align: center" class="sort" data-sort="name">End Date</th>
+                                        <th scope="col" style="text-align: center" class="sort" data-sort="name">Remark</th>
                                     </tr>
                                 </thead>
                             </table>

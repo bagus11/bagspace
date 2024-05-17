@@ -13,11 +13,18 @@ use App\Models\Timeline\TimelineSubDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use NumConvert;
+use Telegram\Bot\Laravel\Facades\Telegram;
+
 class KanbanController extends Controller
 {
     function index($id){
+        $request_code   = str_replace('_','/',$id);
+        $timelineName = TimelineHeader::with(['teamRelation.userRelation'])->where('request_code', $request_code)->first();
+        $team = DetailTeamTimeline::with('userRelation')->where('team_id', $timelineName->team_id)->get();
         $data =[
-            'request_code' =>str_replace('_','/',$id)
+            'data'              =>$timelineName,
+            'request_code'      =>$request_code,
+            'team'      =>$team
         ];
         return view('timeline.kanban.kanban-index',$data);
     }
@@ -25,6 +32,12 @@ class KanbanController extends Controller
         $data = TimelineDetail ::with(['userRelation'])->where('request_code',$request->request_code)->get();
         return response()->json([
             'data'=>$data
+        ]); 
+    }
+    function getSubDetailTimeline(Request $request) {
+        $detail = TimelineSubDetail ::with(['userRelation'])->where('id',$request->id)->first();
+        return response()->json([
+            'detail'=>$detail
         ]); 
     }
     function getTeam(Request $request) {
@@ -77,7 +90,7 @@ class KanbanController extends Controller
         }
     }
     function createModule(Request $request) {
-        try {    
+        // try {    
             $increment_code= TimelineDetail::orderBy('id','desc')->first();
             $date_month =strtotime(date('Y-m-d'));
             $month =idate('m', $date_month);
@@ -86,7 +99,7 @@ class KanbanController extends Controller
             if($increment_code ==null){
                 $ticket_code = '1/DTML/'.$month_convert.'/'.$year;
             }else{
-                $month_before = explode('/',$increment_code->request_code,-1);
+                $month_before = explode('/',$increment_code->detail_code,-1);
                
                 if($month_convert != $month_before[2]){
                     $ticket_code = '1/DTML/'.$month_convert.'/'.$year;
@@ -94,6 +107,7 @@ class KanbanController extends Controller
                     $ticket_code = $month_before[0] + 1 .'/DTML/'.$month_convert.'/'.$year;
                 }   
             }
+            $header = TimelineHeader::where('request_code', $request->request_code)->first();
             $post =[
                 'detail_code'           => $ticket_code,
                 'request_code'          => $request->request_code,
@@ -101,15 +115,16 @@ class KanbanController extends Controller
                 'description'           => $request->description_module,
                 'start_date'            => $request->start_date_module,
                 'end_date'              => $request->end_date_module,
-                'status'                =>$request->status_module,
+                'status'                => $request->status_module,
                 'is_payment'            =>0,
                 'is_taxt'               =>0,
                 'is_negotiate'          =>0,
                 'is_discount'           =>0,
                 'percentage'            =>0,
-                'payment_status'        =>0
+                'payment_status'        =>0,
+                'plan'                  => $header->type_id ==1 ?0: $request->plan_amount
             ];
-
+            // dd($post);
             $post_chat=[
                 'request_code'          => $request->request_code,
                 'attachment'            => '',
@@ -120,23 +135,25 @@ class KanbanController extends Controller
             ];
             // dd($post);
              TimelineDetail::insert($post);
-             ChatTimelineModel::insert($post_chat);
+            //  ChatTimelineModel::insert($post_chat);
+             
             return ResponseFormatter::success(   
                 $post,                              
                 'Chat successfully added'
             );            
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error(
-                $th,
-                'Chat failed to add',
-                500
-            );
-        }  
+        // } catch (\Throwable $th) {
+        //     return ResponseFormatter::error(
+        //         $th,
+        //         'Chat failed to add',
+        //         500
+        //     );
+        // }  
     }
     function addTask(Request $request, StoreTaskRequest $storeTaskRequest) {
-        try {    
+        // try {    
             $storeTaskRequest->validated();
             $increment_code= TimelineSubDetail::orderBy('id','desc')->first();
+           
             $date_month =strtotime(date('Y-m-d'));
             $month =idate('m', $date_month);
             $year = idate('y', $date_month);
@@ -144,14 +161,15 @@ class KanbanController extends Controller
             if($increment_code ==null){
                 $ticket_code = '1/SDTML/'.$month_convert.'/'.$year;
             }else{
-                $month_before = explode('/',$increment_code->request_code,-1);
-               
+                $month_before = explode('/',$increment_code->subdetail_code,-1);
+                // dd($month_convert .' == '. $month_before[2]);
                 if($month_convert != $month_before[2]){
                     $ticket_code = '1/SDTML/'.$month_convert.'/'.$year;
                 }else{
                     $ticket_code = $month_before[0] + 1 .'/SDTML/'.$month_convert.'/'.$year;
                 }   
             }
+            $header = TimelineHeader::where('request_code',  $request->request_code)->first();
             $post =[
                 'request_code'          => $request->request_code,
                 'detail_code'           => $request->detail_code,
@@ -162,7 +180,7 @@ class KanbanController extends Controller
                 'end_date'              => $request->end_date_sub_module,
                 'pic'                   => $request->pic_id,
                 'status'                =>0,
-                'amount'                =>0,
+                'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount,
             ];
             $post_chat=[
                 'request_code'          => $request->request_code,
@@ -174,7 +192,7 @@ class KanbanController extends Controller
             ];
             
              TimelineSubDetail::insert($post);
-             ChatTimelineModel::insert($post_chat);
+            //  ChatTimelineModel::insert($post_chat);
              $statusDone     =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('detail_code',$request->detail_code)->where('status',1)->first();
              $statusAll      =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('detail_code',$request->detail_code)->first();
              $percentage     =   ($statusDone->percentage / $statusAll->percentage) * 100;
@@ -211,13 +229,13 @@ class KanbanController extends Controller
                 $post,                              
                 'Task successfully added'
             );            
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error(
-                $th,
-                'Task failed to add',
-                500
-            );
-        }  
+        // } catch (\Throwable $th) {
+        //     return ResponseFormatter::error(
+        //         $th,
+        //         'Task failed to add',
+        //         500
+        //     );
+        // }  
     }
     function updateStatusTask(Request $request) {
         $status         = 500;
@@ -225,10 +243,11 @@ class KanbanController extends Controller
         $task           = TimelineSubDetail::where('id', $request->id)->first();
         $post_update    = [
             'status'    => $task->status ==1 ?0 : 1,
-            'end_date'  =>date('Y-m-d') > $task->status ? date('Y-m-d') :'',
+            'update_done'  =>$task->status ==1 ?null : date('Y-m-d H:i:s'),
+            
         ];
        
-        $activate = $request->status == 1 ?'inactive' :'active';
+        $activate = $request->status == 1 ?'Cancel' :'DONE';
         $post_chat=[
             'request_code'          => $task->request_code,
             'attachment'            => '',
@@ -277,19 +296,116 @@ class KanbanController extends Controller
                         'status'=>1
                     ]);
                 }
-               
+                // Sending Message on BOT
+                $bot =[
+                    'task'          => $task->name,
+                    'activate'      => $activate,
+                    'request_code'   => $task->request_code,
+                    'user'          => auth()->user()->name,
+                    'project_name'  => $request->name
+                ];
+             
+                // Sending Message on BOT
                 $status = 200;
                 $message ='Successfully Update Progress';
             }
         }else{
                $status = 500;
-                $message ="You're not trully PIC :)";
+                $message ="Hayoooo, mau ngapain :)";
         }
+        return response()->json([
+            'status'        =>$status,
+            'message'       =>$message,
+            'bot'           =>$bot
+        ]); 
+        
+    }
+    function updateTimelineDetailStatus(Request $request) {
+        $status         = 500;
+        $message        = 'Failed Update Progress, please contact ICT Dev';
+        $task           = TimelineDetail::where('detail_code', $request->detail_code)->first();
+        $header = TimelineHeader::where('request_code', $task->request_code)->first();
+        $detail = TimelineDetail::where('detail_code',$task->detail_code)->first();
+        // dd($task);
+        $post =[
+            'status' => $request->status
+        ];
+        $status ='';
+        switch ($request->status) {
+            case 0:
+                $status ="NEW";
+            break;
+            case 1:
+                $status ="In Progress";
+            break;
+            case 2:
+                $status ="Pending";
+            break;
+            case 3:
+                $status ="DONE";
+            break;
+            default:
+            $status = '';
+            
+        }
+        // dd($request->status);
+        if($request->status == 2){
+            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+            . "PIC          : " . auth()->user()->name . "\n"
+            . "Module       :  <b>$detail->name</b>  \n"
+            . "Status       :   Pending";
+            Telegram::sendMessage([
+                'chat_id' => $header->id_channel,
+                'parse_mode' => 'HTML',
+                'text' => $text
+            ]);
+        }
+        if($detail->status == 2){
+            
+            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+            . "PIC          : " . auth()->user()->name . "\n"
+            . "Module       :  <b>$detail->name</b>  \n"
+            . "Status       :  $status ";
+            Telegram::sendMessage([
+                'chat_id' => $header->id_channel,
+                'parse_mode' => 'HTML',
+                'text' => $text
+            ]);
+        }
+        $update         = TimelineDetail::where('detail_code', $request->detail_code)->update($post);
+        if($update){
+            $status         = 200;
+            $message        = 'Successfully Update Status ';
+        }
+      
         return response()->json([
             'status'=>$status,
             'message'=>$message,
         ]); 
         
+    }
+    function postBot(Request $request) { 
+        // dd($request);
+        $header = TimelineHeader::where('request_code', $request->request_code)->first();
+        // dd($header);
+        $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+        . "PIC          : " . $request->user . "\n"
+        . "Task         :  <b>$request->task</b>  \n"
+        . "Status       :   $request->activate \n";
+        $send = Telegram::sendMessage([
+            'chat_id' => $header->id_channel,
+            'parse_mode' => 'HTML',
+            'text' => $text
+        ]);
+        if($send){
+            $status = 200;
+            $message ='Bot successfully sending message';
+        }
+
+        return response()->json([
+            'status'        =>$status,
+            'message'       =>$message,
+        ]); 
     }
 
 }
