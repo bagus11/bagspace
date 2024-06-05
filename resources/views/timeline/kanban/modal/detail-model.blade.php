@@ -101,30 +101,39 @@
                     </div>
                 </div>
               </fieldset>
-    
+              <fieldset class="legend1">
+                <legend>Send Disscuss Here</legend>
+                <div class="row">
+                    <div class="col-1">
+                        <span class="avatar avatar-sm rounded-circle mt-2 ml-2">
+                            @php
+                                $auth= auth()->user()->avatar;
+                            @endphp
+                             <img alt="Image placeholder" src="{{asset('storage/users-avatar/'.$auth)}}">
+                        </span>
+                    </div>
+                    <div class="col-11">
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <input type="file" class="form-control-file attach_btn" id="file_attach" style="display: none;">
+                                <label for="file_attach" class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></label>
+                            </div>
+                            <textarea name="" id="remark_chat" class="form-control type_msg" placeholder="Type your message..."></textarea>
+                            <div class="input-group-append">
+                                <button id="send_chat" class="input-group-text send_btn" style="background-color:#31363F;"><i class="fas fa-location-arrow"></i></button>
+                            </div>
+                        </div>
+                         <span style="color:red;font-size:9px" class="message_error text-red block remark_chat_error"></span>
+                    </div>
+                </div>
+
+              </fieldset>
               <fieldset class="legend1">
                 <legend>Activity</legend>
                 {{-- <fieldset class="legend1">
                     <legend>Log Activity</legend> --}}
                     <div class="box mx-2" id="chat_container">  
                     </div><!-- box -->
-                {{-- </fieldset> --}}
-
-                <fieldset class="legend1">
-                    <legend>Send Disscuss Here</legend>
-                    <div class="row mx-2 p-0">
-                        <div class="col-11">
-                            <textarea class="form-control" id="remark_chat" rows="2"></textarea>
-                            <span  style="color:red;font-size:9px" class="message_error text-red block remark_chat_error"></span>
-                        </div>
-                        <div class="col-1 pr-4">
-                            <button class="btn btn-slack btn-icon" id="send_chat">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </fieldset>
-               
               </fieldset>
 
                
@@ -136,6 +145,31 @@
 <style>
     *{
   box-sizing:border-box;
+}
+.type_msg{
+			background-color: rgba(0,0,0,0.3) !important;
+			border:0 !important;
+			color:white !important;
+			height: 60px !important;
+			overflow-y: auto;
+		}
+.type_msg:focus{
+		     box-shadow:none !important;
+           /* outline:0px !important; */
+}
+.send_btn{
+	border-radius: 0 15px 15px 0 !important;
+	background-color: rgba(0,0,0,0.3) !important;
+    border:0 !important;
+    color: white !important;
+    cursor: pointer;
+}
+.attach_btn{
+	border-radius: 15px 0 0 15px !important;
+	background-color: rgba(0,0,0,0.3) !important;
+			border:0 !important;
+			color: white !important;
+			cursor: pointer;
 }
 body{
   margin:0;

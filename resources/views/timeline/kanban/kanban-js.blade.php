@@ -95,6 +95,7 @@
             var remark_chat     = $('#remark_chat').val()
             formData.append('detail_code', detail_code)
             formData.append('remark_chat',$('#remark_chat').val())
+            formData.append('file_attach',$('#file_attach')[0].files[0]);
             formData.append('request_code_chat',$('#request_code_chat').val())
             if(remark_chat == ''){
                 $('.remark_chat_error').html('remark is required')
@@ -258,7 +259,7 @@
             'end_date_sub_module'   : $('#end_date_sub_module').val(),
             'description_sub_module'   : $('#description_sub_module').val(),
             'pic_id'   : $('#pic_id').val(),
-            'actual_amount'   : actual_amount,
+            'actual_amount'   : actual_amount_convert,
         }
         $.ajax({
             url: "{{route('addTask')}}",
@@ -427,22 +428,67 @@
                                 }else if(response.data[i].percentage >= 76){
                                     color ='bg-success'
                                 }
-                            var card =`
-                            <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                                <div class="card-body detail_kanban p-2">
-                                    <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
-                                    <div class="text-right p-0">
-                                    <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                            var card = ''
+                            if(header_type == 1){
+                                card =`
+                               <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                   <div class="card-body detail_kanban p-2">
+                                       <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                       <div class="text-right p-0">
+                                       <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                       </div>
+                                       <div class="progress" style="height: 5px;">
+                                       <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                       </div>
+                                       <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:#41B06E;border-radius:5px">
+                                       <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
+                                       </div>
+                                   </div>
+                                   </div>
+                               `
+                            }else{
+                                card =`
+                               <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                   <div class="card-body detail_kanban p-2">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                                <div class="text-right p-0">
+                                                        <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                                </div>
+                                                <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                                </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="single-chart" style="display: block; justify-content: left; align-items: left;">
+                                                <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height:100px;width:100%;min-width:60px !important">
+                                                    <path class="circle-bg"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    />
+                                                    <path class="circle"
+                                                        stroke-dasharray="${response.detail.percentage}, 100"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                    />
+                                                    <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                    <div class="mt-0 mx-2" style="margin-top:-15px !important">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:#41B06E;border-radius:5px">
+                                                        <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
+                                                </div>
                                     </div>
-                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:#41B06E;border-radius:5px">
-                                    <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
-                                    </div>
+                                   </div>
                                 </div>
-                                </div>
-                            `
+                               `
+                                
+                            }
                             if(response.data[i].status == 0){
                             data_new += `
                             ${card}
@@ -590,25 +636,33 @@
                             }else{
                                 color ='green'
                             }
-                            data_percentage = `
-                            <div class="single-chart" style="display: flex; justify-content: left; align-items: left;padding-left:15px !important">
-                                <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height:100px;width:100%;min-width:150px !important">
-                                    <path class="circle-bg"
-                                        d="M18 2.0845
-                                            a 15.9155 15.9155 0 0 1 0 31.831
-                                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                        stroke-dasharray="${response.detail.percentage}, 100"
-                                        d="M18 2.0845
-                                            a 15.9155 15.9155 0 0 1 0 31.831
-                                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
-                                </svg>
-                            </div>
-                            `;
-                            $('#percentage_task_container').html(data_percentage)
+                            if ($('#percentage_task_container .circular-chart').length > 0) {
+                                // Update existing chart
+                                $('#percentage_task_container .circular-chart').attr('class', 'circular-chart ' + color);
+                                $('#percentage_task_container .circle').attr('stroke-dasharray', `${response.detail.percentage}, 100`);
+                                $('#percentage_task_container .percentage').text(`${response.detail.percentage}%`);
+                            } else {
+                                // Create new chart
+                                var data_percentage = `
+                                    <div class="single-chart" style="display: flex; justify-content: left; align-items: left; padding-left: 15px !important">
+                                        <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height: 100px; width: 100%; min-width: 150px !important">
+                                            <path class="circle-bg"
+                                                d="M18 2.0845
+                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            />
+                                            <path class="circle"
+                                                stroke-dasharray="${response.detail.percentage}, 100"
+                                                d="M18 2.0845
+                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            />
+                                            <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
+                                        </svg>
+                                    </div>
+                                `;
+                            }
+                                $('#percentage_task_container').html(data_percentage);
                         for(i=0 ; i < response.data.length; i ++){
                            
                             var label = response.data[i].status == 1 ? `<s>${response.data[i].name}</s>` : `${response.data[i].name}`
@@ -658,47 +712,45 @@
                         // Mapping Activity
 
                         // Mapping Chat
-                            for(j = 0; j < response.chat.length; j++){
-                                            const d = new Date(response.chat[j].created_at)
-                                            const date = d.toISOString().split('T')[0];
-                                            const time = d.toTimeString().split(' ')[0];
-                                            var auth = $('#authId').val()
-                                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
-                                                    if(response.chat[j].user_relation.id == 999){
-                                                
-                                                    remark = `
-                                                        <div class="direct-chat-msg">
-                                                                <div class="direct-chat-infos clearfix">
-                                                                    <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
-                                                                </div>
-                                                            <div class="desk" style="width=100px !important">
-                                                                <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
-                                                                </div>
-                                                                
-                                                            </div>
+                        for (j = 0; j < response.chat.length; j++) {
+                            const d = new Date(response.chat[j].created_at);
+                            const date = d.toISOString().split('T')[0];
+                            const time = d.toTimeString().split(' ')[0];
+                            var auth = $('#authId').val();
+                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
+                            var attachment = response.chat[j].attachment ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.chat[j].attachment}')}}" target="_blank">
+                                <i class="fa-solid fa-file-pdf"></i> Click Here
+                                </a>` : '';
 
-                                                    `
-                                                    }else{
-                                                        remark =`
-                                                        <div class="person-a">
-                                                            <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');">
-                                                            </div> 
-                                                            <div class="message">
-                                                            
-                                                                <span>
-                                                                    <b>${response.chat[j].user_relation.name}</b> ${response.chat[j].remark}
-                                                                </span>
-                                                                <br>
-                                                                <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
-                                                            </div>
-                                                        </div>
-                                        
-                                                        `;
-                                                    
-                                                    }
-                                                    chat += remark;
+                            if (response.chat[j].user_relation.id == 999) {
+                                remark = `
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
+                                        </div>
+                                        <div class="desk" style="width=100px !important">
+                                            ${attachment}
+                                            <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                        </div>
+                                       
+                                    </div>
+                                `;
+                            } else {
+                                remark = `
+                                    <div class="person-a">
+                                        <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');"></div>
+                                        <div class="message">
+                                            <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
+                                            <br>
+                                            <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                                        </div>
+                                       
+                                    </div>
+                                `;
+                            }
+                            chat += remark;
                         }
-                        $('#chat_container').append(chat)
+                        $('#chat_container').append(chat);
                         // Mapping Chat
 
                         // Mapping Detail
@@ -778,25 +830,34 @@
                             }else{
                                 color ='green'
                             }
-                            data_percentage = `
-                            <div class="single-chart" style="display: flex; justify-content: left; align-items: left;padding-left:15px !important">
-                                <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height:100px;width:100%;min-width:150px !important">
-                                    <path class="circle-bg"
-                                        d="M18 2.0845
-                                            a 15.9155 15.9155 0 0 1 0 31.831
-                                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                        stroke-dasharray="${response.detail.percentage}, 100"
-                                        d="M18 2.0845
-                                            a 15.9155 15.9155 0 0 1 0 31.831
-                                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
-                                </svg>
-                            </div>
-                            `;
-                            $('#percentage_task_container').html(data_percentage)
+                            console.log($('#percentage_task_container .circular-chart').length)
+                            if ($('#percentage_task_container .circular-chart').length > 0) {
+                                // Update existing chart
+                                $('#percentage_task_container .circular-chart').attr('class', 'circular-chart ' + color);
+                                $('#percentage_task_container .circle').attr('stroke-dasharray', `${response.detail.percentage}, 100`);
+                                $('#percentage_task_container .percentage').text(`${response.detail.percentage}%`);
+                            } else {
+                                // Create new chart
+                                var data_percentage = `
+                                    <div class="single-chart" style="display: flex; justify-content: left; align-items: left; padding-left: 15px !important">
+                                        <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height: 100px; width: 100%; min-width: 150px !important">
+                                            <path class="circle-bg"
+                                                d="M18 2.0845
+                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            />
+                                            <path class="circle"
+                                                stroke-dasharray="${response.detail.percentage}, 100"
+                                                d="M18 2.0845
+                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            />
+                                            <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
+                                        </svg>
+                                    </div>
+                                `;
+                            }
+                                $('#percentage_task_container').html(data_percentage);
                         for(i=0 ; i < response.data.length; i ++){
                             var label = response.data[i].status == 1 ? `<s>${response.data[i].name}</s>` : `${response.data[i].name}`
                             var disabled = response.data[i].pic == auth_id ? 'test' : 'disabled'  
@@ -846,47 +907,43 @@
                         // Mapping Activity
 
                         // Mapping Chat
-                            for(j = 0; j < response.chat.length; j++){
-                                            const d = new Date(response.chat[j].created_at)
-                                            const date = d.toISOString().split('T')[0];
-                                            const time = d.toTimeString().split(' ')[0];
-                                            var auth = $('#authId').val()
-                                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
-                                                    if(response.chat[j].user_relation.id == 999){
-                                                
-                                                    remark = `
-                                                        <div class="direct-chat-msg">
-                                                                <div class="direct-chat-infos clearfix">
-                                                                    <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
-                                                                </div>
-                                                            <div class="desk" style="width=100px !important">
-                                                                <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
-                                                                </div>
-                                                                
-                                                            </div>
-
-                                                    `
-                                                    }else{
-                                                        remark =`
-                                                        <div class="person-a">
-                                                            <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');">
-                                                            </div> 
-                                                            <div class="message">
-                                                            
-                                                                <span>
-                                                                    <b>${response.chat[j].user_relation.name}</b> ${response.chat[j].remark}
-                                                                </span>
-                                                                <br>
-                                                                <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
-                                                            </div>
-                                                        </div>
-                                        
-                                                        `;
-                                                    
-                                                    }
-                                                    chat += remark;
+                        for (j = 0; j < response.chat.length; j++) {
+                            const d = new Date(response.chat[j].created_at);
+                            const date = d.toISOString().split('T')[0];
+                            const time = d.toTimeString().split(' ')[0];
+                            var auth = $('#authId').val();
+                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
+                            var attachment = response.chat[j].attachment ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.chat[j].attachment}')}}" target="_blank">
+                                <i class="fa-solid fa-file-pdf"></i> Click Here
+                                </a>` : '';
+                            if (response.chat[j].user_relation.id == 999) {
+                                remark = `
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
+                                        </div>
+                                        <div class="desk" style="width=100px !important">
+                                            <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                        </div>
+                                        ${attachment}
+                                    </div>
+                                `;
+                            } else {
+                                remark = `
+                                    <div class="person-a">
+                                        <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');"></div>
+                                        <div class="message">
+                                            <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
+                                            <br>
+                                            <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                                        </div>
+                                       
+                                    </div>
+                                `;
+                            }
+                            chat += remark;
                         }
-                        $('#chat_container').append(chat)
+                        $('#chat_container').append(chat);
                         // Mapping Chat
                         var status_detail = ''
                         switch(response.detail.status){

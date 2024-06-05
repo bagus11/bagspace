@@ -657,6 +657,12 @@
 .paging_simple_numbers{
   float: right !important;
 }
+.message {
+    transition: opacity 0.5s ease;
+}
 
+.fade-out {
+    opacity: 0;
+}
 </style>
   </html>

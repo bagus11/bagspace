@@ -29,10 +29,45 @@ class KanbanController extends Controller
         return view('timeline.kanban.kanban-index',$data);
     }
     function getTImelineDetail(Request $request) {
-        $data = TimelineDetail ::with(['userRelation'])->where('request_code',$request->request_code)->get();
-        return response()->json([
-            'data'=>$data
-        ]); 
+        $data   = TimelineDetail ::with(['userRelation'])->where('request_code',$request->request_code)->get();
+        $detail = TimelineHeader ::where('request_code', $request->request_code)->first();
+        $array = [];
+      
+    
+        if($detail->type_id == 1){
+            $post = [
+                'data'=>$data,
+                'detail'=>$detail,
+                
+            ];
+        }else{
+            foreach ($data as $row) {
+                $done       = TimelineSubDetail::select(DB::raw('sum(amount) as sum'))
+                                                ->where('detail_code', $row->detail_code)
+                                                ->where('status', 1)
+                                                ->first();
+                // dd($row->detail_code);
+                 
+                if ($row->done != 0) {
+                    // $percentage = ($done->sum / $row->plan) * 100;
+                    $percentage = $done->sum ;
+                } else {
+                    $percentage = 0; // or any other logic to handle zero division
+                }
+            
+                $sum = [
+                    'actual'    => $done->sum == null ?0 : $done->sum,
+                    'plan'      => $row->plan
+                ];
+                array_push($array, $sum);
+            }
+            $post = [
+                'data'=>$data,
+                'detail'=>$detail,
+                'array'=>$array,  
+            ];
+        }
+        return response()->json($post); 
     }
     function getSubDetailTimeline(Request $request) {
         $detail = TimelineSubDetail ::with(['userRelation'])->where('id',$request->id)->first();
@@ -66,17 +101,26 @@ class KanbanController extends Controller
     }
     function sendChat(Request $request) {
         try {    
-            
+            $attachmentPath = '';
+
+            // Check if a file is uploaded
+            if ($request->hasFile('file_attach')) {
+                $file = $request->file('file_attach');
+                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+                $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+            }
             $post =[
                 'request_code'          => $request->request_code_chat,
-                'attachment'            => '',
+                'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
                 'detail_code'           => $request->detail_code,
                 'remark'                => $request->remark_chat,
                 'user_id'               => auth()->user()->id,
                 'created_at'            => date('Y-m-d H:i:s')
             ];
-            // dd($request);
+       
              ChatTimelineModel::insert($post);
+          
             return ResponseFormatter::success(   
                 $post,                              
                 'Chat successfully added'
