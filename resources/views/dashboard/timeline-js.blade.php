@@ -20,6 +20,7 @@
     })
     getCallbackNoSwal('getValidationSign', null,function(response){
         if(response.count == 0){
+            toastr['info']('Please set your digital signature and set PIN code for validation, thank you ');
             $('#addSignModal').modal('show')
         }
     })
