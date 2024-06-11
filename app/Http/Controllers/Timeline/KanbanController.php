@@ -10,6 +10,7 @@ use App\Models\Timeline\DetailTeamTimeline;
 use App\Models\Timeline\TimelineDetail;
 use App\Models\Timeline\TimelineHeader;
 use App\Models\Timeline\TimelineSubDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use NumConvert;
@@ -57,7 +58,8 @@ class KanbanController extends Controller
             
                 $sum = [
                     'actual'    => $done->sum == null ?0 : $done->sum,
-                    'plan'      => $row->plan
+                    'plan'      => $row->plan,
+                    'detail_code'=>$row->detail_code
                 ];
                 array_push($array, $sum);
             }
@@ -255,14 +257,15 @@ class KanbanController extends Controller
                      'detail_code' =>$request->detail_code,
                  ])->update([
                      'percentage'    =>$percentage,
-                     'status'        => 1
+                     'status'        => 3
                  ]);
              }else{
                  TimelineDetail::where([
                      'request_code' =>$request->request_code,
                      'detail_code' =>$request->detail_code,
                  ])->update([
-                     'percentage'    =>$percentage
+                     'percentage'    =>$percentage,
+                     'status'        => 1
                  ]);
                  TimelineHeader::where('request_code',$request->request_code)->update([
                      'percentage'=>$percentageRFP,
@@ -326,7 +329,7 @@ class KanbanController extends Controller
                         'detail_code' =>$task->detail_code,
                     ])->update([
                         'percentage'    =>$percentage,
-                        'status'        => 1
+                        'status'        => 3
                     ]);
                 }else{
                     TimelineDetail::where([
@@ -451,5 +454,81 @@ class KanbanController extends Controller
             'message'       =>$message,
         ]); 
     }
+    function updateTask(Request $request) {
+        $id     = TimelineSubDetail::with('userRelation')->find($request->id);
+        $header = TimelineHeader::where('request_code', $id->request_code)->first();
+      
+        $post =[
+            'name'                  => $request->name_edit_sub_module,
+            'description'           => $request->description_edit_sub_module,
+            'start_date'            => $request->start_date_edit_sub_module,
+            'end_date'              => $request->end_date_edit_sub_module,
+            'amount'                => $id->amount ==0 ? 0 : $request->actual_amount_edit,
+            'pic'                   => $request->pic_id_edit,
+        ];
+        $post_bot =[
+            'name'                  => $id->name,
+            'description'           => $id->description,
+            'start_date'            => $id->start_date,
+            'end_date'              => $id->end_date,
+            'amount'                => $id->amount,
+            'pic'                   => $id->pic,  
+        ];
+       
+        
+         $user = auth()->user()->name;
+         $newPIC = User::find( $request->pic_id_edit);
+        //  dd($user);
+        if($id->amount ==0){
+            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+            ."Old Task : \n \n \n"
+            . "PIC          : " .$id->userRelation->name . "\n"
+            . "Task         :  <b>$id->name</b>  \n"
+            . "Start Date   :   $id->start_date \n"
+            . "End Date   :   $id->end_date \n"
+            . "Description   :   $id->description \n\n\n\n"
+            
+            ."New Task : \n \n \n "
+            . "PIC          : " . $newPIC->name . "\n"
+            . "Task         :  <b>$request->name_edit_sub_module</b>  \n"
+            . "Start Date   :   $request->start_date_edit_sub_module \n"
+            . "End Date   :   $request->end_date_edit_sub_module \n"
+            . "Description   :   $request->description_edit_sub_module \n\n\n\n"
+            
+            ."Updated By  : $user
+            ";
 
+        }else{
+            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+            ."Old Task : \n \n \n"
+            . "PIC              : " .$id->userRelation->name . "\n"
+            . "Task             :  <b>$id->name</b>  \n"
+            . "Start Date       :   $id->start_date \n"
+            . "End Date         :   $id->end_date \n"
+            . "Actual           :   $id->amount \n"
+            . "Description      :   $id->description \n\n\n\n"
+            
+            ."New Task : \n \n \n "
+            . "PIC          : " . $newPIC->name . "\n"
+            . "Task         :  <b>$request->name_edit_sub_module</b>  \n"
+            . "Start Date   :   $request->start_date_edit_sub_module \n"
+            . "End Date   :   $request->end_date_edit_sub_module \n"
+            . "Actual           :   $request->actual_amount_edit \n"
+            . "Description   :   $request->description_edit_sub_module \n\n\n\n"
+            
+            ."Updated By  : $user
+            ";
+        }
+        Telegram::sendMessage([
+             'chat_id' => $header->id_channel,
+             'parse_mode' => 'HTML',
+             'text' => $text
+         ]);
+         $id->update($post);
+
+        return ResponseFormatter::success(   
+            $id,                              
+            'Task successfully updated'
+        );    
+    }
 }

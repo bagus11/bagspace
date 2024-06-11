@@ -1,4 +1,4 @@
-<div class="modal fade" id="addTaskModal">
+<div class="modal fade" id="updateTaskModal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-dark">
             <div class="modal-header bg-mainCore">
@@ -13,15 +13,16 @@
                         <p>Start Date</p>
                     </div>
                     <div class="col-4">
-                        <input type="date" id="start_date_sub_module" class="form-control" value="{{date('Y-m-d')}}">
-                        <span style="color:red;" class="message_error text-red block start_date_sub_module_error"></span>
+                        <input type="hidden" id="taskId" class="form-control">
+                        <input type="date" id="start_date_edit_sub_module" class="form-control">
+                        <span style="color:red;" class="message_error text-red block start_date_edit_sub_module_error"></span>
                     </div>
                     <div class="col-2 mt-2">
                         <p>End Date</p>
                     </div>
                     <div class="col-4">
-                        <input type="date" id="end_date_sub_module" class="form-control" value="{{date('Y-m-d')}}">
-                        <span style="color:red;" class="message_error text-red block end_date_sub_module_error"></span>
+                        <input type="date" id="end_date_edit_sub_module" class="form-control">
+                        <span style="color:red;" class="message_error text-red block end_date_edit_sub_module_error"></span>
                     </div>
                 </div>
                 <div class="row">
@@ -29,15 +30,15 @@
                         <p>Title</p>
                     </div>
                     <div class="col-4">
-                        <input type="text" class="form-control" id="name_sub_module">
-                        <span style="color:red;" class="message_error text-red block name_sub_module_error"></span>
+                        <input type="text" class="form-control" id="name_edit_sub_module">
+                        <span style="color:red;" class="message_error text-red block name_edit_sub_module_error"></span>
                     </div>
-                    <div class="col-2 mt-2" id="actual_label">
+                    <div class="col-2 mt-2" id="actual_label_edit">
                         <p>Actual</p>
                     </div>
-                    <div class="col-4" id="amount_container">
-                        <input type="text" class="form-control" id="actual_amount">
-                        <span style="color:red;" class="message_error text-red block actual_amount_error"></span>
+                    <div class="col-4" id="amount_container_edit">
+                        <input type="text" class="form-control" id="actual_amount_edit">
+                        <span style="color:red;" class="message_error text-red block actual_amount_edit_error"></span>
                     </div>
                 </div>
                 <div class="row">
@@ -45,8 +46,8 @@
                         <p>Description</p>
                     </div>
                     <div class="col-10">
-                        <textarea class="form-control" id="description_sub_module" rows="3"></textarea>
-                        <span style="color:red;" class="message_error text-red block description_sub_module_error"></span>
+                        <textarea class="form-control" id="description_edit_sub_module" rows="3"></textarea>
+                        <span style="color:red;" class="message_error text-red block description_edit_sub_module_error"></span>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -54,14 +55,14 @@
                         <p>PIC</p>
                     </div>
                     <div class="col-4">
-                        <select name="select_pic" class="select2" id="select_pic"></select>
-                        <input type="hidden" class="form-control" id="pic_id">
-                        <span style="color:red;" class="message_error text-red block pic_id_error"></span>
+                        <select name="select_pic_edit" class="select2" id="select_pic_edit"></select>
+                        <input type="hidden" class="form-control" id="pic_id_edit">
+                        <span style="color:red;" class="message_error text-red block pic_id_edit_error"></span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-end">
-                <button id="btn_save_task" type="button" class="btn btn-sm btn-success">
+                <button id="btn_edit_task" type="button" class="btn btn-sm btn-success">
                     <i class="fa-solid fa-check"></i>
                 </button>
             </div>

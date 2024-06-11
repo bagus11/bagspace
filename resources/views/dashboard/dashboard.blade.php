@@ -84,8 +84,10 @@
     
 </div>
 @include('dashboard.modal.approver')
+@include('dashboard.modal.add-signature')
 @endsection
 @push('custom-js')
     @include('dashboard.dashboard-js')
     @include('dashboard.timeline-js')
+    @include('dashboard.signature-js')
 @endpush

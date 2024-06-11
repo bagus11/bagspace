@@ -9,11 +9,13 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Setting\RolePermissionController;
 use App\Http\Controllers\Setting\SettingAccountController;
 use App\Http\Controllers\Setting\UserAccessController;
+use App\Http\Controllers\Signature\SignatureController;
 use App\Http\Controllers\Timeline\KanbanController;
 use App\Http\Controllers\Timeline\MasterTeamTimelineController;
 use App\Http\Controllers\Timeline\MasterTimelineCategory;
 use App\Http\Controllers\Timeline\MasterTypeController;
 use App\Http\Controllers\Timeline\MonitoringTimelineController;
+use App\Models\Sign\MasterSignature;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -140,6 +142,7 @@ Route::group(['middleware' => ['auth']], function() {
                     Route::get('getChat', [KanbanController::class, 'getChat'])->name('getChat');
                     Route::post('createModule', [KanbanController::class, 'createModule'])->name('createModule');
                     Route::post('addTask', [KanbanController::class, 'addTask'])->name('addTask');
+                    Route::post('updateTask', [KanbanController::class, 'updateTask'])->name('updateTask');
                     Route::get('getTeam', [KanbanController::class, 'getTeam'])->name('getTeam');
                     Route::get('postBot', [KanbanController::class, 'postBot'])->name('postBot');
                     Route::get('getSubDetailTimeline', [KanbanController::class, 'getSubDetailTimeline'])->name('getSubDetailTimeline');
@@ -163,6 +166,11 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::post('updateStatusCategory', [MasterTimelineCategory::class, 'updateStatusCategory'])->name('updateStatusCategory');
                 Route::post('updateTimelineCategory', [MasterTimelineCategory::class, 'updateTimelineCategory'])->name('updateTimelineCategory');
             // Master Category
+
+            // Signature
+                Route::get('getValidationSign', [SignatureController::class, 'getValidationSign'])->name('getValidationSign');
+                Route::post('saveSignature', [SignatureController::class, 'saveSignature'])->name('saveSignature');
+            // Signature
         // Timeline Project
 
         

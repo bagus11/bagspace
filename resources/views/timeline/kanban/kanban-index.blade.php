@@ -116,6 +116,7 @@
         
 </div>
 
+
 {{-- <style>
     .kanban-column{
       min-width: 300px !important;
@@ -126,6 +127,7 @@
 @include('timeline.kanban.modal.add-model')
 @include('timeline.kanban.modal.detail-model')
 @include('timeline.kanban.modal.add-task')
+@include('timeline.kanban.modal.edit-task')
 @include('timeline.kanban.modal.detail-taskModal')
 @endsection
 @push('custom-js')

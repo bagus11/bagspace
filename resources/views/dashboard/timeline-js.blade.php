@@ -8,6 +8,7 @@
         });
         
     })
+    $('#pincode-input1').pincodeInput({inputs:4});
     $('#select_project').on('change',function(){
         var select_project = $('#select_project').val()
         var data ={
@@ -16,6 +17,11 @@
         getCallbackNoSwal('getTimelineHeaderDetail',data,function(response){
             mappingTask(response.data[0])
         })
+    })
+    getCallbackNoSwal('getValidationSign', null,function(response){
+        if(response.count == 0){
+            $('#addSignModal').modal('show')
+        }
     })
     // Function
         function mappingTableTimeline(response){

@@ -3,15 +3,26 @@
   var dataStart ={
     'request_code' : request_code
   }
+//   $(document).ready(function () {
+ 
+
+//   })
   $(document).ready(function () {
         $('#addTaskModal').on('show.bs.modal', function () {
             $('#detailCardModal').css('z-index', 1039);
         });
         $('#addTaskModal').on('hidden.bs.modal', function () {
+            $('#detailCardModal').css('z-index', 1041);
+        });
+        $('#updateTaskModal').on('show.bs.modal', function () {
+            $('#detailCardModal').css('z-index', 1039);
+        });
+        $('#updateTaskModal').on('hidden.bs.modal', function () {
                 $('#detailCardModal').css('z-index', 1041);
         });
-     
   })
+
+
   var header_type = $('#header_type').val()
   getData(dataStart)
 //   Update Status When Drag Kanban
@@ -393,17 +404,40 @@
                     }
                 });
     })
-//   Function 
-        function getData(data){
-            $('#kanban_new').empty()
-            $('#kanban_progress').empty()
-            $('#kanban_pending').empty()
-            $('#kanban_done').empty()
-                $.ajax({
+    $('#task_subdetail_table').on('click','.update', function(){
+        $.ajax({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('getTeam')}}",
+            type: "get",
+            dataType: 'json',
+            async: true,
+            data:{
+              'request_code' : $('#request_code').val(),
+            },
+            success: function(response) {
+                $('#select_pic_edit').empty()
+                    $.each(response.data,function(i,data){
+                        $('#select_pic_edit').append('<option data-name="'+ data.user_relation.name +'" value="'+data.user_id+'">' + data.user_relation.name +'</option>');
+                    });
+            },
+            error: function(xhr, status, error) {
+                toastr['error']('Failed to get data, please contact ICT Developer');
+            }
+        });
+
+        var id = $(this).data('id')
+        
+        var data ={
+            'id': id
+        }
+       
+        $.ajax({
                     headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: "{{route('getTimelineDetail')}}",
+                    url: "{{route('getSubDetailTimeline')}}",
                     type: "get",
                     dataType: 'json',
                     async: true,
@@ -412,24 +446,114 @@
                         SwalLoading('Please wait ...');
                     },
                     success: function(response) {
+                        swal.close()
+                        if(response.detail.amount == 0 || response.detail.amount == null){
+                            $('#amount_container_edit').prop('hidden', true)
+                            $('#actual_label_edit').prop('hidden', true)
+                        }else{
+                            $('#amount_container_edit').prop('hidden', false)
+                            $('#actual_label_edit').prop('hidden', false)
+                        }
+                        $('#start_date_edit_sub_module').val(response.detail.start_date)
+                        $('#end_date_edit_sub_module').val(response.detail.end_date)
+                        $('#name_edit_sub_module').val(response.detail.name)
+                        $('#actual_amount_edit').val(response.detail.amount)
+                        $('#description_edit_sub_module').val(response.detail.description)
+                        $('#select_pic_edit').val(response.detail.pic)
+                        $('#select_pic_edit').select2().trigger('change')
+                        $('#taskId').val(id)
+
+                    },
+                    
+                    error: function(xhr, status, error) {
                         swal.close();
-                        var data_new =''
-                        var data_progress =''
-                        var data_pending =''
-                        var data_done =''
-                        for(i = 0; i < response.data.length ; i++ ){
-                            var color = '';
-                                if(response.data[i].percentage > 0 && response.data[i].percentage <= 25){
-                                    color ='bg-danger'
-                                }else if(response.data[i].percentage >= 26 && response.data[i].percentage <= 50){
-                                    color ='bg-warning'
-                                }else if(response.data[i].percentage >= 51 && response.data[i].percentage <= 75){
-                                    color ='bg-primary'
-                                }else if(response.data[i].percentage >= 76){
-                                    color ='bg-success'
-                                }
-                            var card = ''
-                            if(header_type == 1){
+                        toastr['warning']('Failed to get data, please contact ICT Developer');
+                    }
+                });
+    })
+    onChange('select_pic_edit','pic_id_edit')
+    $('#btn_edit_task').on('click', function(){
+        var data = {
+            'name_edit_sub_module' : $('#name_edit_sub_module').val(),
+            'start_date_edit_sub_module' : $('#start_date_edit_sub_module').val(),
+            'end_date_edit_sub_module' : $('#end_date_edit_sub_module').val(),
+            'actual_amount_edit' : $('#actual_amount_edit').val(),
+            'description_edit_sub_module' : $('#description_edit_sub_module').val(),
+            'pic_id_edit' : $('#pic_id_edit').val(),
+            'id'    :$('#taskId').val(),
+        }
+        $.ajax({
+            url: "{{route('updateTask')}}",
+            type: "post",
+            dataType: 'json',
+            data:data,
+            async: true,
+            beforeSend: function() {
+                SwalLoading('Please wait ...');
+            },
+            success:function(response){
+                swal.close()
+                $('#updateTaskModal').modal('hide')
+                toastr['success'](response.meta.message);
+                showNoSwal(response.data.detail_code)
+            },
+            error: function(response) {
+                $('.message_error').html('')
+                swal.close();
+                if(response.status == 500){
+                    toastr['error'](response.responseJSON.meta.message);
+                    return false
+                }
+                if(response.status === 422)
+                {
+                    $.each(response.responseJSON.errors, (key, val) => 
+                        {
+                            $('span.'+key+'_error').text(val)
+                        });
+                }else{
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            }
+        });  
+    })
+//   Function 
+function getData(data) {
+    $('#kanban_new').empty();
+    $('#kanban_progress').empty();
+    $('#kanban_pending').empty();
+    $('#kanban_done').empty();
+
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: "{{route('getTimelineDetail')}}",
+        type: "get",
+        dataType: 'json',
+        async: true,
+        data: data,
+        beforeSend: function() {
+            SwalLoading('Please wait ...');
+        },
+        success: function(response) {
+            swal.close();
+            var data_new = '';
+            var data_progress = '';
+            var data_pending = '';
+            var data_done = '';
+
+            for (i = 0; i < response.data.length; i++) {
+                var color = '';
+                if (response.data[i].percentage > 0 && response.data[i].percentage <= 25) {
+                    color = 'rgba(255, 99, 132, 1)'; // Red
+                } else if (response.data[i].percentage >= 26 && response.data[i].percentage <= 50) {
+                    color = 'rgba(255, 206, 86, 1)'; // Yellow
+                } else if (response.data[i].percentage >= 51 && response.data[i].percentage <= 75) {
+                    color = 'rgba(54, 162, 235, 1)'; // Blue
+                } else if (response.data[i].percentage >= 76) {
+                    color = 'rgba(75, 192, 192, 1)'; // Green
+                }
+                if(header_type == 1){
                                 card =`
                                <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
                                    <div class="card-body detail_kanban p-2">
@@ -447,146 +571,260 @@
                                    </div>
                                `
                             }else{
-                                card =`
-                               <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                                   <div class="card-body detail_kanban p-2">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
-                                                <div class="text-right p-0">
-                                                        <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
-                                                </div>
-                                                <div class="progress" style="height: 5px;">
-                                                        <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
-                                                </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="single-chart" style="display: block; justify-content: left; align-items: left;">
-                                                <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height:100px;width:100%;min-width:60px !important">
-                                                    <path class="circle-bg"
-                                                        d="M18 2.0845
-                                                            a 15.9155 15.9155 0 0 1 0 31.831
-                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                                    />
-                                                    <path class="circle"
-                                                        stroke-dasharray="${response.detail.percentage}, 100"
-                                                        d="M18 2.0845
-                                                            a 15.9155 15.9155 0 0 1 0 31.831
-                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                                    />
-                                                    <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
-                                                </svg>
-                                            </div>
-                                        </div>
+
+                            
+                var card = `
+                    <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                        <div class="card-body detail_kanban p-2">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                    <div class="text-right p-0">
+                                        <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
                                     </div>
-                                    <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:#41B06E;border-radius:5px">
-                                                        <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
-                                                </div>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                     </div>
-                                   </div>
                                 </div>
-                               `
-                                
+                                <div class="col-12">
+                                    <canvas id="chart-${response.data[i].detail_code}" style="width: 160px; height: 140px;"></canvas>
+                                </div>
+                            </div>
+                            <div class="mt-0 mx-2" style="margin-top:-15px !important">
+                                <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                    <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }
+                if (response.data[i].status == 0) {
+                    data_new += card;
+                } else if (response.data[i].status == 1) {
+                    data_progress += card;
+                } else if (response.data[i].status == 2) {
+                    data_pending += card;
+                } else if (response.data[i].status == 3) {
+                    data_done += card;
+                }
+            }
+
+            $('#kanban_new').append(data_new);
+            $('#kanban_progress').append(data_progress);
+            $('#kanban_pending').append(data_pending);
+            $('#kanban_done').append(data_done);
+
+            // Initialize the charts
+            response.array.forEach(function(item) {
+                var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Plan', 'Actual'],
+                        datasets: [{
+                            label: 'Plan',
+                            data: [item.plan],
+                            backgroundColor: '#E88D67',
+                            borderColor: 'white',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Actual',
+                            data: [item.actual],
+                            backgroundColor: '#F3F7EC',
+                            borderColor: 'white',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        aspectRatio: 3, // Adjust aspect ratio
+                        scales: {
+                            x: {
+                                display: false // Hide x-axis labels
+                            },
+                            y: {
+                                display: true // Hide y-axis labels
                             }
-                            if(response.data[i].status == 0){
-                            data_new += `
-                            ${card}
-                            `;
-                            }
-                            else if(response.data[i].status == 1){
-                            data_progress += `
-                                ${card}
-                                `;
-                            }else if(response.data[i].status == 2){
-                                data_pending +=`
-                                ${card}
-                                `;
-                            }else if(response.data[i].status == 3){
-                                data_done +=`
-                               ${card}
-                                `; 
+                        },
+                        plugins: {
+                            tooltip: {
+                                enabled: true // Enable tooltips on hover
+                            },
+                            legend: {
+                                display: false // Hide legend
                             }
                         }
-                        $('#kanban_new').append(data_new)
-                        $('#kanban_progress').append(data_progress)
-                        $('#kanban_pending').append(data_pending)
-                        $('#kanban_done').append(data_done)
-
-                    },
-                    error: function(xhr, status, error) {
-                        swal.close();
-                        toastr['warning']('Failed to get data, please contact ICT Developer');
                     }
                 });
+            });
+        },
+        error: function(xhr, status, error) {
+            swal.close();
+            toastr['warning']('Failed to get data, please contact ICT Developer');
         }
+    });
+}
 
+
+
+        function isDateLate(inputDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const dateToCheck = new Date(inputDate);
+            dateToCheck.setHours(0, 0, 0, 0);
+
+            return dateToCheck < today; // Returns true if the date is in the past
+        }
         function getDataNoSwal(data){
             $('#kanban_new').empty()
             $('#kanban_progress').empty()
             $('#kanban_pending').empty()
             $('#kanban_done').empty()
-                $.ajax({
-                    headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "{{route('getTimelineDetail')}}",
-                    type: "get",
-                    dataType: 'json',
-                    async: true,
-                    data:data,
-                    success: function(response) {
-                        var data_new =''
-                        var data_progress =''
-                        var data_pending =''
-                        var data_done =''
-                        for(i = 0; i < response.data.length ; i++ ){
-                            var card =`
-                            <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                                <div class="card-body detail_kanban p-2">
+            $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: "{{route('getTimelineDetail')}}",
+        type: "get",
+        dataType: 'json',
+        async: true,
+        data: data,
+        beforeSend: function() {
+            SwalLoading('Please wait ...');
+        },
+        success: function(response) {
+            swal.close();
+            var data_new = '';
+            var data_progress = '';
+            var data_pending = '';
+            var data_done = '';
+
+            for (i = 0; i < response.data.length; i++) {
+                var color = '';
+                if (response.data[i].percentage > 0 && response.data[i].percentage <= 25) {
+                    color = 'rgba(255, 99, 132, 1)'; // Red
+                } else if (response.data[i].percentage >= 26 && response.data[i].percentage <= 50) {
+                    color = 'rgba(255, 206, 86, 1)'; // Yellow
+                } else if (response.data[i].percentage >= 51 && response.data[i].percentage <= 75) {
+                    color = 'rgba(54, 162, 235, 1)'; // Blue
+                } else if (response.data[i].percentage >= 76) {
+                    color = 'rgba(75, 192, 192, 1)'; // Green
+                }
+                if(header_type == 1){
+                                card =`
+                               <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                   <div class="card-body detail_kanban p-2">
+                                       <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                       <div class="text-right p-0">
+                                       <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                       </div>
+                                       <div class="progress" style="height: 5px;">
+                                       <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                       </div>
+                                       <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:#41B06E;border-radius:5px">
+                                       <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
+                                       </div>
+                                   </div>
+                                   </div>
+                               `
+                            }else{
+
+                            
+                var card = `
+                    <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                        <div class="card-body detail_kanban p-2">
+                            <div class="row mb-4">
+                                <div class="col-12">
                                     <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
                                     <div class="text-right p-0">
-                                    <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                        <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
                                     </div>
                                     <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
-                                    </div>
-                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:#41B06E;border-radius:5px">
-                                    <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
+                                        <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                    <canvas id="chart-${response.data[i].detail_code}" style="width: 160px; height: 140px;"></canvas>
                                 </div>
-                            `
-                            if(response.data[i].status == 0){
-                            data_new += `
-                               ${card}
-                            `;
+                            </div>
+                            <div class="mt-0 mx-2" style="margin-top:-15px !important">
+                                <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                    <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }
+                if (response.data[i].status == 0) {
+                    data_new += card;
+                } else if (response.data[i].status == 1) {
+                    data_progress += card;
+                } else if (response.data[i].status == 2) {
+                    data_pending += card;
+                } else if (response.data[i].status == 3) {
+                    data_done += card;
+                }
+            }
+
+            $('#kanban_new').append(data_new);
+            $('#kanban_progress').append(data_progress);
+            $('#kanban_pending').append(data_pending);
+            $('#kanban_done').append(data_done);
+
+            // Initialize the charts
+            response.array.forEach(function(item) {
+                var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Plan', 'Actual'],
+                        datasets: [{
+                            label: 'Plan',
+                            data: [item.plan],
+                            backgroundColor: '#E88D67',
+                            borderColor: 'white',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Actual',
+                            data: [item.actual],
+                            backgroundColor: '#F3F7EC',
+                            borderColor: 'white',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        aspectRatio: 3, // Adjust aspect ratio
+                        scales: {
+                            x: {
+                                display: false // Hide x-axis labels
+                            },
+                            y: {
+                                display: true // Hide y-axis labels
                             }
-                            else if(response.data[i].status == 1){
-                            data_progress += `
-                                ${card}
-                                `;
-                            }else if(response.data[i].status == 2){
-                                data_pending +=`
-                                ${card}
-                                `;
-                            }else if(response.data[i].status == 3){
-                                data_done +=`
-                                ${card}
-                                `; 
+                        },
+                        plugins: {
+                            tooltip: {
+                                enabled: true // Enable tooltips on hover
+                            },
+                            legend: {
+                                display: false // Hide legend
                             }
                         }
-                        $('#kanban_new').append(data_new)
-                        $('#kanban_progress').append(data_progress)
-                        $('#kanban_pending').append(data_pending)
-                        $('#kanban_done').append(data_done)
-
-                    },
-                    error: function(xhr, status, error) {
-                        swal.close();
-                        toastr['warning']('Failed to get data, please contact ICT Developer');
                     }
                 });
+            });
+        },
+        error: function(xhr, status, error) {
+            swal.close();
+            toastr['warning']('Failed to get data, please contact ICT Developer');
+        }
+    });
         }
 
         function show(id,title){
@@ -665,12 +903,38 @@
                                 $('#percentage_task_container').html(data_percentage);
                         for(i=0 ; i < response.data.length; i ++){
                            
-                            var label = response.data[i].status == 1 ? `<s>${response.data[i].name}</s>` : `${response.data[i].name}`
-                            var disabled = response.data[i].pic == auth_id ? 'test' : 'disabled'  
-                            const d = new Date(response.data[i].update_done)
-                            const date = d !='Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(d.toISOString().split('T')[0]) : ''; 
-                            const time = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)'? d.toTimeString().split(' ')[0]: '';   
-                            var date_time =  date + ' ' + time                
+                           
+                            const task = response.data[i];
+
+                            const disabled = task.pic == auth_id ? 'test' : 'disabled';
+                            const d = new Date(task.update_done);
+                            const date = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(d.toISOString().split('T')[0]) : '';
+                            const datevalidate = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? d.toISOString().split('T')[0] : '';
+                            const time = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? d.toTimeString().split(' ')[0] : '';
+                            const date_time = date + ' ' + time;
+
+                            let label = '';
+                            if (task.status == 1) {
+                                label = `<s>${task.name}</s>`;
+                            } else if (isDateLate(task.end_date) && date_time != '') {
+                                label = `<strong style="color:red">${task.name}</strong>`;
+                            } else {
+                                label = `${task.name}`;
+                            }
+
+                            const updatedDate = new Date(task.updated_at);
+                            const isEndDateSameAsUpdated = response.data[i].end_date === datevalidate;
+                            const isEndDateLateComparedToUpdated = new Date(task.end_date) < updatedDate && !isEndDateSameAsUpdated;
+                            const formattedDateTime = isEndDateLateComparedToUpdated ? `<strong style="color:red">${date_time}</strong>` : date_time;
+                            var btn_update =''
+                            if(task.status == 0){
+                                btn_update =`
+                                <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
+                                            <i class="fas fa-edit"></i>
+                                    </button>
+                                `
+                            }
+                            
                             data_table +=`
                             <tr>
                                 <td style="width:5%;text-align:center">
@@ -689,12 +953,14 @@
                                     ${convertDate(response.data[i].end_date)}
                                 </td>
                                 <td style="width:15%;text-align:left">
-                                    ${date_time}
+                                    ${formattedDateTime}
                                 </td>
-                                <td style="width:5%;text-align:center">
-                                    <button title="Detail" class="detail btn btn-sm btn-info"data-id="${response.data[i]['id']}" type="button">
+                                <td style="width:15%;text-align:center">
+                                    <button title="Detail" class="detail btn btn-sm btn-info" data-id="${response.data[i]['id']}" type="button">
                                                     <i class="fas fa-solid fa-eye"></i>
                                     </button>   
+                                   ${btn_update}
+
                                 </td>
                             </tr>
                             `;
@@ -858,42 +1124,69 @@
                                 `;
                             }
                                 $('#percentage_task_container').html(data_percentage);
-                        for(i=0 ; i < response.data.length; i ++){
-                            var label = response.data[i].status == 1 ? `<s>${response.data[i].name}</s>` : `${response.data[i].name}`
-                            var disabled = response.data[i].pic == auth_id ? 'test' : 'disabled'  
-                            const d = new Date(response.data[i].update_done)
-                            const date = d !='Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(d.toISOString().split('T')[0]) : ''; 
-                            const time = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)'? d.toTimeString().split(' ')[0]: '';   
-                            var date_time =  date + ' ' + time                
-                            data_table +=`
-                            <tr>
-                                <td style="width:5%;text-align:center">
-                                    <input type="checkbox" id="check" name="check" class="is_checked" style="border-radius: 5px !important;" value="${response.data[i]['id']}"  data-status="${response.data[i]['status']}" data-id="${response.data[i]['id']}" ${response.data[i]['status'] == 1 ?'checked':'' } ${disabled}>
-                                </td>
-                                <td style="width:10%;text-align:left">
-                                    ${convertDate(response.data[i].start_date)}
-                                </td>
-                                <td>
-                                    ${label}
-                                </td>
-                                <td style="width:25%;">
-                                    ${response.data[i].user_relation.name}
-                                </td>
-                                <td style="width:10%;text-align:left">
-                                    ${convertDate(response.data[i].end_date)}
-                                </td>
-                                <td style="width:15%;text-align:left">
-                                    ${date_time}
-                                </td>
-                                <td style="width:5%;text-align:center">
-                                  
-                                    <button title="Detail" class="detail btn btn-sm btn-info"data-id="${response.data[i]['id']}" type="button">
-                                                    <i class="fas fa-solid fa-eye"></i>
-                                    </button>   
-                                </td>
-                            </tr>
-                            `;
-                        }
+                                for(i=0 ; i < response.data.length; i ++){
+                           
+                           
+                                    const task = response.data[i];
+
+                                    const disabled = task.pic == auth_id ? 'test' : 'disabled';
+                                    const d = new Date(task.update_done);
+                                    const date = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(d.toISOString().split('T')[0]) : '';
+                                    const datevalidate = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? d.toISOString().split('T')[0] : '';
+                                    const time = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? d.toTimeString().split(' ')[0] : '';
+                                    const date_time = date + ' ' + time;
+
+                                    let label = '';
+                                    if (task.status == 1) {
+                                        label = `<s>${task.name}</s>`;
+                                    } else if (isDateLate(task.end_date) && date_time != '') {
+                                        label = `<strong style="color:red">${task.name}</strong>`;
+                                    } else {
+                                        label = `${task.name}`;
+                                    }
+
+                                    const updatedDate = new Date(task.updated_at);
+                                    const isEndDateSameAsUpdated = response.data[i].end_date === datevalidate;
+                                    const isEndDateLateComparedToUpdated = new Date(task.end_date) < updatedDate && !isEndDateSameAsUpdated;
+                                    const formattedDateTime = isEndDateLateComparedToUpdated ? `<strong style="color:red">${date_time}</strong>` : date_time;
+                                    var btn_update =''
+                            if(task.status == 0){
+                                btn_update =`
+                                <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
+                                            <i class="fas fa-edit"></i>
+                                    </button>
+                                `
+                            }
+                           data_table +=`
+                           <tr>
+                               <td style="width:5%;text-align:center">
+                                   <input type="checkbox" id="check" name="check" class="is_checked" style="border-radius: 5px !important;" value="${response.data[i]['id']}"  data-status="${response.data[i]['status']}" data-id="${response.data[i]['id']}" ${response.data[i]['status'] == 1 ?'checked':'' } ${disabled}>
+                               </td>
+                               <td style="width:10%;text-align:left">
+                                   ${convertDate(response.data[i].start_date)}
+                               </td>
+                               <td>
+                                   ${label}
+                               </td>
+                               <td style="width:25%;">
+                                   ${response.data[i].user_relation.name}
+                               </td>
+                               <td style="width:10%;text-align:left">
+                                   ${convertDate(response.data[i].end_date)}
+                               </td>
+                               <td style="width:15%;text-align:left">
+                                   ${formattedDateTime}
+                               </td>
+                               <td style="width:15%;text-align:center">
+                                   <button title="Detail" class="detail btn btn-sm btn-info"data-id="${response.data[i]['id']}" type="button">
+                                                   <i class="fas fa-solid fa-eye"></i>
+                                   </button>   
+                                  ${btn_update}
+
+                               </td>
+                           </tr>
+                           `;
+                       }
                         $('#task_subdetail_table > tbody:first').html(data_table);
                         $('#task_subdetail_table').DataTable({
                             // scrollX  : true,
