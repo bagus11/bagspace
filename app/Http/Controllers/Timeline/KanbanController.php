@@ -317,6 +317,7 @@ class KanbanController extends Controller
                 $statusRFPDone  =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('request_code',$task->request_code)->where('status',1)->first();
                 $statusRFPAll   =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('request_code',$task->request_code)->first();
                 $percentageRFP  =   ($statusRFPDone->percentage / $statusRFPAll->percentage) * 100 ; 
+             
                 if($percentage == 100 ){
                     if($percentageRFP == 100){
                        TimelineHeader::where('request_code',$task->request_code)->update([
@@ -335,8 +336,11 @@ class KanbanController extends Controller
                     TimelineDetail::where([
                         'request_code' =>$task->request_code,
                         'detail_code' =>$task->detail_code,
+                        
+                        
                     ])->update([
-                        'percentage'    =>$percentage
+                        'percentage'    =>$percentage,
+                        'status'        => 1
                     ]);
                     TimelineHeader::where('request_code',$task->request_code)->update([
                         'percentage'=>$percentageRFP,

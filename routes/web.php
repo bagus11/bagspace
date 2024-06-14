@@ -185,6 +185,7 @@ Route::group(['middleware' => ['auth']], function() {
 
         // Setting
                 Route::get('setting_account', [SettingAccountController::class, 'index'])->name('setting_account');
+                Route::get('getCalculation', [SettingAccountController::class, 'getCalculation'])->name('getCalculation');
         // Setting
 
 
