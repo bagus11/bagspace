@@ -23,7 +23,7 @@ class KanbanController extends Controller
         $request_code   = str_replace('_','/',$id);
         $timelineName = TimelineHeader::with(['teamRelation.userRelation'])->where('request_code', $request_code)->first();
         $team = DetailTeamTimeline::with('userRelation')->where('team_id', $timelineName->team_id)->get();
-        $leader   = DetailTeamTimeline::where('team_id',$timelineName->team_id)->where('position',1)->first();
+        $leader   = DetailTeamTimeline::where('team_id',$timelineName->team_id)->where('position',2)->first();
         $data =[
             'data'              =>$timelineName,
             'request_code'      =>$request_code,
@@ -311,7 +311,7 @@ class KanbanController extends Controller
         $message        = 'Failed Update Progress, please contact ICT Dev';
         $task           = TimelineSubDetail::where('id', $request->id)->first();
         $headerTimeline = TimelineHeader::where('request_code', $task->request_code)->first();
-        $leader         = DetailTeamTimeline::where('team_id',$headerTimeline->team_id)->where('position', 1)->first();
+        $leader         = DetailTeamTimeline::where('team_id',$headerTimeline->team_id)->where('position', 2)->first();
         $post_update    = [
             'status'    => $task->status ==1 ?0 : 1,
             'update_done'  =>$task->status ==1 ?null : date('Y-m-d H:i:s'),

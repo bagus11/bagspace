@@ -944,14 +944,14 @@ function getData(data) {
                                 $('#percentage_task_container').html(data_percentage);
                         for(i=0 ; i < response.data.length; i ++){
                            
-                           
+                           console.log(leader_id + ' == ' + auth_id )
                             const task = response.data[i];
                             var disabled = 'disabled';
                             if(task.pic == auth_id){
-                                alert('test')
+                              
                                 disabled = 'disabled'
                             }else if(leader_id == auth_id && response.data[i]['status'] == 1){
-                                alert('test 2')
+                              
                             disabled = ''
                             }
                             const d = new Date(task.update_done);
@@ -1177,10 +1177,10 @@ function getData(data) {
 
                                     var disabled = 'disabled';
                                     if(task.pic == auth_id){
-                                        alert('test')
+                                      
                                         disabled = 'disabled'
                                     }else if(leader_id == auth_id && response.data[i]['status'] == 1){
-                                        alert('test 2')
+                                        
                                     disabled = ''
                                     }
                                     const d = new Date(task.update_done);
