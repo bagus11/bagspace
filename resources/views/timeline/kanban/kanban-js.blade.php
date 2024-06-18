@@ -944,15 +944,18 @@ function getData(data) {
                                 $('#percentage_task_container').html(data_percentage);
                         for(i=0 ; i < response.data.length; i ++){
                            
-                           console.log(leader_id + ' == ' + auth_id )
+                          
                             const task = response.data[i];
+                            console.log(leader_id + ' == ' + auth_id )
+                            console.log(task.pic + ' == ' + auth_id )
                             var disabled = 'disabled';
                             if(task.pic == auth_id){
+                                alert('test')
                               
-                                disabled = 'disabled'
-                            }else if(leader_id == auth_id && response.data[i]['status'] == 1){
-                              
-                            disabled = ''
+                                disabled = ''
+                            }
+                            if(leader_id == auth_id && response.data[i]['status'] == 1){  
+                                disabled = ''
                             }
                             const d = new Date(task.update_done);
                             const date = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(d.toISOString().split('T')[0]) : '';
@@ -1178,7 +1181,7 @@ function getData(data) {
                                     var disabled = 'disabled';
                                     if(task.pic == auth_id){
                                       
-                                        disabled = 'disabled'
+                                        disabled = ''
                                     }else if(leader_id == auth_id && response.data[i]['status'] == 1){
                                         
                                     disabled = ''
