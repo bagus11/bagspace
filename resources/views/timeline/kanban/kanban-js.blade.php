@@ -950,8 +950,6 @@ function getData(data) {
                             console.log(task.pic + ' == ' + auth_id )
                             var disabled = 'disabled';
                             if(task.pic == auth_id){
-                                alert('test')
-                              
                                 disabled = ''
                             }
                             if(leader_id == auth_id && response.data[i]['status'] == 1){  
