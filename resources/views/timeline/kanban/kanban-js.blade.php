@@ -946,8 +946,6 @@ function getData(data) {
                            
                           
                             const task = response.data[i];
-                            console.log(leader_id + ' == ' + auth_id )
-                            console.log(task.pic + ' == ' + auth_id )
                             var disabled = 'disabled';
                             if(task.pic == auth_id){
                                 disabled = ''
@@ -976,11 +974,13 @@ function getData(data) {
                             const formattedDateTime = isEndDateLateComparedToUpdated ? `<strong style="color:red">${date_time}</strong>` : date_time;
                             var btn_update =''
                             if(task.status == 0){
-                                btn_update =`
-                                <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
-                                            <i class="fas fa-edit"></i>
-                                    </button>
-                                `
+                                if(auth_id == leader_id){
+                                    btn_update =`
+                                    <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
+                                                <i class="fas fa-edit"></i>
+                                        </button>
+                                    `
+                                }
                             }
                             
                             data_table +=`
