@@ -1,7 +1,13 @@
 <script>
      getCallbackNoSwal('getTimelineHeaderUser',null,function(response){
                             mappingTableTimeline(response.data)
+                            $('#project_label').html(response.data.length)
                         })
+    getCallbackNoSwal('getCalculation',null, function(response){
+        $('#remaining_label').html(response.progress)
+        $('#task_label').html(response.all)
+       
+    })
      function mappingTableTimeline(response){
             var data =''
             $('#progress_track_container').empty()

@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="header pb-6 d-flex align-items-center" style="min-height: 200px; margin-top:-10px !important; background-image: url(../../assets/img/theme/bg.png); background-size: cover; background-position: center top;">
+<div class="header pb-6 d-flex align-items-center" style="min-height: 150px; margin-top:-10px !important; background-image: url(../../assets/img/theme/bg.png); background-size: cover; background-position: center top;">
 
     <span class="mask bg-gradient-default opacity-7"></span>
     
@@ -44,16 +44,9 @@
     </div>
     </div>
         <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-            <div class="d-flex justify-content-between">
-                <a href="#" class="btn btn-sm btn-default  mr-4 " title="Change Password">
-                    <i class="fa-solid fa-key"></i> Password
-                </a>
-                <a href="#" class="btn btn-sm btn-default float-right" title="Update Signature">
-                    <i class="fa-solid fa-signature"></i> Signature
-                </a>
-            </div>
+         
         </div>
-        <div class="card-body pt-0">
+        <div class="card-body pt-4 ">
             <div class="card-body p-0">
                 <div class="text-center" style="font-weight: bold">
                     <span style="font-size: 14px">
@@ -65,15 +58,15 @@
                     <div class="col">
                         <div class="card-profile-stats d-flex justify-content-center mt-0">
                             <div>
-                                <span class="heading">2</span>
+                                <span class="heading" id="project_label">2</span>
                                 <span class="description">Project</span>
                             </div>
                             <div>
-                                <span class="heading">100</span>
+                                <span class="heading" id="task_label">100</span>
                                 <span class="description">Task</span>
                             </div>
                             <div>
-                                <span class="heading">11</span>
+                                <span class="heading" id="remaining_label">11</span>
                                 <span class="description">Remaining</span>
                             </div>
                         </div>

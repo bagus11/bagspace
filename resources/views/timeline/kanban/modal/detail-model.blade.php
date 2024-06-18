@@ -36,6 +36,12 @@
                                 <div class="col-3"><input type="date" class="form-control" id="module_start_date_label"></div>
                                 <div class="col-3 mt-2"><p>End Date</p></div>
                                 <div class="col-3"><input type="date" class="form-control" id="module_end_date_label"></div>
+                                <div class="col-3 mt-2">
+                                    <p>Plan</p>
+                                </div>
+                                <div class="col-3 mt-2">
+                                    <p id="plan_label"></p>
+                                </div>
                             </div>
                             <div class="row mx-2">
                                 <div class="col-3 mt-2"><p>Description</p></div>

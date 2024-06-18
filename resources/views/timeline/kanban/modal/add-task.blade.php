@@ -58,6 +58,12 @@
                         <input type="hidden" class="form-control" id="pic_id">
                         <span style="color:red;" class="message_error text-red block pic_id_error"></span>
                     </div>
+                    <div class="col-2 mt-2">
+                        <p>Attachment</p>
+                    </div>
+                    <div class="col-4">
+                        <input type="file" class="form-control" id="attachment_task">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-end">

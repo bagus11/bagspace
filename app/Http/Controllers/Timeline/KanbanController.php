@@ -10,6 +10,7 @@ use App\Models\Timeline\DetailTeamTimeline;
 use App\Models\Timeline\TimelineDetail;
 use App\Models\Timeline\TimelineHeader;
 use App\Models\Timeline\TimelineSubDetail;
+use App\Models\Timeline\TimelineSubDetailLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,16 +23,19 @@ class KanbanController extends Controller
         $request_code   = str_replace('_','/',$id);
         $timelineName = TimelineHeader::with(['teamRelation.userRelation'])->where('request_code', $request_code)->first();
         $team = DetailTeamTimeline::with('userRelation')->where('team_id', $timelineName->team_id)->get();
+        $leader   = DetailTeamTimeline::where('team_id',$timelineName->team_id)->where('position',2)->first();
         $data =[
             'data'              =>$timelineName,
             'request_code'      =>$request_code,
-            'team'      =>$team
+            'team'              =>$team,
+            'leader'            =>$leader
         ];
         return view('timeline.kanban.kanban-index',$data);
     }
     function getTImelineDetail(Request $request) {
         $data   = TimelineDetail ::with(['userRelation'])->where('request_code',$request->request_code)->get();
         $detail = TimelineHeader ::where('request_code', $request->request_code)->first();
+      
         $array = [];
       
     
@@ -39,6 +43,7 @@ class KanbanController extends Controller
             $post = [
                 'data'=>$data,
                 'detail'=>$detail,
+                
                 
             ];
         }else{
@@ -66,15 +71,22 @@ class KanbanController extends Controller
             $post = [
                 'data'=>$data,
                 'detail'=>$detail,
+              
                 'array'=>$array,  
             ];
         }
         return response()->json($post); 
     }
     function getSubDetailTimeline(Request $request) {
-        $detail = TimelineSubDetail ::with(['userRelation'])->where('id',$request->id)->first();
+        $detail     = TimelineSubDetail ::with(['userRelation'])->where('id',$request->id)->first();
+        $log_task   = TimelineSubDetailLog::with([
+                                                'userRelation',
+                                                'creatorRelation',
+                                            ])->where('subdetail_code', $detail->subdetail_code)
+                                            ->get();
         return response()->json([
-            'detail'=>$detail
+            'detail'=>$detail,
+            'log_task'=>$log_task,
         ]); 
     }
     function getTeam(Request $request) {
@@ -215,6 +227,15 @@ class KanbanController extends Controller
                     $ticket_code = $month_before[0] + 1 .'/SDTML/'.$month_convert.'/'.$year;
                 }   
             }
+            $attachmentPath = '';
+
+            // Check if a file is uploaded
+            if ($request->hasFile('attachment_task')) {
+                $file = $request->file('attachment_task');
+                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+                $attachmentPath = $file->storeAs('GalleryTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+            }
             $header = TimelineHeader::where('request_code',  $request->request_code)->first();
             $post =[
                 'request_code'          => $request->request_code,
@@ -227,6 +248,7 @@ class KanbanController extends Controller
                 'pic'                   => $request->pic_id,
                 'status'                =>0,
                 'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount,
+                'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
             ];
             $post_chat=[
                 'request_code'          => $request->request_code,
@@ -288,23 +310,38 @@ class KanbanController extends Controller
         $status         = 500;
         $message        = 'Failed Update Progress, please contact ICT Dev';
         $task           = TimelineSubDetail::where('id', $request->id)->first();
+        $headerTimeline = TimelineHeader::where('request_code', $task->request_code)->first();
+        $leader         = DetailTeamTimeline::where('team_id',$headerTimeline->team_id)->where('position', 2)->first();
         $post_update    = [
             'status'    => $task->status ==1 ?0 : 1,
             'update_done'  =>$task->status ==1 ?null : date('Y-m-d H:i:s'),
             
         ];
-       
+        $statusMessage =  $task->status ==0 ? "Has Finish task " : "Has unchecked task ";
         $activate = $request->status == 1 ?'Cancel' :'DONE';
         $post_chat=[
             'request_code'          => $task->request_code,
             'attachment'            => '',
             'detail_code'           =>  $task->detail_code,
-            'remark'                => ' has update status task : <b>'.$task->name.'</b>',
+            'remark'                => $statusMessage.' : <b>'.$task->name.'</b>',
             'user_id'               => auth()->user()->id,
             'created_at'            => date('Y-m-d H:i:s')
         ];
-        if(auth()->user()->id == $task->pic){
-            ChatTimelineModel::create($post_chat);
+        $post_bot =[
+            'subdetail_code'        => $task->subdetail_code,
+            'name'                  => $task->name,
+            'description'           => $task->description,
+            'start_date'            => $task->start_date,
+            'end_date'              => $task->end_date,
+            'amount'                => $task->amount,
+            'pic'                   => $task->pic,  
+            'created_at'            => date('Y-m-d H:i:s'),
+            'user_id'               => auth()->user()->id,
+            'remark'                => $statusMessage.' : <b>'.$task->name.'</b>',
+        ];
+        $bot=[];
+        if((auth()->user()->id == $task->pic) || (auth()->user()->id == $leader->user_id)){
+            // ChatTimelineModel::create($post_chat);
             $update = TimelineSubDetail::where([
                 'request_code' =>$task->request_code,
                 'detail_code' =>$task->detail_code,
@@ -317,6 +354,7 @@ class KanbanController extends Controller
                 $statusRFPDone  =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('request_code',$task->request_code)->where('status',1)->first();
                 $statusRFPAll   =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('request_code',$task->request_code)->first();
                 $percentageRFP  =   ($statusRFPDone->percentage / $statusRFPAll->percentage) * 100 ; 
+             
                 if($percentage == 100 ){
                     if($percentageRFP == 100){
                        TimelineHeader::where('request_code',$task->request_code)->update([
@@ -335,14 +373,18 @@ class KanbanController extends Controller
                     TimelineDetail::where([
                         'request_code' =>$task->request_code,
                         'detail_code' =>$task->detail_code,
+                        
+                        
                     ])->update([
-                        'percentage'    =>$percentage
+                        'percentage'    =>$percentage,
+                        'status'        => 1
                     ]);
                     TimelineHeader::where('request_code',$task->request_code)->update([
                         'percentage'=>$percentageRFP,
                         'status'=>1
                     ]);
                 }
+                TimelineSubDetailLog::create($post_bot);
                 // Sending Message on BOT
                 $bot =[
                     'task'          => $task->name,
@@ -371,58 +413,66 @@ class KanbanController extends Controller
         $status         = 500;
         $message        = 'Failed Update Progress, please contact ICT Dev';
         $task           = TimelineDetail::where('detail_code', $request->detail_code)->first();
-        $header = TimelineHeader::where('request_code', $task->request_code)->first();
-        $detail = TimelineDetail::where('detail_code',$task->detail_code)->first();
-        // dd($task);
-        $post =[
-            'status' => $request->status
-        ];
-        $status ='';
-        switch ($request->status) {
-            case 0:
-                $status ="NEW";
-            break;
-            case 1:
-                $status ="In Progress";
-            break;
-            case 2:
-                $status ="Pending";
-            break;
-            case 3:
-                $status ="DONE";
-            break;
-            default:
-            $status = '';
-            
-        }
-        // dd($request->status);
-        if($request->status == 2){
-            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
-            . "PIC          : " . auth()->user()->name . "\n"
-            . "Module       :  <b>$detail->name</b>  \n"
-            . "Status       :   Pending";
-            Telegram::sendMessage([
-                'chat_id' => $header->id_channel,
-                'parse_mode' => 'HTML',
-                'text' => $text
-            ]);
-        }
-        if($detail->status == 2){
-            
-            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
-            . "PIC          : " . auth()->user()->name . "\n"
-            . "Module       :  <b>$detail->name</b>  \n"
-            . "Status       :  $status ";
-            Telegram::sendMessage([
-                'chat_id' => $header->id_channel,
-                'parse_mode' => 'HTML',
-                'text' => $text
-            ]);
-        }
-        $update         = TimelineDetail::where('detail_code', $request->detail_code)->update($post);
-        if($update){
-            $status         = 200;
-            $message        = 'Successfully Update Status ';
+        $header         = TimelineHeader::where('request_code', $task->request_code)->first();
+        $detail         = TimelineDetail::where('detail_code',$task->detail_code)->first();
+        if($detail->percentage == 100){
+            $status         = 500;
+            $message        = 'Cannot update because, module is totally done ';
+        }else if($request->status == 3 && $detail->percentage < 100){
+            $status         = 500;
+            $message        = 'Cannot update to DONE, because module is not 100%';
+        }else{
+            // dd($task);
+            $post =[
+                'status' => $request->status
+            ];
+            $status ='';
+            switch ($request->status) {
+                case 0:
+                    $status ="NEW";
+                break;
+                case 1:
+                    $status ="In Progress";
+                break;
+                case 2:
+                    $status ="Pending";
+                break;
+                case 3:
+                    $status ="DONE";
+                break;
+                default:
+                $status = '';
+                
+            }
+            // dd($request->status);
+            if($request->status == 2){
+                $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+                . "PIC          : " . auth()->user()->name . "\n"
+                . "Module       :  <b>$detail->name</b>  \n"
+                . "Status       :   Pending";
+                Telegram::sendMessage([
+                    'chat_id' => $header->id_channel,
+                    'parse_mode' => 'HTML',
+                    'text' => $text
+                ]);
+            }
+            if($detail->status == 2){
+                
+                $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+                . "PIC          : " . auth()->user()->name . "\n"
+                . "Module       :  <b>$detail->name</b>  \n"
+                . "Status       :  $status ";
+                Telegram::sendMessage([
+                    'chat_id' => $header->id_channel,
+                    'parse_mode' => 'HTML',
+                    'text' => $text
+                ]);
+            }
+            $update         = TimelineDetail::where('detail_code', $request->detail_code)->update($post);
+            if($update){
+                $status         = 200;
+                $message        = 'Successfully Update Status ';
+            }
         }
       
         return response()->json([
@@ -466,13 +516,18 @@ class KanbanController extends Controller
             'amount'                => $id->amount ==0 ? 0 : $request->actual_amount_edit,
             'pic'                   => $request->pic_id_edit,
         ];
+   
         $post_bot =[
+            'subdetail_code'       => $id->subdetail_code,
             'name'                  => $id->name,
             'description'           => $id->description,
             'start_date'            => $id->start_date,
             'end_date'              => $id->end_date,
             'amount'                => $id->amount,
             'pic'                   => $id->pic,  
+            'created_at'            => date('Y-m-d H:i:s'),
+            'user_id'               => auth()->user()->id,
+            'remark'                => $request->remark_edit
         ];
        
         
@@ -525,6 +580,7 @@ class KanbanController extends Controller
              'text' => $text
          ]);
          $id->update($post);
+         TimelineSubDetailLog::create($post_bot);
 
         return ResponseFormatter::success(   
             $id,                              
