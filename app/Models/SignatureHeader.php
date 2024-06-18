@@ -10,4 +10,9 @@ class SignatureHeader extends Model
     use HasFactory;
     protected $table = "signature_header";
     protected $guarded = [];
+
+    public function SignatureDetail()
+    {
+        return $this->hasMany(SignatureDetail::class, 'signature_id', 'id');
+    }
 }
