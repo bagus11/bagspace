@@ -13,7 +13,9 @@
             <button type="button" class="btn btn-sm btn-tool btn-dark dropdown-toggle px-2" id="btn_history_remark" title="Participant" style="margin-top:3px" data-toggle="dropdown">
                 <i class="fa-solid fa-users"></i>
             </button>
+           
             <input type="hidden" name="pc_code_id" id="pc_code_id">
+            <input type="hidden" name="leader_id" id="leader_id" value="{{$leader->user_id}}">
             <div class="dropdown-menu dropdown-menu-right"  role="menu" style="width: 250px !important;border-radius:15px;background-color:#31363F">
                 
                 @foreach ($team as $item)
@@ -127,6 +129,7 @@
 @include('timeline.kanban.modal.add-model')
 @include('timeline.kanban.modal.detail-model')
 @include('timeline.kanban.modal.add-task')
+@include('timeline.kanban.modal.detail-taskModal')
 @include('timeline.kanban.modal.edit-task')
 @include('timeline.kanban.modal.detail-taskModal')
 @endsection

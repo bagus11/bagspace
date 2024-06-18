@@ -1,5 +1,5 @@
 <div class="modal fade" id="updateTaskModal">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-dark">
             <div class="modal-header bg-mainCore">
                 <b style="font-size: 12px;color:white">Form Add Task</b>
@@ -62,29 +62,18 @@
                             <span style="color:red;" class="message_error text-red block pic_id_edit_error"></span>
                         </div>
                     </div>
-                </fieldset>
-                <fieldset class="legend1  mx-0 my-0 mt-2">
-                    <legend>Log Transaction</legend>
-                    <div class="row mx-1">
-                        <div class="col-12">
-                            <table class="datatable-stepper" id="log_task_table">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Created at</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Updated By</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Title</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">PIC</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Start Date</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">End Date</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Actual</th>
-                                        <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Remark</th>
-                                       
-                                    </tr>
-                                </thead>
-                            </table>
+                    <div class="row">
+                        <div class="col-2 mt-2">
+                            <p>Remark</p>
+                        </div>
+                        <div class="col-10">
+                            <textarea class="form-control" id="remark_edit" rows="3"></textarea>
+                            <span style="color:red;" class="message_error text-red block remark_edit_error"></span>
                         </div>
                     </div>
                 </fieldset>
+                <br>
+             
             </div>
             <div class="modal-footer justify-content-end">
                 <button id="btn_edit_task" type="button" class="btn btn-sm btn-success">
