@@ -246,20 +246,24 @@ class KanbanController extends Controller
                 'start_date'            => $request->start_date_sub_module,
                 'end_date'              => $request->end_date_sub_module,
                 'pic'                   => $request->pic_id,
-                'status'                =>0,
+                'status'                => 0,
                 'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount,
                 'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
             ];
-            $post_chat=[
-                'request_code'          => $request->request_code,
-                'attachment'            => '',
-                'detail_code'           =>  $request->detail_code,
-                'remark'                => ' has created a new task : <b>'.$request->name_sub_module.'</b>',
+            $post_bot =[
+                'subdetail_code'        => $ticket_code,
+                'name'                  => $request->name_sub_module,
+                'description'           => $request->description_sub_module,
+                'start_date'            => $request->start_date_sub_module,
+                'end_date'              => $request->end_date_sub_module,
+                'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount,
+                'pic'                   => $request->pic_id, 
+                'created_at'            => date('Y-m-d H:i:s'),
                 'user_id'               => auth()->user()->id,
-                'created_at'            => date('Y-m-d H:i:s')
+                'remark'                => 'has created task : <b>'.$request->name_sub_module.'</b>',
             ];
-            
              TimelineSubDetail::insert($post);
+             TimelineSubDetailLog::create($post_bot);
             //  ChatTimelineModel::insert($post_chat);
              $statusDone     =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('detail_code',$request->detail_code)->where('status',1)->first();
              $statusAll      =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('detail_code',$request->detail_code)->first();
@@ -317,7 +321,7 @@ class KanbanController extends Controller
             'update_done'  =>$task->status ==1 ?null : date('Y-m-d H:i:s'),
             
         ];
-        $statusMessage =  $task->status ==0 ? "Has Finish task " : "Has unchecked task ";
+        $statusMessage =  $task->status ==0 ? "Has finished task " : "Has unchecked task ";
         $activate = $request->status == 1 ?'Cancel' :'DONE';
         $post_chat=[
             'request_code'          => $task->request_code,
@@ -518,13 +522,13 @@ class KanbanController extends Controller
         ];
    
         $post_bot =[
-            'subdetail_code'       => $id->subdetail_code,
-            'name'                  => $id->name,
-            'description'           => $id->description,
-            'start_date'            => $id->start_date,
-            'end_date'              => $id->end_date,
-            'amount'                => $id->amount,
-            'pic'                   => $id->pic,  
+            'subdetail_code'       =>  $id->subdetail_code,
+            'name'                  => $request->name_edit_sub_module,
+            'description'           => $request->description_edit_sub_module,
+            'start_date'            => $request->start_date_edit_sub_module,
+            'end_date'              => $request->end_date_edit_sub_module,
+            'amount'                => $id->amount ==0 ? 0 : $request->actual_amount_edit,
+            'pic'                   => $request->pic_id_edit,
             'created_at'            => date('Y-m-d H:i:s'),
             'user_id'               => auth()->user()->id,
             'remark'                => $request->remark_edit
