@@ -15,7 +15,7 @@ use App\Http\Controllers\Timeline\MasterTeamTimelineController;
 use App\Http\Controllers\Timeline\MasterTimelineCategory;
 use App\Http\Controllers\Timeline\MasterTypeController;
 use App\Http\Controllers\Timeline\MonitoringTimelineController;
-use App\Models\Sign\MasterSignature;
+use App\Http\Controllers\Signature\SignTransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -187,9 +187,12 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('setting_account', [SettingAccountController::class, 'index'])->name('setting_account');
                 Route::get('getCalculation', [SettingAccountController::class, 'getCalculation'])->name('getCalculation');
         // Setting
-
-
-
-  
+        // signature transaction
+        Route::get('sign', [SignTransactionController::class,'index'])->name('sign');
+        Route::get('fetch-sign', [SignTransactionController::class,'fetch'])->name('fetch-sign');
+        Route::get('list-user-approval', [SignTransactionController::class,'fetchUserApproval'])->name('list-user-approval');
+        Route::get('detail-sign', [SignTransactionController::class,'detailSign'])->name('detail-sign');
+        Route::post('create-sign', [SignTransactionController::class,'createSignTransaction'])->name('create-sign');
+        // signature transaction
 
 });
