@@ -35,12 +35,19 @@
 
                     }
                 },
-            ]
+            ],
+            language: {
+                'paginate': {
+                'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                }
+            },
         })
 
         $(document).on('click', '#btn_add_sign', function(e) {
             e.preventDefault()
             $('#form_create_sign_transaction')[0].reset()
+            $('#table_approver_data').hide()
             // $.ajax({
             //     url: "{{ route('list-user-approval') }}",
             //     type: "get",
@@ -59,29 +66,46 @@
             // $('#list_sign_approval').DataTable().destroy();
         })
 
-        $(document).on('keyup', '#total_approval_sign', function() {
+        $(document).on('change', '#total_approval_sign', function() {
             let total_approval = $('#total_approval_sign').val()
             $('#form_list_approval').empty()
+            $('#table_list_approval').empty()
             if (total_approval <= 0) {
                 $('#form_list_approval').empty()
+                $('#table_list_approval').empty()
+                $('#table_approver_data').hide()
             } else {
                 $.ajax({
                     url: "{{ route('list-user-approval') }}",
                     type: "get",
                     dataType: 'json',
                     success: function(res) {
+                        $('#table_approver_data').show()
+                        $('#table_list_approval').empty()
+                        let number_user = 1
                         for (let i = 0; i < total_approval; i++) {
-                            $('#form_list_approval').append(`
-                                <div class="mb-3">
-                                    <label for="approval_list_data_${i}" class="form-label">Disabled input</label>
-                                    <select class="form-control approval_list_data" name="approval_list_data[]" id="approval_list_data_${i}">
-                                        <option value="0">Hirarki</option>
-                                        <option value="1">Non Hirarki</option>
-                                    </select>
-                                </div>
+                            $('#table_list_approval').append(`
+                                <tr>
+                                    <td>${number_user++}</td>
+                                    <td>
+                                        <div class="mb-3">
+                                            <select class="form-control approval_list_data" name="approval_list_data[]" id="approval_list_data_${i}">
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
                             `)
+                            // $('#form_list_approval').append(`
+                            //     <div class="mb-3">
+                            //         <select class="form-control approval_list_data" name="approval_list_data[]" id="approval_list_data_${i}">
+                            //             <option value="0">Hirarki</option>
+                            //             <option value="1">Non Hirarki</option>
+                            //         </select>
+                            //     </div>
+                            // `)
                         }
                         $('.approval_list_data').empty()
+                        $('.approval_list_data').append(`<option value="">Choose Approver</option>`)
                         $.each(res.data, function(i, user) {
                             $('.approval_list_data').append(`
                                 <option value="${user.id}">${user.name}</option>
@@ -144,12 +168,11 @@
                     swal.close();
                     let response_error = JSON.parse(xhr.responseText)
                     $.each(response_error.meta.message.errors, function(i, value) {
-
-                    })
-                    Swal.fire({
-                        icon: "error",
-                        title: 'Error!',
-                        text: response_error
+                        Swal.fire({
+                            icon: "error",
+                            title: 'Error!',
+                            text: value
+                        })
                     })
                 }
             })

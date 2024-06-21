@@ -59,8 +59,19 @@
                             <span style="color:red;" class="message_error text-red block attachment_sign_error"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12" id="form_list_approval">
+                    <div class="row mt-4" id="table_approver_data">
+                        <div class="col-sm-12">
+                            <table class="datatable-stepper">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="sort" data-sort="no">No</th>
+                                        <th scope="col" class="sort" data-sort="user_approval">Approver</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="table_list_approval">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
