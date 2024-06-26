@@ -53,8 +53,10 @@
                             <p>Attachment</p>
                         </div>
                         <div class="col-9">
-                            <input type="file" class="form-control" name="detail_attachment_sign" id="detail_attachment_sign"
-                                style="height: 40px !important;">
+                            <p>
+                                <a href="" id="detail_attachment_sign" target="_blank"><i class="fas fa-file"></i> Link Attachment</a>
+                            </p>
+                            {{-- <input type="file" class="form-control" name="detail_attachment_sign" id="detail_attachment_sign" style="height: 40px !important;"> --}}
                             <span style="color:red;" class="message_error text-red block detail_attachment_sign_error"></span>
                         </div>
                     </div>

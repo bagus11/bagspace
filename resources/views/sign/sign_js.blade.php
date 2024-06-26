@@ -211,7 +211,10 @@
                     $('#detail_description_sign').val(res.data[0].description)
                     $('#detail_total_approval_sign').val(res.data[0].step_approval)
                     $('#detail_total_approval_sign').val(res.data[0].step_approval)
-                    console.log(res.data[0].signature_detail[0].user_id);
+                    let data_attachment = res.data[0].attachment
+                    let link_attachment = "{{ asset('') }}"+data_attachment
+                    $('#detail_attachment_sign').attr('href', link_attachment)
+                    console.log(link_attachment);
                     $('#table_list_detail_approval').empty()
                     let number_user = 1
                     $.each(res.data[0].signature_detail, function(i, user) {
