@@ -162,6 +162,16 @@
                     formatCurrency($(this), "blur");
                     }
     });
+    
+    $("#plan_amount_edit").on({
+                    keyup: function() {
+                    formatCurrency($(this));
+                    },
+                    blur: function() { 
+                    formatCurrency($(this), "blur");
+                    }
+    });
+
     $("#actual_amount").on({
                     keyup: function() {
                     formatCurrency($(this));
@@ -325,8 +335,13 @@
         });  
        
     })
+    $('#btn_edit_module').on('click', function(){
+        var data ={
+            'detail_code' : $('#detail_code_chat').val()
+        }
+       
+    })
 //   Update Status When Drag Kanban
-
     $('#task_subdetail_table').on('change', '.is_checked', function(){
         var id      = $(this).data('id')
         var status  = $(this).data('status')
@@ -407,15 +422,15 @@
                                 const time = d.toTimeString().split(' ')[0];
 
                                     mapping_data += `<tr style="text-align: center;">
-                                                    <td style="text-align:center;width:10%">${convertDate(date)} ${time}</td>
-                                                    <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
-                                                    <td style="text-align:left;width:10%">${response.log_task[i].name}</td>
-                                                    <td style="text-align:left;width:15%">${response.log_task[i].user_relation.name}</td>
-                                                    <td style="text-align:center;width:10%">${convertDate(response.log_task[i].start_date)}</td>
-                                                    <td style="text-align:center;width:15%">${convertDate(response.log_task[i].end_date)}</td>
-                                                    <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
-                                                    <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
-                                                </tr>
+                                                        <td style="text-align:center;width:10%">${convertDate(date)} ${time}</td>
+                                                        <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
+                                                        <td style="text-align:left;width:10%">${response.log_task[i].name}</td>
+                                                        <td style="text-align:left;width:15%">${response.log_task[i].user_relation.name}</td>
+                                                        <td style="text-align:center;width:10%">${convertDate(response.log_task[i].start_date)}</td>
+                                                        <td style="text-align:center;width:15%">${convertDate(response.log_task[i].end_date)}</td>
+                                                        <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
+                                                        <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
+                                                    </tr>
                                             `;
                             }
                         $('#log_task_table > tbody:first').html(mapping_data);
@@ -549,161 +564,271 @@
             }
         });  
     })
-//   Function 
-function getData(data) {
-    $('#kanban_new').empty();
-    $('#kanban_progress').empty();
-    $('#kanban_pending').empty();
-    $('#kanban_done').empty();
-
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: "{{route('getTimelineDetail')}}",
-        type: "get",
-        dataType: 'json',
-        async: true,
-        data: data,
-        beforeSend: function() {
-            SwalLoading('Please wait ...');
-        },
-        success: function(response) {
-            swal.close();
-            var data_new = '';
-            var data_progress = '';
-            var data_pending = '';
-            var data_done = '';
-
-            for (i = 0; i < response.data.length; i++) {
-                var color = '';
-                if (response.data[i].percentage > 0 && response.data[i].percentage <= 25) {
-                    color = 'rgba(255, 99, 132, 1)'; // Red
-                } else if (response.data[i].percentage >= 26 && response.data[i].percentage <= 50) {
-                    color = 'rgba(255, 206, 86, 1)'; // Yellow
-                } else if (response.data[i].percentage >= 51 && response.data[i].percentage <= 75) {
-                    color = 'rgba(54, 162, 235, 1)'; // Blue
-                } else if (response.data[i].percentage >= 76) {
-                    color = 'rgba(75, 192, 192, 1)'; // Green
-                }
-                if(header_type == 1){
-                                card =`
-                               <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                                   <div class="card-body detail_kanban p-2">
-                                       <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
-                                       <div class="text-right p-0">
-                                       <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
-                                       </div>
-                                       <div class="progress" style="height: 5px;">
-                                       <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
-                                       </div>
-                                       <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
-                                       <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
-                                       </div>
-                                   </div>
-                                   </div>
-                               `
-                }else{
-
-                            
-                var card = `
-                    <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                        <div class="card-body detail_kanban p-2">
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
-                                    <div class="text-right p-0">
-                                        <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
-                                    </div>
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <canvas id="chart-${response.data[i].detail_code}" style="width: 160px; height: 140px;"></canvas>
-                                </div>
-                            </div>
-                            <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
-                                    <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                }
-                if (response.data[i].status == 0) {
-                    data_new += card;
-                } else if (response.data[i].status == 1) {
-                    data_progress += card;
-                } else if (response.data[i].status == 2) {
-                    data_pending += card;
-                } else if (response.data[i].status == 3) {
-                    data_done += card;
-                }
-            }
-
-            $('#kanban_new').append(data_new);
-            $('#kanban_progress').append(data_progress);
-            $('#kanban_pending').append(data_pending);
-            $('#kanban_done').append(data_done);
-
-            // Initialize the charts
-            if(header_type ==2){
-                response.array.forEach(function(item) {
-                    var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Plan', 'Actual'],
-                            datasets: [{
-                                label: 'Plan',
-                                data: [item.plan],
-                                backgroundColor: '#E88D67',
-                                borderColor: 'white',
-                                borderWidth: 1
-                            },
-                            {
-                                label: 'Actual',
-                                data: [item.actual],
-                                backgroundColor: '#F3F7EC',
-                                borderColor: 'white',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            maintainAspectRatio: false,
-                            aspectRatio: 3, // Adjust aspect ratio
-                            scales: {
-                                x: {
-                                    display: false // Hide x-axis labels
-                                },
-                                y: {
-                                    display: true // Hide y-axis labels
-                                }
-                            },
-                            plugins: {
-                                tooltip: {
-                                    enabled: true // Enable tooltips on hover
-                                },
-                                legend: {
-                                    display: false // Hide legend
-                                }
-                            }
-                        }
-                    });
-                });
-
-            }
-        },
-        error: function(xhr, status, error) {
-            swal.close();
-            toastr['warning']('Failed to get data, please contact ICT Developer');
+    $('#btn_update_module').on('click', function(){
+        var detail_code =  $('#detail_code_chat').val()
+        var plan        = $('#plan_amount_edit').val()
+        var plan_convert = parseFloat(plan.replace(/,/g, ''));
+        var data ={
+            'start_date_module_edit'        : $('#start_date_module_edit').val(),
+            'end_date_module_edit'          : $('#end_date_module_edit').val(),
+            'name_module_edit'              : $('#name_module_edit').val(),
+            'description_module_edit'       : $('#description_module_edit').val(),
+            'plan_amount_edit'              : plan_convert,
+            'reason_module_edit'            : $('#reason_module_edit').val(),
+            'detail_code'                   : detail_code
         }
-    });
-}
+        $.ajax({
+            url: "{{route('updateModule')}}",
+            type: "post",
+            dataType: 'json',
+            data:data,
+            async: true,
+            beforeSend: function() {
+                SwalLoading('Please wait ...');
+            },
+            success:function(response){
+                swal.close()
+                $('#editModuleModal').modal('hide')
+                toastr['success'](response.meta.message);
+                showNoSwal(detail_code)
+            },
+            error: function(response) {
+                $('.message_error').html('')
+                swal.close();
+                if(response.status == 500){
+                    toastr['error'](response.responseJSON.meta.message);
+                    return false
+                }
+                if(response.status === 422)
+                {
+                    $.each(response.responseJSON.errors, (key, val) => 
+                        {
+                            $('span.'+key+'_error').text(val)
+                        });
+                }else{
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            }
+        });  
 
+    })
 
+    // Gantt Chart
+        $('#gantt-tab').on('click', function(){
+            $.ajax({
+                url: "{{route('getGanttChart')}}",
+                data : dataStart,
+                type: 'GET',
+                dataType: 'json',  // Assuming response will be JSON
+                success: function(data) {
+                    updateGanttChart(data);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error('Error fetching data:', error);
+                    // Example: Show error message to user
+                    alert('Error fetching data. Please try again later.');
+                }
+            });
+        })
+        
+                
+                    
+            function formatDate(dateStr) {
+                var date = new Date(dateStr);
+                return date.getFullYear() + '-' +
+                    ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+                    ('0' + date.getDate()).slice(-2);
+            }
+
+            function calculateDuration(startDateStr, endDateStr) {
+                var startDate = new Date(startDateStr);
+                var endDate = new Date(endDateStr);
+                var duration = (endDate - startDate) / (1000 * 60 * 60 * 24);
+                return Math.round(duration);
+            }
+            // Set custom task type for milestones
+            gantt.templates.task_class = function (start, end, task) {
+                if (task.type == 'milestone') {
+                    return "milestone";
+                } else if (task.overdue) {
+                    return "overdue";
+                }
+                return "";
+            };
+
+            gantt.templates.tooltip_text = function(start, end, task) {
+                var text = '<b>Task:</b> ' + task.text + '<br>';
+                text += '<b>Start Date:</b> ' + gantt.templates.tooltip_date_format(start) + '<br>';
+                text += '<b>End Date:</b> ' + gantt.templates.tooltip_date_format(end) + '<br>';
+                text += '<b>Progress:</b> ' + (task.progress * 100).toFixed(2) + '%<br>';
+                if (task.type === 'milestone') {
+                    text += '<b>Type:</b> Milestone<br>';
+                } else if (task.overdue) {
+                    text += '<b>Status:</b> Overdue<br>';
+                } else {
+                    text += '<b>Status:</b> On Time<br>';
+                }
+                return text;
+            };
+            // Initialize Gantt chart
+            gantt.config.xml_date = "%Y-%m-%d";
+            gantt.config.readonly = true; // Set Gantt chart to read-only
+            gantt.init("gantt_here");
+    // Gantt Chart
+//   Function 
+        function getData(data) {
+            $('#kanban_new').empty();
+            $('#kanban_progress').empty();
+            $('#kanban_pending').empty();
+            $('#kanban_done').empty();
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('getTimelineDetail')}}",
+                type: "get",
+                dataType: 'json',
+                async: true,
+                data: data,
+                beforeSend: function() {
+                    SwalLoading('Please wait ...');
+                },
+                success: function(response) {
+                    swal.close();
+                    var data_new = '';
+                    var data_progress = '';
+                    var data_pending = '';
+                    var data_done = '';
+
+                    for (i = 0; i < response.data.length; i++) {
+                        var color = '';
+                        if (response.data[i].percentage > 0 && response.data[i].percentage <= 25) {
+                            color = 'rgba(255, 99, 132, 1)'; // Red
+                        } else if (response.data[i].percentage >= 26 && response.data[i].percentage <= 50) {
+                            color = 'rgba(255, 206, 86, 1)'; // Yellow
+                        } else if (response.data[i].percentage >= 51 && response.data[i].percentage <= 75) {
+                            color = 'rgba(54, 162, 235, 1)'; // Blue
+                        } else if (response.data[i].percentage >= 76) {
+                            color = 'rgba(75, 192, 192, 1)'; // Green
+                        }
+                        if(header_type == 1){
+                                        card =`
+                                    <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                        <div class="card-body detail_kanban p-2">
+                                            <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                            <div class="text-right p-0">
+                                            <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                            </div>
+                                            <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                            </div>
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                            <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
+                                            </div>
+                                        </div>
+                                        </div>
+                                    `
+                        }else{
+
+                                    
+                        var card = `
+                            <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                <div class="card-body detail_kanban p-2">
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                            <div class="text-right p-0">
+                                                <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                            </div>
+                                            <div class="progress" style="height: 5px;">
+                                                <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <canvas id="chart-${response.data[i].detail_code}" style="width: 160px; height: 140px;"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="mt-0 mx-2" style="margin-top:-15px !important">
+                                        <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                            <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        }
+                        if (response.data[i].status == 0) {
+                            data_new += card;
+                        } else if (response.data[i].status == 1) {
+                            data_progress += card;
+                        } else if (response.data[i].status == 2) {
+                            data_pending += card;
+                        } else if (response.data[i].status == 3) {
+                            data_done += card;
+                        }
+                    }
+
+                    $('#kanban_new').append(data_new);
+                    $('#kanban_progress').append(data_progress);
+                    $('#kanban_pending').append(data_pending);
+                    $('#kanban_done').append(data_done);
+
+                    // Initialize the charts
+                    if(header_type ==2){
+                        response.array.forEach(function(item) {
+                            var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Plan', 'Actual'],
+                                    datasets: [{
+                                        label: 'Plan',
+                                        data: [item.plan],
+                                        backgroundColor: '#E88D67',
+                                        borderColor: 'white',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Actual',
+                                        data: [item.actual],
+                                        backgroundColor: '#F3F7EC',
+                                        borderColor: 'white',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    maintainAspectRatio: false,
+                                    aspectRatio: 3, // Adjust aspect ratio
+                                    scales: {
+                                        x: {
+                                            display: false // Hide x-axis labels
+                                        },
+                                        y: {
+                                            display: true // Hide y-axis labels
+                                        }
+                                    },
+                                    plugins: {
+                                        tooltip: {
+                                            enabled: true // Enable tooltips on hover
+                                        },
+                                        legend: {
+                                            display: false // Hide legend
+                                        }
+                                    }
+                                }
+                            });
+                        });
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    swal.close();
+                    toastr['warning']('Failed to get data, please contact ICT Developer');
+                }
+            });
+        }
 
         function isDateLate(inputDate) {
             const today = new Date();
@@ -892,9 +1017,20 @@ function getData(data) {
                        
                         swal.close();
                         chat
+                        $('#start_date_module_edit').val(response.detail.start_date)
+                        $('#end_date_module_edit').val(response.detail.end_date)
+                        $('#name_module_edit').val(response.detail.name)
+                        $('#description_module_edit').val(response.detail.description)
+                        if(header_type == 1){
+                            $('#purchase_container_edit').prop('hidden', true)
+                        }else{
+                            $('#purchase_container_edit').prop('hidden', false)
+                            $('#plan_amount_edit').val(convertToRupiah(response.detail.plan))
+                        }
                         // Mapping Activity
                         $('#task_subdetail_table').DataTable().clear();
                         $('#task_subdetail_table').DataTable().destroy();
+                        $('#log_module_table').DataTable().destroy();
                         
                         $('#chat_container').empty()
                         $('#percentage_task_container').empty()
@@ -902,7 +1038,8 @@ function getData(data) {
                         var data_table = ''
                         var auth_id = $('#authId').val()
                        
-                    var data_percentage =''
+                        var data_percentage =''
+                       
                         var plan_label =response.detail.plan == 0 ? ': -' : `: ${convertToRupiah(response.detail.plan)}`
                         $('#plan_label').html(plan_label)
                         var color = ''
@@ -1026,67 +1163,67 @@ function getData(data) {
                         // Mapping Activity
 
                         // Mapping Chat
-                        for (j = 0; j < response.chat.length; j++) {
-                            const d = new Date(response.chat[j].created_at);
-                            const date = d.toISOString().split('T')[0];
-                            const time = d.toTimeString().split(' ')[0];
-                            var auth = $('#authId').val();
-                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
-                            var attachment = response.chat[j].attachment ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.chat[j].attachment}')}}" target="_blank">
-                                <i class="fa-solid fa-file-pdf"></i> Click Here
-                                </a>` : '';
+                            for (j = 0; j < response.chat.length; j++) {
+                                const d = new Date(response.chat[j].created_at);
+                                const date = d.toISOString().split('T')[0];
+                                const time = d.toTimeString().split(' ')[0];
+                                var auth = $('#authId').val();
+                                var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
+                                var attachment = response.chat[j].attachment ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.chat[j].attachment}')}}" target="_blank">
+                                    <i class="fa-solid fa-file-pdf"></i> Click Here
+                                    </a>` : '';
 
-                            if (response.chat[j].user_relation.id == 999) {
-                                remark = `
-                                    <div class="direct-chat-msg">
-                                        <div class="direct-chat-infos clearfix">
-                                            <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
+                                if (response.chat[j].user_relation.id == 999) {
+                                    remark = `
+                                        <div class="direct-chat-msg">
+                                            <div class="direct-chat-infos clearfix">
+                                                <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
+                                            </div>
+                                            <div class="desk" style="width=100px !important">
+                                                ${attachment}
+                                                <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                            </div>
+                                        
                                         </div>
-                                        <div class="desk" style="width=100px !important">
-                                            ${attachment}
-                                            <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                    `;
+                                } else {
+                                    remark = `
+                                        <div class="person-a">
+                                            <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');"></div>
+                                            <div class="message">
+                                                <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
+                                                <br>
+                                                <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                                            </div>
+                                        
                                         </div>
-                                       
-                                    </div>
-                                `;
-                            } else {
-                                remark = `
-                                    <div class="person-a">
-                                        <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');"></div>
-                                        <div class="message">
-                                            <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
-                                            <br>
-                                            <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
-                                        </div>
-                                       
-                                    </div>
-                                `;
+                                    `;
+                                }
+                                chat += remark;
                             }
-                            chat += remark;
-                        }
-                        $('#chat_container').append(chat);
+                            $('#chat_container').append(chat);
                         // Mapping Chat
 
                         // Mapping Detail
-                        var status_detail = ''
-                        switch(response.detail.status){
-                            case 0:
-                                status_detail ='New'
-                              
-                                break;
-                            case 1:
-                                status_detail ='In Progress'
-                                break;
-                            case 2:
-                                status_detail ='Pending'
-                                break;
-                            case 3:
-                                status_detail ='DONE'
-                                break;
-                            default:
+                            var status_detail = ''
+                            switch(response.detail.status){
+                                case 0:
+                                    status_detail ='New'
+                                
+                                    break;
+                                case 1:
+                                    status_detail ='In Progress'
+                                    break;
+                                case 2:
+                                    status_detail ='Pending'
+                                    break;
+                                case 3:
+                                    status_detail ='DONE'
+                                    break;
+                                default:
 
-                        }
-                        
+                            }
+                        // Mapping Detail
                         $('#module_request_code_label').html(': ' + response.detail.request_code)
                         $('#module_detail_code_label').html(': ' + response.detail.detail_code)
                         $('#module_name_label').html(': ' + response.detail.name)
@@ -1097,6 +1234,39 @@ function getData(data) {
                         $('#request_code_chat').val(response.detail.request_code)
                         $('#detail_code_chat').val(id)
                         // Mapping Detail
+                       
+                        // Mapping Log Module
+                            var data_log_module =''
+                           
+                            for(k=0 ; k < response.log.length; k ++){
+                                console.log(response.log[k])
+                                var dateConvert = new Date(response.log[k].created_at);
+                                var dateLog = dateConvert != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(dateConvert.toISOString().split('T')[0]) : '';
+                                var timeLog = dateConvert != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? dateConvert.toTimeString().split(' ')[0] : '';
+                                data_log_module +=`
+                                <tr>
+                                    <td style="width:13%;text-align:center"> ${dateLog} ${timeLog}</td>
+                                    <td style="width:17%;text-align:left"> ${response.log[k].user_relation.name}</td>
+                                    <td style="width:10%;"> ${response.log[k].name}</td>
+                                    <td style="width:10%;">${convertDate(response.log[k].start_date)}</td>
+                                    <td style="width:10%;text-align:left">${convertDate(response.log[k].end_date)}</td>
+                                    <td style="width:5%;text-align:right">${convertToRupiah(response.log[k].plan)}</td>
+                                    <td style="text-align:left">${response.log[k].remark}</td>
+                                </tr>
+                                `;
+                            }
+                            $('#log_module_table > tbody:first').html(data_log_module);
+                            console.log(data_log_module)
+                            $('#log_module_table').DataTable({
+                                // scrollX  : true,
+                                language: {
+                                            'paginate': {
+                                                    'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                                    'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                            }
+                                        },
+                            }).columns.adjust()   
+                        // Mapping Log Module
                         },
                     error: function(xhr, status, error) {
                         swal.close();
@@ -1127,6 +1297,7 @@ function getData(data) {
                         // Mapping Activity
                         $('#task_subdetail_table').DataTable().clear();
                         $('#task_subdetail_table').DataTable().destroy();
+                        $('#log_module_table').DataTable().destroy();
                         
                         $('#chat_container').empty()
                         $('#percentage_task_container').empty()
@@ -1321,6 +1492,36 @@ function getData(data) {
                         $('#request_code_chat').val(response.detail.request_code)
                         $('#detail_code_chat').val(id)
                         // Mapping Detail
+                          // Mapping Log Module
+                          var data_log_module =''
+                            for(k=0 ; k < response.log.length; k ++){
+                                
+                                var dateConvert = new Date(response.log[k].created_at);
+                                var date = dateConvert != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(dateConvert.toISOString().split('T')[0]) : '';
+                                var time = dateConvert != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? dateConvert.toTimeString().split(' ')[0] : '';
+                                data_log_module +=`
+                                <tr>
+                                    <td style="width:13%;text-align:center"> ${date} ${time}</td>
+                                    <td style="width:17%;text-align:left"> ${response.log[k].user_relation.name}</td>
+                                    <td style="width:10%;"> ${response.log[k].name}</td>
+                                    <td style="width:10%;">${convertDate(response.log[k].start_date)}</td>
+                                    <td style="width:10%;text-align:left">${convertDate(response.log[k].end_date)}</td>
+                                    <td style="width:5%;text-align:right">${convertToRupiah(response.log[k].plan)}</td>
+                                    <td style="text-align:left">${response.log[k].remark}</td>
+                                </tr>
+                                `;
+                            }
+                            $('#log_module_table > tbody:first').html(data_log_module);
+                            $('#log_module_table').DataTable({
+                                // scrollX  : true,
+                                language: {
+                                            'paginate': {
+                                                    'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                                    'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                            }
+                                        },
+                            }).columns.adjust()   
+                        // Mapping Log Module
                         },
                     error: function(xhr, status, error) {
                         swal.close();
@@ -1391,8 +1592,76 @@ function getData(data) {
                 }
             });
         }
-       
-  
+        
+
+        function updateGanttChart(data) {
+            var tasks = {
+                data: [],
+                links: []
+            };
+
+            data.forEach(function(header) {
+                var headerTask = {
+                    id: 'header_' + header.id,
+                    text: header.name,
+                    start_date: formatDate(header.start_date),
+                    duration: calculateDuration(header.start_date, header.end_date),
+                    progress: header.percentage / 100,
+                    open: true // Open by default
+                };
+                tasks.data.push(headerTask);
+
+                if (header.detail_relation) {
+                    header.detail_relation.forEach(function(detail) {
+                        var detailTask = {
+                            id: 'detail_' + detail.id,
+                            text: detail.name,
+                            start_date: formatDate(detail.start_date),
+                            duration: calculateDuration(detail.start_date, detail.end_date),
+                            progress: detail.percentage / 100,
+                            parent: headerTask.id
+                        };
+                        tasks.data.push(detailTask);
+
+                        if (detail.sub_detail_relation) {
+                            detail.sub_detail_relation.forEach(function(subdetail) {
+                                var updateDoneDate = new Date(subdetail.update_done);
+                                var endDate;
+                                var duration;
+                                var isOverdue = false;
+
+                                if (updateDoneDate.getFullYear() === 1970) {
+                                    endDate = subdetail.end_date;
+                                    duration = 0; // Set as milestone
+                                } else {
+                                    endDate = updateDoneDate.toISOString().split('T')[0];
+                                    duration = calculateDuration(subdetail.start_date, endDate);
+
+                                    if (updateDoneDate > new Date(subdetail.end_date)) {
+                                        isOverdue = true;
+                                    }
+                                }
+
+                                var subdetailTask = {
+                                    id: 'subdetail_' + subdetail.id,
+                                    text: subdetail.name,
+                                    start_date: formatDate(subdetail.start_date),
+                                    duration: duration,
+                                    progress: subdetail.percentage / 100,
+                                    parent: detailTask.id,
+                                    type: (duration === 0) ? 'milestone' : 'task',
+                                    overdue: isOverdue // Custom attribute to indicate overdue status
+                                };
+                                tasks.data.push(subdetailTask);
+                            });
+                        }
+                    });
+                }
+            });
+
+            gantt.clearAll();
+            gantt.parse(tasks);
+        }
 
 
 //   Function 

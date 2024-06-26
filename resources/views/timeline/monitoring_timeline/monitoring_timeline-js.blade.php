@@ -179,7 +179,15 @@
                 })
         })
     })
+    $('#timeline_header_table').on('click', '.export', function(){
+        var request_code = $(this).data('request')
+        var id = $(this).data('id')
+        var data ={
+            'id':id,
+            'request_code': request_code
+        }
 
+    })
     function mappingTable(response){
         var data =''
             

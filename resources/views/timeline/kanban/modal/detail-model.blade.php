@@ -18,6 +18,17 @@
                 <fieldset class="legend1">
                     <legend>General Module</legend>
                     <div class="row">
+                        <div class="col-12">
+                           
+                            <button class="btn btn-sm btn-warning rounded-circle"" style="float: right" title="Module Edit" id="btn_edit_module" data-toggle="modal" data-target="#editModuleModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-dark rounded-circle"" style="float: right" title="Module History" id="btn_log_module" data-toggle="modal" data-target="#logModuleModal">
+                                <i class="fa-regular fa-clock"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-3">
                             <div class="flex-wrapper" id="percentage_task_container" style="margin: auto !important;margin-top:10px !important;"> 
                             </div>
@@ -36,45 +47,41 @@
                                 <div class="col-3"><input type="date" class="form-control" id="module_start_date_label"></div>
                                 <div class="col-3 mt-2"><p>End Date</p></div>
                                 <div class="col-3"><input type="date" class="form-control" id="module_end_date_label"></div>
-                                <div class="col-3 mt-2">
-                                    <p>Plan</p>
-                                </div>
-                                <div class="col-3 mt-2">
-                                    <p id="plan_label"></p>
-                                </div>
+                                <div class="col-3 mt-2"><p>Plan</p></div>
+                                <div class="col-3 mt-2"><p id="plan_label"></p></div>
                             </div>
                             <div class="row mx-2">
                                 <div class="col-3 mt-2"><p>Description</p></div>
                                 <div class="col-9 mt-2"><p id="module_description_label"></p></div>
                             </div>
-                        </div>
-                        
+                        </div>          
                         <!-- Task Section -->
                         <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-12">
-                                    <button class="btn btn-sm btn-dark rounded-circle" id="btn_add_task" style="float: right;margin-top:-12px;margin-bottom:5px" data-toggle="modal" data-target="#addTaskModal" title="Create Task Here">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-sm btn-dark rounded-circle" id="btn_add_task" style="float: right;margin-top:-12px;margin-bottom:5px" data-toggle="modal" data-target="#addTaskModal" title="Create Task Here">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="datatable-stepper" id="task_subdetail_table">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort=""></th>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Start Date</th>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort="task">Task</th>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort="pic">PIC</th>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort="dateline">Dateline</th>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort="updated_at">Updated At</th>
-                                                <th scope="col" style="text-align: center" class="sort" data-sort="action">Action</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="datatable-stepper" id="task_subdetail_table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort=""></th>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Start Date</th>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort="task">Task</th>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort="pic">PIC</th>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort="dateline">Dateline</th>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort="updated_at">Updated At</th>
+                                            <th scope="col" style="text-align: center" class="sort" data-sort="action">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </fieldset>

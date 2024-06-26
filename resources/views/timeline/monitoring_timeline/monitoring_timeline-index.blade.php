@@ -1,7 +1,18 @@
 @extends('layouts.admin')
 @section('title', 'Monitoring Timeline')
 @section('content')
-
+<style>
+  #container {
+     width: 100%;
+     height: 300 px !important;
+     margin: 0;
+     padding: 0;
+   }
+   #chart_div{
+    width: 100% !important;
+    height: 100% !important;
+   }
+</style>
 <nav aria-label="breadcrumb" class="mx-3" style="font-size: 12px !important;">
   <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
   <li class="breadcrumb-item"> <i class="ni ni-ruler-pencil text-danger"></i> Timeline Project</li>
@@ -48,9 +59,7 @@
   </div>
 
 </div>
-<div class="container">
-  <div id="chart_div" hidden></div>
-</div>
+
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
   google.charts.load('current', {'packages':['gantt']});
@@ -73,15 +82,15 @@
 
     data.addRows([
       ['Research', 'Analisa',
-       new Date(2015, 0, 1), new Date(2015, 0, 5), null,  100,  null],
+       new Date(2024, 02, 1), new Date(2024, 10, 5), null,  100,  null],
       ['Write', 'Design',
-       null, new Date(2015, 0, 9), daysToMilliseconds(3), 25, 'Research,Outline'],
+       null, new Date(2024, 02, 9), daysToMilliseconds(3), 25, 'Research,Outline'],
       ['Cite', 'Development',
-       null, new Date(2015, 0, 7), daysToMilliseconds(1), 20, 'Research'],
+       null, new Date(2024, 03, 7), daysToMilliseconds(1), 20, 'Research'],
       ['Complete', 'UAT',
-       null, new Date(2015, 0, 10), daysToMilliseconds(1), 0, 'Cite,Write'],
+       null, new Date(2024, 04, 10), daysToMilliseconds(1), 0, 'Cite,Write'],
       ['Outline', 'Deployment',
-       null, new Date(2015, 0, 6), daysToMilliseconds(1), 100, 'Research']
+       null, new Date(2024, 05, 6), daysToMilliseconds(1), 100, 'Research']
     ]);
 
     var options = {
@@ -93,6 +102,8 @@
     chart.draw(data, options);
   }
 </script>
+
+
 @include('timeline.monitoring_timeline.modal.botTimeline')
 @include('timeline.monitoring_timeline.modal.add-timeline_header')
 @include('timeline.monitoring_timeline.modal.detail-timeline')

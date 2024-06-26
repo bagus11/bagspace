@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
 </head>
 <body>
     @include('timeline.kanban.navbar')
@@ -33,6 +35,9 @@
       <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+      <script src="https://cdn.dhtmlx.com/gantt/7.1.10/gantt.js"></script>
+      <link href="https://cdn.dhtmlx.com/gantt/7.1.10/gantt.css" rel="stylesheet">
       <!-- Core -->
     <!-- Argon JS -->
     <script src="{{asset('assets/js/argon.js?v=1.2.0')}}"></script>
@@ -118,7 +123,7 @@
             position: cover;
             background-image: url('https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100');
         }
-        background-size: cover;
+        background-size :cover;
         font-family: Poppins;
     }
     .bg-1{
@@ -161,6 +166,21 @@
     .kanban-cards{
       max-height: 500px !important;
       overflow-y: auto !important; 
+    }
+        /* Change milestone color */
+    .gantt_task .gantt_task_line.milestone {
+        background-color: #f39c12; /* Example color */
+        border-color: #e67e22; /* Example border color */
+    }
+
+    /* Scale down the milestone */
+    .gantt_task .gantt_task_line.milestone .gantt_task_progress {
+        transform: scale(0.3) !important; /* Scale down to 50% */
+        transform-origin: center;
+    }
+    .gantt_task_line.overdue {
+        background-color: #ff0000 !important; /* Red color */
+        border-color: #ff0000 !important; /* Red border */
     }
 </style>
 

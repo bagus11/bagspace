@@ -8,6 +8,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Models\Timeline\ChatTimelineModel;
 use App\Models\Timeline\DetailTeamTimeline;
 use App\Models\Timeline\TimelineDetail;
+use App\Models\Timeline\TimelineDetailLog;
 use App\Models\Timeline\TimelineHeader;
 use App\Models\Timeline\TimelineSubDetail;
 use App\Models\Timeline\TimelineSubDetailLog;
@@ -101,10 +102,12 @@ class KanbanController extends Controller
         $data       = TimelineSubDetail::with(['userRelation'])->where('detail_code', $request->detail_code)->orderBy('start_date','asc')->get();
         $detail     = TimelineDetail::with(['userRelation']) ->where('detail_code', $request->detail_code)->first();
         $chat       = ChatTimelineModel::with(['userRelation'])->where('detail_code',$request->detail_code)->get();
+        $log        = TimelineDetailLog::with(['userRelation'])->where('detail_code',$request->detail_code)->get();
         return response()->json([
             'data'=>$data,
             'chat'=>$chat,
             'detail'=>$detail,
+            'log'=>$log,
         ]); 
     }
     function getChat(Request $request) {
@@ -112,6 +115,10 @@ class KanbanController extends Controller
         return response()->json([
             'chat'=>$chat,
         ]); 
+    }
+    function getGanttChart(Request $request) {
+            $data = TimelineHeader::with(['detailRelation','detailRelation.subDetailRelation'])->where('request_code',$request->request_code)->get();
+            return response()->json($data);
     }
     function sendChat(Request $request) {
         try {    
@@ -183,16 +190,20 @@ class KanbanController extends Controller
                 'plan'                  => $header->type_id ==1 ?0: $request->plan_amount
             ];
             // dd($post);
-            $post_chat=[
-                'request_code'          => $request->request_code,
-                'attachment'            => '',
-                'detail_code'           => $ticket_code,
-                'remark'                => ' has created this module',
-                'user_id'               => auth()->user()->id,
-                'created_at'            => date('Y-m-d H:i:s')
+            $postLog = [
+                'request_code'  => $request->request_code,
+                'detail_code'   => $ticket_code,
+                'start_date'    => $request->start_date_module,
+                'end_date'      => $request->end_date_module,
+                'name'          => $request->name_module,
+                'plan'          => $header->type_id ==1 ?0: $request->plan_amount,
+                'description'   => $request->description_module,
+                'user_id'       => auth()->user()->id,
+                'remark'        =>'Has create this module',
             ];
             // dd($post);
              TimelineDetail::insert($post);
+             TimelineDetailLog::create($postLog);
             //  ChatTimelineModel::insert($post_chat);
              
             return ResponseFormatter::success(   
@@ -590,5 +601,41 @@ class KanbanController extends Controller
             $id,                              
             'Task successfully updated'
         );    
+    }
+    function updateModule(Request $request) {
+        try{
+                $detail = TimelineDetail::where('detail_code', $request->detail_code)->first();
+                $post = [
+                    'start_date'    => $request->start_date_module_edit,
+                    'end_date'      => $request->end_date_module_edit,
+                    'name'          => $request->name_module_edit,
+                    'plan'          => $request->plan_amount_edit,
+                    'description'   => $request->description_module_edit,
+                ];
+                $postLog = [
+                    'request_code'  => $detail->request_code,
+                    'detail_code'   => $detail->detail_code,
+                    'start_date'    => $request->start_date_module_edit,
+                    'end_date'      => $request->end_date_module_edit,
+                    'name'          => $request->name_module_edit,
+                    'plan'          => $request->plan_amount_edit,
+                    'description'   => $request->description_module_edit,
+                    'user_id'       => auth()->user()->id,
+                    'remark'        => $request->reason_module_edit,
+                ];
+
+                TimelineDetail::where('detail_code', $request->detail_code)->update($post);
+                TimelineDetailLog::create($postLog);
+                return ResponseFormatter::success(   
+                    $post,                              
+                    'Module successfully updated'
+                );            
+          } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Task failed to add',
+                500
+            );
+        }  
     }
 }

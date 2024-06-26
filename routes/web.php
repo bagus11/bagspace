@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth']], function() {
                     Route::get('getTimelineDetail', [KanbanController::class, 'getTimelineDetail'])->name('getTimelineDetail');
                     Route::get('getSubDetailKanban', [KanbanController::class, 'getSubDetailKanban'])->name('getSubDetailKanban');
                     Route::post('sendChat', [KanbanController::class, 'sendChat'])->name('sendChat');
+                    Route::get('getGanttChart', [KanbanController::class, 'getGanttChart'])->name('getGanttChart');
                     Route::get('getChat', [KanbanController::class, 'getChat'])->name('getChat');
                     Route::post('createModule', [KanbanController::class, 'createModule'])->name('createModule');
                     Route::post('addTask', [KanbanController::class, 'addTask'])->name('addTask');
@@ -148,6 +149,7 @@ Route::group(['middleware' => ['auth']], function() {
                     Route::get('getSubDetailTimeline', [KanbanController::class, 'getSubDetailTimeline'])->name('getSubDetailTimeline');
                     Route::post('updateStatusTask', [KanbanController::class, 'updateStatusTask'])->name('updateStatusTask');
                     Route::post('updateTimelineDetailStatus', [KanbanController::class, 'updateTimelineDetailStatus'])->name('updateTimelineDetailStatus');
+                    Route::post('updateModule', [KanbanController::class, 'updateModule'])->name('updateModule');
                 // Kanban
             // Monitoring Timeline
             // Master Type
