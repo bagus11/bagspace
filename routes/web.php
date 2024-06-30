@@ -147,9 +147,11 @@ Route::group(['middleware' => ['auth']], function() {
                     Route::get('getTeam', [KanbanController::class, 'getTeam'])->name('getTeam');
                     Route::get('postBot', [KanbanController::class, 'postBot'])->name('postBot');
                     Route::get('getSubDetailTimeline', [KanbanController::class, 'getSubDetailTimeline'])->name('getSubDetailTimeline');
+                    Route::get('getLogTask', [KanbanController::class, 'getLogTask'])->name('getLogTask');
                     Route::post('updateStatusTask', [KanbanController::class, 'updateStatusTask'])->name('updateStatusTask');
                     Route::post('updateTimelineDetailStatus', [KanbanController::class, 'updateTimelineDetailStatus'])->name('updateTimelineDetailStatus');
                     Route::post('updateModule', [KanbanController::class, 'updateModule'])->name('updateModule');
+                    Route::post('updateDaily', [KanbanController::class, 'updateDaily'])->name('updateDaily');
                 // Kanban
             // Monitoring Timeline
             // Master Type

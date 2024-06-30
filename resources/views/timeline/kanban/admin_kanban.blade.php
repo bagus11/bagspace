@@ -179,8 +179,8 @@
         transform-origin: center;
     }
     .gantt_task_line.overdue {
-        background-color: #ff0000 !important; /* Red color */
-        border-color: #ff0000 !important; /* Red border */
+        background-color: #C80036 !important; /* Red color */
+        border-color: #C80036 !important; /* Red border */
     }
 </style>
 
@@ -602,6 +602,33 @@
       color: #008DDA;
     }
     
+</style>
+<style>
+  .accordionSubDetail {
+  margin: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.5);
+}
+.accordionSubDetail-label {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+}
+.accordionSubDetail-content {
+  max-height: 0;
+  padding: 0 1em;
+  background: white;
+  transition: all 0.35s;
+}
+input:checked ~ .accordion-content {
+  max-height: 100vh;
+  padding: 1em;
+}
 </style>
 
 <style>

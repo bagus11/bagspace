@@ -34,7 +34,7 @@ class KanbanController extends Controller
         return view('timeline.kanban.kanban-index',$data);
     }
     function getTImelineDetail(Request $request) {
-        $data   = TimelineDetail ::with(['userRelation'])->where('request_code',$request->request_code)->get();
+        $data   = TimelineDetail ::with(['userRelation','subDetailRelation','subDetailRelation.userRelation','subDetailRelation.logRelation','subDetailRelation.logRelation.userRelation'])->where('request_code',$request->request_code)->get();
         $detail = TimelineHeader ::where('request_code', $request->request_code)->first();
       
         $array = [];
@@ -72,7 +72,6 @@ class KanbanController extends Controller
             $post = [
                 'data'=>$data,
                 'detail'=>$detail,
-              
                 'array'=>$array,  
             ];
         }
@@ -150,6 +149,44 @@ class KanbanController extends Controller
             return ResponseFormatter::error(
                 $th,
                 'Chat failed to add',
+                500
+            );
+        }
+    }
+    function updateDaily(Request $request) {
+        try {    
+            $attachmentPath = '';
+            $header = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
+            // Check if a file is uploaded
+            if ($request->hasFile('daily_attachment')) {
+                $file = $request->file('daily_attachment');
+                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+                $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+            }
+            $post =[
+                'subdetail_code'          => $request->subdetail_code,
+                'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
+                'name'                  => $header->name,
+                'start_date'            => $header->start_date,
+                'end_date'              => $header->end_date,
+                'amount'                => $header->amount,
+                'pic'                   => $header->pic,
+                'user_id'               => auth()->user()->id,
+                'remark'                => $request->daily_description,
+                'user_id'               => auth()->user()->id,
+                'created_at'            => date('Y-m-d H:i:s')
+            ];
+            TimelineSubDetailLog::create($post);
+           
+            return ResponseFormatter::success(   
+                $post,                              
+                'Activity successfully update progress, thanks :)'
+            );            
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Activity failed to add',
                 500
             );
         }
@@ -638,4 +675,13 @@ class KanbanController extends Controller
             );
         }  
     }
+    function getLogTask(Request $request) {
+        $detail = TimelineSubDetail::with(['userRelation'])->where('subdetail_code',$request->subdetail_code)->first();
+        $data   = TimelineSubDetailLog::with(['userRelation','creatorRelation'])->where('subdetail_code',$request->subdetail_code)->get();
+        return response()->json([
+            'detail'        =>$detail,
+            'data'       =>$data,
+        ]); 
+    }
+
 }
