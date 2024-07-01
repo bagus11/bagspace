@@ -55,6 +55,7 @@
                                                     <div class="progress progress-md">
                                                         <div class="progress-bar bg-${color}" style="width: ${response[i].percentage}%;height:20px !important">
                                                     </div>
+                                                
                                                 </div>
                                             </div>
                         </div>
@@ -82,19 +83,24 @@
                 var task =''
                 var pic = response.task_relation[i].pic 
                 if(authId == pic && response.task_relation[i].status ==0 ){
-                    task =`<li class="list-group-item mx-4">
+                    task =`<li class="list-group-item mx-4 p-0">
                                 <div class="row p-0">
-                                <div class="col-1 mt-2">
+                                <div class="col-1 mt-3">
                                     <input type="checkbox" id="check" name="check" class="is_checked" style="border-radius: 5px !important;" value="${response.task_relation[i]['id']}"  data-status="${response.task_relation[i]['status']}" data-id="${response.task_relation[i]['id']}" ${response.task_relation[i]['status'] == 1 ?'checked':'' } onchange="updateStatusTask('${response.task_relation[i].id}','${response.task_relation[i].status}','${select_project}')">
                                 </div>
-                                <div class="col-10">
+                                <div class="col-9">
                                     <label>${response.task_relation[i].detail_relation.name}</label>
                                     <p>${response.task_relation[i].name}</p>
                                     </div>
                                     <div class="col-1 mt-2">
-                                    <button class="btn btn-sm btn-info  rounded" onclick="showDetail('${response.task_relation[i].id}')" title="Detail Information">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
+                                        <button class="btn btn-sm btn-info  rounded" onclick="showDetail('${response.task_relation[i].id}')" title="Detail Information">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-1 mt-2">
+                                        <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#addDailyModal">
+                                            <i class="fa-solid fa-book"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </li>`

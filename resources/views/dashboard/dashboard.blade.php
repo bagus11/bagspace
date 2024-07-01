@@ -17,7 +17,16 @@
      <div class="card-header pb-0">
       <label style="font-size: 13px;font-weight:bold">Task List</label>
       <div class="card-tools">
-        <select name="select_project"  class="form-control" style="padding: 0px 12px !important;" id="select_project"></select>
+        <div class="row">
+          <div class="col-10">
+            <select name="select_project"  class="form-control select2" id="select_project"></select>
+          </div>
+          <div class="col-2 mt-1">
+            <button class=" btn btn-sm btn-default" style="float: right" title="Daily Activity">
+              <i class="fa-solid fa-book"></i>
+            </button>
+          </div>
+        </div>
       </div>
      </div>
        <div class="card-body p-0" style="height: 500px; overflow-y :auto;overflow-x: rever !important;">
