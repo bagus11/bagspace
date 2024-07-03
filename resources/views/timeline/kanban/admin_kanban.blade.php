@@ -713,5 +713,23 @@ input:checked ~ .accordion-content {
 .fade-out {
     opacity: 0;
 }
+            
+::-webkit-scrollbar {
+  width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+  background:#E68369; 
+  border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+  background:#EEEDEB
+  }
 </style>
   </html>

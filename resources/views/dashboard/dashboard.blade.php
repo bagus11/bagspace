@@ -9,6 +9,16 @@
     height: 1px;
     background: #eee;
   }
+  .checkbox-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.is_checked {
+    border-radius: 5px !important;
+}
+
 
 </style>
 <div class="row justify-content mx-2 mt-2">
@@ -94,6 +104,7 @@
 </div>
 @include('dashboard.modal.approver')
 @include('dashboard.modal.add-signature')
+@include('dashboard.modal.detail-timeline')
 @endsection
 @push('custom-js')
     @include('dashboard.dashboard-js')

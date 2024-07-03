@@ -180,7 +180,23 @@
               position: relative;
             }
                     
-            
+            ::-webkit-scrollbar {
+            width: 5px;
+            }
+
+            ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey; 
+            border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+            background:#FF8A08; 
+            border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+            background:#EEEDEB;
+            }
   </style>
 </head>
 

@@ -8,6 +8,7 @@
         });
         
     })
+
     $('#pincode-input1').pincodeInput({inputs:4});
     $('#select_project').on('change',function(){
         var select_project = $('#select_project').val()
@@ -82,22 +83,30 @@
             for(i =0; i < response.task_relation.length; i++){
                 var task =''
                 var pic = response.task_relation[i].pic 
+                var style =''
+                const d = new Date();
+                const date = d.toISOString().split('T')[0];
+                const time = d.toTimeString().split(' ')[0];
+                if(date > response.task_relation[i].end_date)
+                {
+                    style='style="color:#EE4E4E;"'
+                }
                 if(authId == pic && response.task_relation[i].status ==0 ){
-                    task =`<li class="list-group-item mx-4 p-0">
+                    task =`<li class="list-group-item mx-4 p-0" style="max-height:60px !important">
                                 <div class="row p-0">
-                                <div class="col-1 mt-3">
-                                    <input type="checkbox" id="check" name="check" class="is_checked" style="border-radius: 5px !important;" value="${response.task_relation[i]['id']}"  data-status="${response.task_relation[i]['status']}" data-id="${response.task_relation[i]['id']}" ${response.task_relation[i]['status'] == 1 ?'checked':'' } onchange="updateStatusTask('${response.task_relation[i].id}','${response.task_relation[i].status}','${select_project}')">
+                               <div class="p-0 col-1 checkbox-container">
+                                    <input type="checkbox" id="check" name="check" class="is_checked" value="${response.task_relation[i]['id']}" data-status="${response.task_relation[i]['status']}" data-id="${response.task_relation[i]['id']}" ${response.task_relation[i]['status'] == 1 ?'checked':'' } onchange="updateStatusTask('${response.task_relation[i].id}','${response.task_relation[i].status}','${select_project}')">
                                 </div>
-                                <div class="col-9">
-                                    <label>${response.task_relation[i].detail_relation.name}</label>
-                                    <p>${response.task_relation[i].name}</p>
+                                <div class="p-0 col-9 mt-2">
+                                    <label ${style}>${response.task_relation[i].detail_relation.name}</label>
+                                    <p ${style}>${response.task_relation[i].name}</p>
                                     </div>
-                                    <div class="col-1 mt-2">
-                                        <button class="btn btn-sm btn-info  rounded" onclick="showDetail('${response.task_relation[i].id}')" title="Detail Information">
+                                    <div class="p-0 col-1 mt-3">
+                                        <button class="btn btn-sm btn-info rounded" onclick="detail(${response.task_relation[i].id})" data-toggle="modal" data-target="#detailTimelineModal" title="Detail Information">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
                                     </div>
-                                    <div class="col-1 mt-2">
+                                    <div class="p-0 col-1 mt-3">
                                         <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#addDailyModal">
                                             <i class="fa-solid fa-book"></i>
                                         </button>
@@ -110,6 +119,77 @@
                 `;
             }
             $('#task_container').html(data_1)
+        }
+        function detail(id){
+            $('#log_task_table').DataTable().clear();
+            $('#log_task_table').DataTable().destroy();
+            $.ajax({
+                        headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "{{route('getSubDetailTimeline')}}",
+                        type: "get",
+                        dataType: 'json',
+                        async: true,
+                        data:{
+                            'id' :id
+                        },
+                        success: function(response) {
+                            $('#start_date_sub_task_label').val(response.detail.start_date)
+                            $('#end_date_task_label').val(response.detail.end_date)
+                            $('#name_task_label').html(': ' + response.detail.name)
+                            $('#select_pic_task').html(': ' + response.detail.user_relation.name)
+                            var attachment_label ='-'
+                            if(response.detail.attachment !==''){
+                                attachment_label =`<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.detail.attachment}')}}" target="_blank">
+                                    <i class="fa-solid fa-file-pdf"></i> Click Here
+                                    </a>`
+                            }
+                            $('#attachment_label').html(': ' + attachment_label)
+                            if(response.detail.amount > 0){
+                                $('#actual_amount_label').html(': ' + convertToRupiah(response.detail.amount))
+                            }else{
+                                $('#actual_amount_label').html(': - ')
+                            }
+                            $('#description_task_label').html(': ' + response.detail.description)
+                            
+                            var mapping_data =''
+                
+                                    
+                            for(i = 0; i < response.log_task.length; i++ )
+                                {
+                                    const d = new Date(response.log_task[i].created_at)
+                                    const date = d.toISOString().split('T')[0];
+                                    const time = d.toTimeString().split(' ')[0];
+    
+                                        mapping_data += `<tr style="text-align: center;">
+                                                            <td style="text-align:center;width:10%">${convertDate(date)} ${time}</td>
+                                                            <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
+                                                            <td style="text-align:left;width:10%">${response.log_task[i].name}</td>
+                                                            <td style="text-align:left;width:15%">${response.log_task[i].user_relation.name}</td>
+                                                            <td style="text-align:center;width:10%">${convertDate(response.log_task[i].start_date)}</td>
+                                                            <td style="text-align:center;width:10%">${convertDate(response.log_task[i].end_date)}</td>
+                                                            <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
+                                                            <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
+                                                        </tr>
+                                                `;
+                                }
+                            $('#log_task_table > tbody:first').html(mapping_data);
+                            $('#log_task_table').DataTable({
+                                // scrollX  : true,
+                                language: {
+                                                    'paginate': {
+                                                            'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                                            'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                                    }
+                                                },
+                            }).columns.adjust()
+                        },
+                        error: function(xhr, status, error) {
+                            swal.close();
+                            toastr['warning']('Failed to get data, please contact ICT Developer');
+                        }
+                    });
         }
 
         function updateStatusTask(id, status,detail_code){
