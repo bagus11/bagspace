@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use NumConvert;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use \Mpdf\Mpdf as PDF;
 
 class KanbanController extends Controller
 {
@@ -721,5 +722,65 @@ class KanbanController extends Controller
                 500
             );
         }
+    }
+    function print_daily($id) {
+        $log = TimelineSubDetailLog::with([
+                                    'creatorRelation'
+                                    ])->where('start_date',date('Y-m-d'))
+                                    ->where('pic',auth()->user()->id)
+                                    ->get();
+        $name               = auth()->user()->name;
+        $data               =[
+            'log'=>$log,
+            'name'=>$name,
+        ];
+        $cetak              = view('report.report_daily',$data);
+        $imageLogo          = '<img src="'.public_path('icon.png').'" width="70px" style="float: right;"/>';
+        $header             = '';
+        $header             .= '<table width="100%">
+                                    <tr>
+                                    <td style="padding-left:10px;">
+                                    <span style="font-size: 6px; font-weight: bold;margin-top:-10px"> '.$imageLogo.'</span>
+                                    <br>
+                                    <span style="font-size:8px;">Synergy Building #08-08</span> 
+                                    <br>
+                                    <span style="font-size:8px;">Jl. Jalur Sutera Barat 17 Alam Sutera, Serpong Tangerang 15143 - Indonesia</span>
+                                    <br>
+                                    <span style="font-size:8px;">Tangerang 15143 - Indonesia +62 21 304 38808</span>
+                                </td>
+                                    </tr>
+                                    
+                                </table>
+                               ';
+        
+        $footer             = '<hr>
+                                <table width="100%" style="font-size: 10px;">
+                                    <tr>
+                                        <td width="90%" align="left"><b>Disclaimer</b><br>this document is strictly private, confidential and personal to recipients and should not be copied, distributed or reproduced in whole or in part, not passed to any third party.</td>
+                                        <td width="10%" style="text-align: right;"> {PAGENO}</td>
+                                    </tr>
+                                </table>';
+
+        
+            $mpdf           = new PDF();
+            $mpdf->SetHTMLHeader($header);
+            $mpdf->SetHTMLFooter($footer);
+            $mpdf->AddPage(
+                'P', // L - landscape, P - portrait 
+                '',
+                '',
+                '',
+                '',
+                5, // margin_left
+                5, // margin right
+                25, // margin top
+                20, // margin bottom
+                5, // margin header
+                5
+            ); // margin footer
+            $mpdf->WriteHTML($cetak);
+            // Output a PDF file directly to the browser
+            ob_clean();
+            $mpdf->Output('Report Daily'.'('.date('Y-m-d').').png', 'I');
     }
 }
