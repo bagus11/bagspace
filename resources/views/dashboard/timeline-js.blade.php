@@ -39,6 +39,16 @@
             $('#addDailyModal').modal('hide')
             $('.message_error').html('')
             toastr['success'](response.meta.message);
+            getCallbackNoSwal('getTimelineHeaderUser',null,function(response){
+                mappingTableTimeline(response.data)
+                mappingTask(response.data[0])
+                mappingDaily(response.daily)
+                $('#select_project').empty()
+                $.each(response.data,function(i,data){
+                    $('#select_project').append('<option style="margin-top:-5px; font-size:12px !Important" data-name="'+ data.name +'" value="'+data.request_code+'">' + data.name +'</option>');
+                });
+                
+            })
         })
     })
     // Function
