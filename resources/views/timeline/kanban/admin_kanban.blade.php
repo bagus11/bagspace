@@ -112,6 +112,12 @@
     @stack('custom-js')
   </body>
   <style>
+    html{
+      font-family: Poppins !important;
+        line-height: 1.15;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
     body{
         /* background-color: #35374B !important; */
         /* background-color: #61677A !important; */
