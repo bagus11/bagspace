@@ -163,6 +163,7 @@ Route::group(['middleware' => ['auth']], function() {
                     Route::post('updateTimelineDetailStatus', [KanbanController::class, 'updateTimelineDetailStatus'])->name('updateTimelineDetailStatus');
                     Route::post('updateModule', [KanbanController::class, 'updateModule'])->name('updateModule');
                     Route::post('updateDaily', [KanbanController::class, 'updateDaily'])->name('updateDaily');
+                    Route::post('addDaily', [KanbanController::class, 'addDaily'])->name('addDaily');
                 // Kanban
             // Monitoring Timeline
             // Master Type

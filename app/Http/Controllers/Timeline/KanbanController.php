@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Timeline;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddDailyRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Timeline\ChatTimelineModel;
 use App\Models\Timeline\DetailTeamTimeline;
@@ -683,5 +684,42 @@ class KanbanController extends Controller
             'data'       =>$data,
         ]); 
     }
-
+    function addDaily(Request $request, AddDailyRequest $addDailyRequest) {
+        try {    
+            $addDailyRequest->validated();
+            $attachmentPath = '';
+            // Check if a file is uploaded
+            if ($request->hasFile('daily_attachment')) {
+                $file = $request->file('daily_attachment');
+                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+                $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+            }
+            $post =[
+                'subdetail_code'          => '-',
+                'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
+                'name'                  => $request->daily_name,
+                'start_date'            => date('Y-m-d'),
+                'end_date'              => date('Y-m-d'),
+                'amount'                => 0,
+                'pic'                   => auth()->user()->id,
+                'user_id'               => auth()->user()->id,
+                'remark'                => $request->daily_description,
+                'description'                => $request->daily_description,
+                'created_at'            => date('Y-m-d H:i:s')
+            ];
+            TimelineSubDetailLog::create($post);
+           
+            return ResponseFormatter::success(   
+                $post,                              
+                'Activity successfully update progress, thanks :)'
+            );            
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Activity failed to add',
+                500
+            );
+        }
+    }
 }

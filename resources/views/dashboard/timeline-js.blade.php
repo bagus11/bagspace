@@ -2,13 +2,13 @@
     getCallbackNoSwal('getTimelineHeaderUser',null,function(response){
         mappingTableTimeline(response.data)
         mappingTask(response.data[0])
+        mappingDaily(response.daily)
         $('#select_project').empty()
         $.each(response.data,function(i,data){
             $('#select_project').append('<option style="margin-top:-5px; font-size:12px !Important" data-name="'+ data.name +'" value="'+data.request_code+'">' + data.name +'</option>');
         });
         
     })
-
     $('#pincode-input1').pincodeInput({inputs:4});
     $('#select_project').on('change',function(){
         var select_project = $('#select_project').val()
@@ -24,6 +24,22 @@
             toastr['info']('Please set your digital signature and set PIN code for validation, thank you ');
             $('#addSignModal').modal('show')
         }
+    })
+    onChange('select_status','daily_status')
+    $('#btn_save_daily').on('click', function(e){
+        e.preventDefault();
+        var data = new FormData();
+        data.append('daily_name',$('#daily_name').val())
+        data.append('daily_description',$('#daily_description').val())
+        data.append('daily_status',$('#daily_status').val())
+        data.append('daily_attachment',$('#daily_attachment')[0].files[0]);
+
+        postAttachment('addDaily',data,false,function(response){
+            swal.close()
+            $('#addDailyModal').modal('hide')
+            $('.message_error').html('')
+            toastr['success'](response.meta.message);
+        })
     })
     // Function
         function mappingTableTimeline(response){
@@ -276,6 +292,28 @@
                     }
                 });
         }
-
+        function mappingDaily(response){
+            $('#daily_container').empty()
+            var task =''
+            for(i =0; i < response.length; i++){
+                    task +=`<li class="list-group-item mx-4 p-0" style="max-height:60px !important">
+                                <div class="row p-0">
+                                <div class="p-0 col-10 mt-2">
+                                    <label>${response[i].name}</label>
+                                    <p>${response[i].remark}</p>
+                                    </div>
+                                    <div class="p-0 col-2 mt-3">
+                                      <button class="btn btn-sm btn-danger" title ="export PDF">
+                                        <i class="fa-solid fa-file"></i>
+                                      </button>
+                                      <button class="btn btn-sm btn-info" title ="Detail">
+                                        <i class="fa-solid fa-eye"></i>
+                                      </button>
+                                    </div>
+                                </div>
+                            </li>`
+            }
+            $('#daily_container').html(task)
+        }
     // Function
 </script>
