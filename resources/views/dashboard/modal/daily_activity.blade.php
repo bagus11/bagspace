@@ -44,7 +44,8 @@
                             <option value="1">On Progress</option>
                             <option value="2">DONE</option>
                         </select>
-                        <input type="text" class="form-control" id="daily_status">  
+                        <input type="hidden" class="form-control" id="daily_status">  
+                        <span  style="color:red;" class="message_error text-red block daily_status_error"></span>
                     </div>
                 </div>
                 </div>
