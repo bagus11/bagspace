@@ -781,6 +781,6 @@ class KanbanController extends Controller
             $mpdf->WriteHTML($cetak);
             // Output a PDF file directly to the browser
             ob_clean();
-            $mpdf->Output('Report Daily'.'('.date('Y-m-d').').png', 'I');
+            $mpdf->Output('Report Daily'.'('.date('Y-m-d').').pdf', 'I');
     }
 }
