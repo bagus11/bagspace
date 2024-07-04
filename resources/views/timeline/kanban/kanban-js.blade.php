@@ -1224,7 +1224,7 @@
                             var btn_update =''
                             var log_activity =''
                             if(task.status == 0){
-                                if(auth_id == leader_id){
+                                if(auth_id == task.pic){
                                     btn_update =`
                                     <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
                                                 <i class="fas fa-edit"></i>
@@ -1263,7 +1263,7 @@
                                 <td style="width:15%;text-align:left">
                                     ${formattedDateTime}
                                 </td>
-                                <td style="width:15%;text-align:center">
+                                <td style="width:20%;text-align:center">
                                     <button title="Detail" class="detail btn btn-sm btn-info" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#detailTaskModal" >
                                                     <i class="fas fa-solid fa-eye"></i>
                                     </button>   
@@ -1501,7 +1501,7 @@
                                     var btn_update =''
                                     var log_activity =''
                                     if(task.status == 0){
-                                        if(auth_id == leader_id){
+                                        if(auth_id == task.pic){
                                             btn_update =`
                                                 <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
                                                         <i class="fas fa-edit"></i>
@@ -1540,7 +1540,7 @@
                                         <td style="width:15%;text-align:left">
                                             ${formattedDateTime}
                                         </td>
-                                        <td style="width:15%;text-align:center">
+                                        <td style="width:20%;text-align:center">
                                             <button title="Detail" class="detail btn btn-sm btn-info" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#detailTaskModal" >
                                                             <i class="fas fa-solid fa-eye"></i>
                                             </button>   

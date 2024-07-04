@@ -26,6 +26,24 @@
       font-size: 9px !important;
       color: red !important;
     }
+    .nav-tabs .nav-link {
+            font-size: 12px; 
+            color: #45474B;
+            font-weight: normal !important;
+            height: 30px;
+            background: #FCF8F3;
+             border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+        }
+        .nav-tabs .nav-link.active {
+             color: white;
+            border-color: transparent;
+            background-color: #4793AF;
+        }
+        .nav-tabs .nav-link :hover{
+          color: #F6995C !important;
+          background-color: #4793AF;
+        }
     .card-footer{
       border-bottom-right-radius: 15px;
       border-bottom-left-radius: 15px;

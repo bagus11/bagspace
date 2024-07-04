@@ -25,14 +25,13 @@
   <div class="col-md-8">
     <div class="card ">
       <div class="card-header"> 
-          <ul class="nav nav-tabs card-header-tabs pull-right"  id="myTab" role="tablist">
-              <li class="nav-item">
+          <ul class="nav nav-tabs card-header-tabs pull-right"  id="myTab" role="tablist" >
+              <li class="nav-item" style="border-top-left-radius: 15px !important">
                   <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" style="font-size: 12px; font-family:Poppins !important" aria-controls="home" aria-selected="true">Project</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" style="border-top-right-radius: 15px !important">
                   <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" style="font-size: 12px; font-family:Poppins !important" aria-controls="profile" aria-selected="false">Daily Activity</a>
               </li>
-            
           </ul>
       </div>
     
@@ -40,7 +39,11 @@
           <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div class="mb-0">
-                  <select name="select_project"  class="form-control select2" style="float: right" id="select_project"></select>
+                  <div class="row">
+                    <div class="col-12">
+                      <select name="select_project"  class="form-control select2" style="float: right" id="select_project"></select>
+                    </div>
+                  </div>
                 </div>
                 <ul class="list-group list-group-flush list p-0" id="task_container">
                 
