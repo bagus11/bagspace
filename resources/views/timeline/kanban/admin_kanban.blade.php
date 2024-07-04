@@ -115,8 +115,8 @@
     body{
         /* background-color: #35374B !important; */
         /* background-color: #61677A !important; */
-        background-image:url('{{ asset('bg-kanban-1.png')}}');
-        /* background-image:url('{{ asset('men.jpg')}}'); */
+        /* background-image:url('{{ asset('bg-kanban-1.png')}}'); */
+        background-image:url('{{ asset('login.png')}}');
         &::after {
             content: '';
             opacity: 3.8;
@@ -144,19 +144,24 @@
     }
     .b-head{
         font-size: 12px !important;
-        color: white;
+        color: #4793AF;
 
     }
     .radius{
         border-radius: 50%;
-        background-color: #35374B;
+        background-color: white;
     }
     .card-parent{
         border-radius: 20px  !important;
     }
     .card-child{
         border-radius: 10px  !important;
-        background: #31363F;
+        background: white;
+        color: #4793AF;
+    }
+    .card-child:hover{
+        border-radius: 10px  !important;
+        background: #4793AF;
         color: white;
     }
     .card-parent-footer{
@@ -246,8 +251,8 @@
         font-size:9px;
     }
     p{
-    font-size: 12px !important;
-    color: #cacaca !important;
+    font-size: 11px !important;
+    /* color: #cacaca !important; */
     }
     .open\:bg-green-200[open] {
     --tw-bg-opacity: 1;
@@ -305,95 +310,36 @@
     tr.shown td.subdetails-click {
         background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
     }
-    .rating {
-    position: relative;
-    width: 180px;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: .3em;
-    padding: 5px;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: 0 0 2px #b3acac;
-    }
-
-    .rating__result {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateY(-10px) translateX(-5px);
-    z-index: -9;
-    font: 3em Arial, Helvetica, sans-serif;
-    color: #ebebeb8e;
-    pointer-events: none;
-    }
-
-    .rating__star {
-    font-size: 1.3em;
-    cursor: pointer;
-    color: #dabd18b2;
-    transition: filter linear .3s;
-    }
-
-    .rating__star:hover {
-    filter: drop-shadow(1px 1px 4px gold);
-    }
     .datatable-stepper{
-    /* font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    font-size: 12px;
-    overflow-x:auto !important; */
-    width: 100% !important;
-    font-family: Poppins;
-    border-collapse: collapse;
-    border-spacing: 0;
-    font-size: 9px;
-    width: 100% !important;
-    border: 1px solid #ddd;
-    
-    }
-    .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
-
-    .datatable-stepper tr:hover {background-color: #ddd;}
-
-    .datatable-stepper th {
-    border: 1px solid #ddd;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    text-align: center;
-    
-    color: black;
-    overflow-x:auto !important;
-    }
-    .datatable-stepper td, .datatable-stepper th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        
+        font-family: Poppins;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 9px;
+        width: 100% !important;
+        /* border: 1px solid #ddd; */
         }
+        .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
+
+        .datatable-stepper tr:hover {background-color: #ddd;}
+
+        .datatable-stepper th {
+        /* border: 1px solid #ddd; */
+        text-align: center;
+        color: white;
+        /* color: black; */
+        overflow-x:auto !important;
+        background-color: #F6995C !important;
+        padding: 10px;
+          font-weight: bold;
+        } 
+        .datatable-stepper td {
+              /* border: 1px solid #ddd; */
+              padding: 5px;
+          }
     .headerTitle{
         font-size: 14px;
 
     }
-        fieldset.scheduler-border {
-            border: 1px groove #ddd !important;
-            padding: 0 1.5em 1.5em 1.5em !important;
-            margin: 0 0 1.5em 0 !important;
-            -webkit-box-shadow:  0px 0px 0px 0px #000;
-                    box-shadow:  0px 0px 0px 0px #000;
-        }
-
-        legend.scheduler-border {
-        font-size: 12px !important;
-        font-weight: bold !important;
-        text-align: left !important;
-    }
-        .legend1
-        {
-        margin-bottom:0px;
-        margin-left:16px;
-        }
         .btnAction  {
         appearance: none;
         backface-visibility: hidden;
@@ -491,25 +437,7 @@
             -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
             filter: alpha(opacity=20);
         }
-        .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
 
-        .datatable-stepper tr:hover {background-color: #ddd;}
-
-        .datatable-stepper th {
-        /* border: 1px solid #ddd; */
-        text-align: center;
-        color: white;
-        /* color: black; */
-        overflow-x:auto !important;
-        background-color: #F6995C !important;
-        padding: 10px;
-        font-weight: bold;
-        } 
-  .datatable-stepper td {
-      /* border: 1px solid #ddd; */
-      background-color:#EEEEEE;
-      padding: 5px;
-  }
   .form-control{
     height: 30px;
     font-size: 9px !important;
@@ -566,26 +494,7 @@
     font-family: Poppins !important;
     font-weight: bold !important
   }
-  legend {
-    /* background-color: #76ABAE; */
-    color: #fff;
-    /* color:black; */
-    margin-top:-20px;
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 10%;
-    max-width : 40%;
-    padding-right: 20px !important;
-    font-size: 12px !important;
-    }
-    .legend1 {
-        border: 1px solid #35374B; /* Adding border */
-        padding: 10px; /* Adding padding for spacing */
-        margin: 20px; /* Adding margin for spacing */
-    }
-    .legend1 legend {
-        display: inline; /* Making the legend display inline */
-    }
+ 
 
   .dataTables_wrapper .dataTables_paginate .paginate_button
     {
@@ -685,8 +594,8 @@ input:checked ~ .accordion-content {
 }
 
 .percentage {
-  /* fill: #666; */
-  fill: white;
+  fill: #666;
+  /* fill: white; */
 
   font-family: sans-serif;
   font-size: 0.5em;
@@ -716,20 +625,44 @@ input:checked ~ .accordion-content {
             
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
   }
 
   ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
+  /* box-shadow: inset 0 0 5px grey;  */
   border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
+  /* background:#E68369;  */
   background:#E68369; 
+  padding-bottom: 10px;
   border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
   background:#EEEDEB
   }
+  fieldset {
+    font-family: Poppins;
+    border: 1px solid #B9B4C7;
+    /* border-radius: 15px; */
+    padding-right: 5px;
+    padding-left: 5px;
+  
+}
+
+fieldset legend {
+    color: black;
+    background: white;
+    font-size: 12px;
+    /* border-radius: 5px; */
+    margin-top: -10px !important;
+    margin-left: 20px;
+    max-width: 130px !important;
+}
+.legend1{
+  margin-bottom : 10px;
+}
 </style>
   </html>

@@ -36,7 +36,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     // Setting
         // Role Permission  
-            Route::get('role_permission', [RolePermissionController::class, 'index'])->name('role_permission');
+        
+            Route::group(['middleware' => ['permission:view-role_permission']], function () {
+                Route::get('role_permission', [RolePermissionController::class, 'index'])->name('role_permission');
+            });
+          
             Route::get('getRole', [RolePermissionController::class, 'getRole'])->name('getRole');
             Route::get('getPermission', [RolePermissionController::class, 'getPermission'])->name('getPermission');
             Route::get('deleteRole', [RolePermissionController::class, 'deleteRole'])->name('deleteRole');
@@ -49,7 +53,10 @@ Route::group(['middleware' => ['auth']], function() {
         // Role Permission
 
         // User Access
-            Route::get('user_access', [UserAccessController::class, 'index'])->name('user_access');
+            Route::group(['middleware' => ['permission:view-user_access']], function () {
+                Route::get('user_access', [UserAccessController::class, 'index'])->name('user_access');
+            });
+           
             Route::get('getRoleUser', [UserAccessController::class, 'getRoleUser'])->name('getRoleUser');
             Route::get('getUser', [UserAccessController::class, 'getUser'])->name('getUser');
             Route::get('getUserDepartment', [UserAccessController::class, 'getUserDepartment'])->name('getUserDepartment');
@@ -63,22 +70,13 @@ Route::group(['middleware' => ['auth']], function() {
         // User Access
     // Setting
             
-        // Chat
-        // Setting Chat
-            Route::get('setting_chat_menus', [SettingChatController::class, 'index'])->name('setting_chat_menus');
-            Route::get('getGroup', [SettingChatController::class, 'getGroup'])->name('getGroup');
-            Route::get('detailGroup', [SettingChatController::class, 'detailGroup'])->name('detailGroup');
-            Route::post('addGroup', [SettingChatController::class, 'addGroup'])->name('addGroup');
-            Route::post('updateDetailGroup', [SettingChatController::class, 'updateDetailGroup'])->name('updateDetailGroup');
-            Route::get('getDetailGroup', [SettingChatController::class, 'getDetailGroup'])->name('getDetailGroup');
-            Route::post('updateGroup', [SettingChatController::class, 'updateGroup'])->name('updateGroup');
-        // Setting Chat
-       
-    // Chat
 
     // Booking Room
         // Master Room
-            Route::get('master_room', [MasterRoomController::class, 'index'])->name('master_room');
+            Route::group(['middleware' => ['permission:view-master_room']], function () {
+                Route::get('master_room', [MasterRoomController::class, 'index'])->name('master_room');
+            });
+          
             Route::get('getRoom', [MasterRoomController::class, 'getRoom'])->name('getRoom');
             Route::get('getLocation', [MasterRoomController::class, 'getLocation'])->name('getLocation');
             Route::post('addRoom', [MasterRoomController::class, 'addRoom'])->name('addRoom');
@@ -87,7 +85,10 @@ Route::group(['middleware' => ['auth']], function() {
         // Master Room
 
         // Booking Room 
-            Route::get('booking_room', [BookingController::class, 'index'])->name('booking_room');
+            Route::group(['middleware' => ['permission:view-booking_room']], function () {
+                Route::get('booking_room', [BookingController::class, 'index'])->name('booking_room');
+            });
+          
             Route::get('getTicket', [BookingController::class, 'getTicket'])->name('getTicket');
             Route::get('detailTicket', [BookingController::class, 'detailTicket'])->name('detailTicket');
             Route::get('getActiveRoom', [BookingController::class, 'getActiveRoom'])->name('getActiveRoom');
@@ -97,7 +98,10 @@ Route::group(['middleware' => ['auth']], function() {
         // Booking Room
             
         // Approval
-            Route::get('approval', [MasterApprovalController::class, 'index'])->name('approval');
+            Route::group(['middleware' => ['permission:view-approval']], function () {
+                Route::get('approval', [MasterApprovalController::class, 'index'])->name('approval');
+            });
+           
             Route::get('getApproval', [MasterApprovalController::class, 'getApproval'])->name('getApproval');
             Route::post('addMasterApproval', [MasterApprovalController::class, 'addMasterApproval'])->name('addMasterApproval');
             Route::get('getStepApproval', [MasterApprovalController::class, 'getStepApproval'])->name('getStepApproval');
@@ -114,7 +118,10 @@ Route::group(['middleware' => ['auth']], function() {
         // Meeting Online
         // Timeline Project
             // Master Team Timeline
-                Route::get('master_team_timeline', [MasterTeamTimelineController::class, 'index'])->name('master_team_timeline');
+                    Route::group(['middleware' => ['permission:view-master_team_timeline']], function () {
+                        Route::get('master_team_timeline', [MasterTeamTimelineController::class, 'index'])->name('master_team_timeline');
+                    });
+              
                 Route::get('getTeamTimeline', [MasterTeamTimelineController::class, 'getTeamTimeline'])->name('getTeamTimeline');
                 Route::post('updateStatusMasterTeamTimeline', [MasterTeamTimelineController::class, 'updateStatusMasterTeamTimeline'])->name('updateStatusMasterTeamTimeline');
                 Route::get('getDetailTeam', [MasterTeamTimelineController::class, 'getDetailTeam'])->name('getDetailTeam');
@@ -126,7 +133,10 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::post('updateMasterTeam', [MasterTeamTimelineController::class, 'updateMasterTeam'])->name('updateMasterTeam');
             // Master Team Timeline 
             // Monitoring Timeline
-                Route::get('monitoring_timeline', [MonitoringTimelineController::class, 'index'])->name('monitoring_timeline');
+                Route::group(['middleware' => ['permission:view-monitoring_timeline']], function () {
+                    Route::get('monitoring_timeline', [MonitoringTimelineController::class, 'index'])->name('monitoring_timeline');
+                });
+              
                 Route::get('getTimelineHeader', [MonitoringTimelineController::class, 'getTimelineHeader'])->name('getTimelineHeader');
                 Route::get('getTimelineHeaderUser', [MonitoringTimelineController::class, 'getTimelineHeaderUser'])->name('getTimelineHeaderUser');
                 Route::post('saveTimelineHeader', [MonitoringTimelineController::class, 'saveTimelineHeader'])->name('saveTimelineHeader');
@@ -135,6 +145,7 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::post('summonBot', [MonitoringTimelineController::class, 'summonBot'])->name('summonBot');
                 Route::get('getTimelineHeaderDetail', [MonitoringTimelineController::class, 'getTimelineHeaderDetail'])->name('getTimelineHeaderDetail');
                 // Kanban
+                
                     Route::get('project/{id}',[KanbanController::class, 'index']);
                     Route::get('getTimelineDetail', [KanbanController::class, 'getTimelineDetail'])->name('getTimelineDetail');
                     Route::get('getSubDetailKanban', [KanbanController::class, 'getSubDetailKanban'])->name('getSubDetailKanban');
@@ -155,7 +166,10 @@ Route::group(['middleware' => ['auth']], function() {
                 // Kanban
             // Monitoring Timeline
             // Master Type
-                Route::get('master_type_timeline', [MasterTypeController::class, 'index'])->name('master_type_timeline');
+                Route::group(['middleware' => ['permission:view-master_type_timeline']], function () {
+                    Route::get('master_type_timeline', [MasterTypeController::class, 'index'])->name('master_type_timeline');
+                });
+              
                 Route::get('getTimelineType', [MasterTypeController::class, 'getTimelineType'])->name('getTimelineType');
                 Route::get('getActiveTimelineType', [MasterTypeController::class, 'getActiveTimelineType'])->name('getActiveTimelineType');
                 Route::post('saveTimelineType', [MasterTypeController::class, 'saveTimelineType'])->name('saveTimelineType');
@@ -163,8 +177,10 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::post('updateStatusType', [MasterTypeController::class, 'updateStatusType'])->name('updateStatusType');
             // Master Type
             // Master Category
-            
-                Route::get('master_category_timeline', [MasterTimelineCategory::class, 'index'])->name('master_category_timeline');
+                Route::group(['middleware' => ['permission:view-master_category_timeline']], function () {
+                    Route::get('master_category_timeline', [MasterTimelineCategory::class, 'index'])->name('master_category_timeline');
+                });
+               
                 Route::get('getTimelineCategory', [MasterTimelineCategory::class, 'getTimelineCategory'])->name('getTimelineCategory');
                 Route::post('saveTimelineCategory', [MasterTimelineCategory::class, 'saveTimelineCategory'])->name('saveTimelineCategory');
                 Route::post('updateStatusCategory', [MasterTimelineCategory::class, 'updateStatusCategory'])->name('updateStatusCategory');

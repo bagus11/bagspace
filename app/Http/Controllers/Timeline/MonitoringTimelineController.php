@@ -20,7 +20,25 @@ class MonitoringTimelineController extends Controller
         return view('timeline.monitoring_timeline.monitoring_timeline-index');
     }
     function getTimelineHeader(){
-        $data = TimelineHeader::with(['officeRelation','teamRelation','typeRelation'])->get();
+        if(auth()->user()->hasPermissionTo('get-only_admin-monitoring_timeline'))
+        {
+            $data = TimelineHeader::with(['officeRelation','teamRelation','typeRelation'])->get();
+        }else{
+            $data = TimelineHeader::with([
+                'officeRelation',
+                'teamRelation',
+                'typeRelation',
+                'teamRelation.detailRelation.UserRelation',
+                'taskRelation',
+                'taskRelation.detailRelation',
+                'detailRelation',
+                ])->
+            whereHas('teamRelation.detailRelation.UserRelation', function($q){
+                $q->where('id',auth()->user()->id);
+            })->get();
+        }
+       
+        
         return response()->json([
             'data'=>$data,
         ]);

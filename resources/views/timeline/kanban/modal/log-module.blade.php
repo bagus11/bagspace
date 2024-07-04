@@ -1,8 +1,8 @@
 <div class="modal fade" id="logModuleModal">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content" style="background-color: #222831">
-            <div class="modal-header bg-mainCore">
-                <b style="font-size: 12px; color: white;">Log Module</b>
+        <div class="modal-content">
+            <div class="modal-header">
+                <b style="font-size: 12px;">Log Module</b>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

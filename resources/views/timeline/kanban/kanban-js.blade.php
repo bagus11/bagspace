@@ -433,7 +433,7 @@
                                                         <td style="text-align:left;width:10%">${response.log_task[i].name}</td>
                                                         <td style="text-align:left;width:15%">${response.log_task[i].user_relation.name}</td>
                                                         <td style="text-align:center;width:10%">${convertDate(response.log_task[i].start_date)}</td>
-                                                        <td style="text-align:center;width:15%">${convertDate(response.log_task[i].end_date)}</td>
+                                                        <td style="text-align:center;width:10%">${convertDate(response.log_task[i].end_date)}</td>
                                                         <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
                                                         <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
                                                     </tr>
@@ -769,16 +769,16 @@
                       
                         if(header_type == 1){
                                         card =`
-                                            <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                            <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
                                                 <div class="card-body detail_kanban p-2">
-                                                    <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                                    <p class="mb-0 hover" style="font-weight:bold;font-size:12px;color:black">${response.data[i].name}</p>
                                                     <div class="text-right p-0">
-                                                    <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                                    <small class="text-muted mb-1 d-inline-block hover" style="font-size:9px;font-weight:bold;color:black !important">${response.data[i].percentage}%</small>
                                                     </div>
                                                     <div class="progress" style="height: 5px;">
                                                     <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                                     </div>
-                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                     <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
                                                     </div>
                                                 </div>
@@ -786,13 +786,13 @@
                                             `
                         }else{         
                             var card = `
-                                <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
+                                <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
                                     <div class="card-body detail_kanban p-2">
                                         <div class="row mb-4">
                                             <div class="col-12">
-                                                <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                                <p class="mb-0 hover" style="font-weight:bold;font-size:12px; !important">${response.data[i].name}</p>
                                                 <div class="text-right p-0">
-                                                    <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                                                    <p class="mb-1 d-inline-block hover" style="font-size:9px !important;font-weight:bold;">${response.data[i].percentage}%</p>
                                                 </div>
                                                 <div class="progress" style="height: 5px;">
                                                     <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
@@ -803,7 +803,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                 <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
                                             </div>
                                         </div>
@@ -816,20 +816,20 @@
                             for(j =0 ; j < response.data[i].sub_detail_relation.length; j++ ){
                                
                                     taskLabel +=`
-                                                    <li class="list-group-item  bg-dark" style="color:white;font-size:10px;font-family:Poppins" onclick="changeLabel('${response.data[i].sub_detail_relation[j].subdetail_code}')"> ${response.data[i].sub_detail_relation[j].name}</li>
+                                                    <li class="list-group-item" style="font-size:10px;font-family:Poppins" onclick="changeLabel('${response.data[i].sub_detail_relation[j].subdetail_code}')"> ${response.data[i].sub_detail_relation[j].name}</li>
                                               
                                                     
                                     `
                             }
                           var plan = response.data[i].plan > 0 ? formatRupiah(response.data[i].plan) : '-'
                         module_container +=`
-                            <div class="card bg-dark mx-2 mb-1" style="box-shadow:none !important;border-radius:30px !important;${cssModule};">
-                                <div class="card-header  bg-dark collapsed p-0 mb-0 mt-2" id="heading${i}" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}" style="border-radius:30px !important">
+                            <div class="card  mx-2 mb-1" style="box-shadow:none !important;border-radius:30px !important;${cssModule};">
+                                <div class="card-header   collapsed p-0 mb-0 mt-2" id="heading${i}" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}" style="border-radius:30px !important">
                                     <b class="p-0 ml-3 mb-0" style="font-size:12px">${response.data[i].name}</b>
                                 </div>
                                 <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
                                     <div class="card-body p-0">
-                                            <fieldset class="legend1">
+                                            <fieldset class="legend1 mt-4">
                                                 <legend>General Information</legend>
                                                 <div class="row">
                                                     <div class="col-12">
@@ -850,7 +850,7 @@
                                             </fieldset>
                                               <fieldset class="legend1">
                                                 <legend>Task List</legend>
-                                                <ul class="list-group bg-dark">
+                                                <ul class="list-group ">
                                                     ${taskLabel}
                                                 </ul>
                                                 </fieldset>
@@ -1008,29 +1008,29 @@
 
                                     
                         var card = `
-                            <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                                <div class="card-body detail_kanban p-2">
-                                    <div class="row mb-4">
-                                        <div class="col-12">
-                                            <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
-                                            <div class="text-right p-0">
-                                                <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
+                          <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
+                                    <div class="card-body detail_kanban p-2">
+                                        <div class="row mb-4">
+                                            <div class="col-12">
+                                                <p class="mb-0 hover" style="font-weight:bold;font-size:12px; !important">${response.data[i].name}</p>
+                                                <div class="text-right p-0">
+                                                    <p class="mb-1 d-inline-block hover" style="font-size:9px !important;font-weight:bold;">${response.data[i].percentage}%</p>
+                                                </div>
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                                </div>
                                             </div>
-                                            <div class="progress" style="height: 5px;">
-                                                <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                            <div class="col-12">
+                                                <canvas id="chart-${response.data[i].detail_code}" style="width: 160px; height: 140px;"></canvas>
                                             </div>
                                         </div>
-                                        <div class="col-12">
-                                            <canvas id="chart-${response.data[i].detail_code}" style="width: 160px; height: 140px;"></canvas>
-                                        </div>
-                                    </div>
-                                    <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                        <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
-                                            <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
+                                        <div class="mt-0 mx-2" style="margin-top:-15px !important">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                                <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         `;
                         }
                         if (response.data[i].status == 0) {
@@ -1185,7 +1185,7 @@
                                                     a 15.9155 15.9155 0 0 1 0 31.831
                                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                             />
-                                            <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
+                                            <text x="18" y="20.35" class="percentage" style="color : black !important">${response.detail.percentage}%</text>
                                         </svg>
                                     </div>
                                 `;
@@ -1317,7 +1317,7 @@
                                             <div class="message">
                                                 <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
                                                 <br>
-                                                <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                                                <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
                                             </div>
                                         
                                         </div>
@@ -1460,7 +1460,7 @@
                                                     a 15.9155 15.9155 0 0 1 0 31.831
                                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                             />
-                                            <text x="18" y="20.35" class="percentage">${response.detail.percentage}%</text>
+                                            <text x="18" y="20.35" class="percentage" style="color : black !important">${response.detail.percentage}%</text>
                                         </svg>
                                     </div>
                                 `;
@@ -1592,7 +1592,7 @@
                                         <div class="message">
                                             <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
                                             <br>
-                                            <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                                            <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
                                         </div>
                                        
                                     </div>
@@ -1716,7 +1716,7 @@
                                                                         <b>${response.chat[j].user_relation.name}</b> ${response.chat[j].remark}
                                                                     </span>
                                                                     <br>
-                                                                    <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                                                                    <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
                                                                 </div>
                                                             </div>     
                                                     `;
@@ -1859,15 +1859,13 @@
                         <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.data[i].creator_relation.avatar}')}}');">
                         </div> 
                         <div class="message">
-                        
                             <span>
-                           
                                 <b>${response.data[i].creator_relation.name}</b> 
                                  ${attachment}
                                 ${response.data[i].remark}
                             </span>
                             <br>
-                            <span style="font-size:9px !important;color:#E2DFD0">${convertDate(date)}, ${time}</span>
+                            <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
                         </div>
                     </div>     
                     `   
