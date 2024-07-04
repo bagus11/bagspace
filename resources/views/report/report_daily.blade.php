@@ -10,10 +10,12 @@
 <body>
     <div class="container" style="text-align:center">
         <p style="font-size:10px;margin-top:-10px">
-            <b style="font-size:14px">Daily Report {{$name}}</b> <br>
+            <b style="font-size:14px">Daily Activity</b> <br>
         </p>
        <br>
     </div>
+    <p style="font-size:10px"> Date : {{date('d F Y')}}</p>
+    <p style="font-size:10px"> Name : {{$name}}</p>
     <p style="font-size:10px">
         <b>Activity :</b>
     </p>
@@ -24,7 +26,6 @@
     <table class="table-stepper">
         <thead>
             <tr>
-                <th>Created At</th>
                 <th>Title</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -36,8 +37,7 @@
                $status = $item->status == 1 ? 'On Progress' : 'DONE'
            @endphp
             <tr>
-                <td style="width:15%">{{$item->created_at}}</td>
-                <td style="text-align: left">{{$item->name}}</td>
+                <td style="text-align: left;width:30%">{{$item->name}}</td>
                 <td style="text-align: left">{{$item->description}}</td>
                 <td style="text-align: left;width:10%">{{$status}}</td>
             </tr>

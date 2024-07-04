@@ -707,7 +707,8 @@ class KanbanController extends Controller
                 'user_id'               => auth()->user()->id,
                 'remark'                => $request->daily_description,
                 'description'                => $request->daily_description,
-                'created_at'            => date('Y-m-d H:i:s')
+                'created_at'            => date('Y-m-d H:i:s'),
+                'status'                => $request->daily_status
             ];
             TimelineSubDetailLog::create($post);
            
@@ -766,7 +767,7 @@ class KanbanController extends Controller
             $mpdf->SetHTMLHeader($header);
             $mpdf->SetHTMLFooter($footer);
             $mpdf->AddPage(
-                'P', // L - landscape, P - portrait 
+                'L', // L - landscape, P - portrait 
                 '',
                 '',
                 '',

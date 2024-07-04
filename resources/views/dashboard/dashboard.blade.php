@@ -49,6 +49,9 @@
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="row p-0 mb-2">
                   <div class="col-12">
+                    <button class="btn btn-sm btn-danger ml-2" style="float: right" onclick="reportDaily(12)">
+                      <i class="fas fa-file"></i>
+                    </button>
                     <button class=" btn btn-sm btn-success" style="float: right" title="Daily Activity"  data-toggle="modal" data-target="#addDailyModal">
                       <i class="fa-solid fa-plus"></i>
                     </button>

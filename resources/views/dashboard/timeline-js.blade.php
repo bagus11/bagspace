@@ -313,9 +313,6 @@
                                     <p>${response[i].remark}</p>
                                     </div>
                                     <div class="p-0 col-2 mt-3">
-                                      <button title="Export PDF" class="export btn btn-sm btn-danger rounded" onclick="reportDaily('${response[i].id}')" data-id="${response[i].id}">
-                                                <i class="fas fa-solid fa-file"></i>
-                                            </button>
                                       <button class="btn btn-sm btn-info rounded" title ="Detail">
                                         <i class="fa-solid fa-eye"></i>
                                       </button>
