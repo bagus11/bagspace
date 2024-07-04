@@ -112,6 +112,7 @@
     @stack('custom-js')
   </body>
   <style>
+    @import url('https://fonts.cdnfonts.com/css/poppins');
     html{
       font-family: "Poppins" !important;
         line-height: 1.15;
