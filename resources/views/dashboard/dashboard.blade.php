@@ -52,7 +52,7 @@
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="row p-0 mb-2">
                   <div class="col-12">
-                    <button class="btn btn-sm btn-danger ml-2" style="float: right" onclick="reportDaily(12)">
+                    <button class="btn btn-sm btn-danger ml-2" style="float: right" onclick="reportDaily(12)" title="Export To PDF">
                       <i class="fas fa-file"></i>
                     </button>
                     <button class=" btn btn-sm btn-success" style="float: right" title="Daily Activity"  data-toggle="modal" data-target="#addDailyModal">
@@ -125,6 +125,7 @@
   </div>
 
 @include('dashboard.modal.approver')
+@include('dashboard.modal.detail_daily')
 @include('dashboard.modal.add-signature')
 @include('dashboard.modal.detail-timeline')
 @include('dashboard.modal.daily_activity')

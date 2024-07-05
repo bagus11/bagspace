@@ -727,10 +727,11 @@ class KanbanController extends Controller
     function print_daily($id) {
         $log = TimelineSubDetailLog::with([
                                     'creatorRelation'
-                                    ])->where('start_date',date('Y-m-d'))
+                                    ])->where(DB::raw('DATE(created_at)'),date('Y-m-d'))
                                     ->where('pic',auth()->user()->id)
                                     ->get();
         $name               = auth()->user()->name;
+        // dd($log);
         $data               =[
             'log'=>$log,
             'name'=>$name,
@@ -783,5 +784,12 @@ class KanbanController extends Controller
             // Output a PDF file directly to the browser
             ob_clean();
             $mpdf->Output('Report Daily'.'('.date('Y-m-d').').pdf', 'I');
+    }
+    function detailActivity(Request $request) {
+        $detail = TimelineSubDetailLog::with(['creatorRelation'])->find($request->id);
+        return response()->json([
+            'detail'        =>$detail,
+        ]); 
+        
     }
 }

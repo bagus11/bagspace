@@ -34,12 +34,13 @@
         <tbody>
         @forelse ($log as $item)
            @php
-               $status = $item->status == 1 ? 'On Progress' : 'DONE'
+               $status = $item->status == 1 ? 'On Progress' : 'DONE';
+               $remark = str_replace(['<b>', '</b>'],'', $item->remark);
            @endphp
             <tr>
-                <td style="text-align: left;width:30%">{{$item->name}}</td>
-                <td style="text-align: left">{{$item->description}}</td>
-                <td style="text-align: left;width:10%">{{$status}}</td>
+                <td style="text-align: left;width:25%"><p>{{$item->name}}</p></td>
+                <td style="text-align: left"><p>{{$remark}}</p></td>
+                <td style="text-align: left;width:10%"><p>{{$status}}   </p></td>
             </tr>
           
       @empty

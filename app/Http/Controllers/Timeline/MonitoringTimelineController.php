@@ -56,7 +56,10 @@ class MonitoringTimelineController extends Controller
                                 whereHas('teamRelation.detailRelation.UserRelation', function($q){
                                     $q->where('id',auth()->user()->id);
                                 })->get();
-        $daily = TimelineSubDetailLog::where('user_id',auth()->user()->id)->where('subdetail_code','-')->get();
+        $daily = TimelineSubDetailLog::where('user_id',auth()->user()->id)
+                                        ->where('subdetail_code','-')
+                                        ->where('start_date', date('Y-m-d'))
+                                        ->get();
         return response()->json([
             'data'=>$data,
             'daily'=>$daily,

@@ -133,7 +133,7 @@
                                         </button>
                                     </div>
                                     <div class="p-0 col-1 mt-3">
-                                        <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#addDailyModal">
+                                        <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#updateDailyModal">
                                             <i class="fa-solid fa-book"></i>
                                         </button>
                                     </div>
@@ -313,7 +313,7 @@
                                     <p>${response[i].remark}</p>
                                     </div>
                                     <div class="p-0 col-2 mt-3">
-                                      <button class="btn btn-sm btn-info rounded" title ="Detail">
+                                      <button class="btn btn-sm btn-info rounded" onclick="detailActivity('${response[i].id}')" title ="Detail" data-toggle="modal" data-target="#detailDailyModal">
                                         <i class="fa-solid fa-eye"></i>
                                       </button>
                                     </div>
@@ -325,6 +325,26 @@
         }
         function reportDaily(id){
             window.open(`print_daily/${id}`,'_blank');
+        }
+        function detailActivity(id){
+            data={'id':id}
+            getCallback('detailActivity',data,function(response){
+                swal.close()
+                var attachment ='-'
+                
+                if(response.detail.attachment !==''){
+                   attachment =  `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.detail.attachment}')}}" target="_blank">
+                                    <i class="fa-solid fa-file-pdf"></i> Click Here
+                                    </a>`
+                }
+                var status = response.detail.status == 1 ? 'On Progress' : 'Done'
+                $('#daily_name_label').html(': ' +  response.detail.name)
+                $('#daily_start_date_label').html(': ' +  convertDate(response.detail.start_date))
+                $('#daily_description_label').html(': ' +  response.detail.description)
+                $('#daily_status_label').html(': ' +  status)
+                $('#daily_attachment_label').html(': ' +  attachment)
+
+            })
         }
     // Function
 </script>
