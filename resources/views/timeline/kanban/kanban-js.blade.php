@@ -624,26 +624,24 @@
     })
 
     // Gantt Chart
-        $('#gantt-tab').on('click', function(){
-            $.ajax({
-                url: "{{route('getGanttChart')}}",
-                data : dataStart,
-                type: 'GET',
-                dataType: 'json',  // Assuming response will be JSON
-                success: function(data) {
-                    updateGanttChart(data);
-                },
-                error: function(xhr, status, error) {
-                    // Handle error response
-                    console.error('Error fetching data:', error);
-                    // Example: Show error message to user
-                    alert('Error fetching data. Please try again later.');
-                }
-            });
-        })
-        
-                
-                    
+            $('#gantt-tab').on('click', function(){
+                $.ajax({
+                    url: "{{route('getGanttChart')}}",
+                    data : dataStart,
+                    type: 'GET',
+                    dataType: 'json',  // Assuming response will be JSON
+                    success: function(data) {
+                        updateGanttChart(data);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response
+                        console.error('Error fetching data:', error);
+                        // Example: Show error message to user
+                        alert('Error fetching data. Please try again later.');
+                    }
+                });
+            })
+             
             function formatDate(dateStr) {
                 var date = new Date(dateStr);
                 return date.getFullYear() + '-' +
@@ -685,46 +683,81 @@
             gantt.config.xml_date = "%Y-%m-%d";
             gantt.config.readonly = true; // Set Gantt chart to read-only
             gantt.init("gantt_here");
+
+            // Export Gantt Chart
+            document.getElementById('export-btn').addEventListener('click', function() {
+                exportGanttToExcel();
+            });
+            function exportGanttToExcel() {
+                var data = gantt.serialize();
+                var tasks = data.data;
+                
+                // Prepare Excel data
+                var excelData = [];
+                tasks.forEach(function(task) {
+                    var row = {
+                        // "ID": task.id,
+                        "Title": task.text,
+                        "Start Date": task.start_date,
+                        "Duration": task.duration,
+                        "Progress (%)": task.progress * 100,
+                        // "Parent": task.parent || '',
+                        // "Type": task.type || 'task',
+                        "Overdue": task.overdue ? 'Yes' : 'No'
+                    };
+                    excelData.push(row);
+                });
+
+                // Create a worksheet
+                var ws = XLSX.utils.json_to_sheet(excelData);
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Gantt Chart");
+
+                // Export to Excel
+                XLSX.writeFile(wb, "gantt_chart.xlsx");
+            }
+
+            // Export Gantt Chart
     // Gantt Chart
 
     // Dauly Activity
-            $('#btn_save_daily').on('click', function(e){
-                e.preventDefault()
-                var formData        = new FormData();    
-                var subdetail_code     = $('#daily_task').val()
-                formData.append('subdetail_code', subdetail_code)
-                formData.append('daily_description',$('#daily_description').val())
-                formData.append('daily_attachment',$('#daily_attachment')[0].files[0]);
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "{{route('updateDaily')}}",
-                    type: "post",
-                    dataType: 'json',
-                    async: true,
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    beforeSend: function() {
-                        SwalLoading('Inserting progress, please wait .');
-                    },
-                    success: function(response) {
-                            swal.close()
-                            $('.message_error').html('')
-                            var detail_code = $('#detail_code_chat').val()
-                            showNoSwal(detail_code)
-                            $('#daily_description').val('')
-                            $('#addDailyModal').modal('hide')
-                            toastr['success'](response.meta.message);
-                
-                    },
-                    error: function(xhr, status, error) {
-                        // swal.close();
-                        toastr['error']('Failed to get data, please contact ICT Developer');
-                    }
-                });
-            })
+        $('#btn_save_daily').on('click', function(e){
+            e.preventDefault()
+            var formData        = new FormData();    
+            var subdetail_code     = $('#daily_task').val()
+            formData.append('subdetail_code', subdetail_code)
+            formData.append('daily_description',$('#daily_description').val())
+            formData.append('daily_attachment',$('#daily_attachment')[0].files[0]);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('updateDaily')}}",
+                type: "post",
+                dataType: 'json',
+                async: true,
+                processData: false,
+                contentType: false,
+                data: formData,
+                beforeSend: function() {
+                    SwalLoading('Inserting progress, please wait .');
+                },
+                success: function(response) {
+                        swal.close()
+                        $('.message_error').html('')
+                        var detail_code = $('#detail_code_chat').val()
+                        showNoSwal(detail_code)
+                        $('#daily_description').val('')
+                        $('#addDailyModal').modal('hide')
+                        toastr['success'](response.meta.message);
+            
+                },
+                error: function(xhr, status, error) {
+                    // swal.close();
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            });
+        })
     // Dauly Activity
 //   Function 
         function getData(data) {
@@ -778,7 +811,7 @@
                                                     <div class="progress" style="height: 5px;">
                                                     <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                                     </div>
-                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                     <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
                                                     </div>
                                                 </div>
@@ -803,7 +836,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                 <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
                                             </div>
                                         </div>
@@ -998,7 +1031,7 @@
                                             <div class="progress" style="height: 5px;">
                                             <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                             </div>
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px">
                                             <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
                                             </div>
                                         </div>
@@ -1025,7 +1058,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                 <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
                                             </div>
                                         </div>
@@ -1805,6 +1838,7 @@
         }
 
         $('#detail_content').prop('hidden', true)
+
         function changeLabel(response){
             $('#detail_content').prop('hidden', false)
             $('#result_container').empty()
@@ -1844,7 +1878,7 @@
                                     </div>
                                 </div>
                         </fieldset>
-`;
+            `;
                 $('#result_container').html(detail)
 
                 for(i = 0; i < response.data.length ; i ++){

@@ -106,45 +106,59 @@
             var data_1 =''
             $('#task_container').empty()
             var select_project = $('#select_project').val()
-            for(i =0; i < response.task_relation.length; i++){
-                var task =''
-                var pic = response.task_relation[i].pic 
-                var style =''
-                const d = new Date();
-                const date = d.toISOString().split('T')[0];
-                const time = d.toTimeString().split(' ')[0];
-                if(date > response.task_relation[i].end_date)
-                {
-                    style='style="color:#EE4E4E;"'
+            console.log(response.task_relation.length)
+          
+                for(i =0; i < response.task_relation.length; i++){
+                    var task =''
+                    var pic = response.task_relation[i].pic 
+                    var style =''
+                    const d = new Date();
+                    const date = d.toISOString().split('T')[0];
+                    const time = d.toTimeString().split(' ')[0];
+                    if(date > response.task_relation[i].end_date)
+                    {
+                        style='style="color:#EE4E4E;"'
+                    }
+                    if(authId == pic && response.task_relation[i].status ==0){
+                        task =`<li class="list-group-item mx-4 p-0" style="max-height:60px !important">
+                                    <div class="row p-0">
+                                   <div class="p-0 col-1 checkbox-container">
+                                        <input type="checkbox" id="check" name="check" class="is_checked" value="${response.task_relation[i]['id']}" data-status="${response.task_relation[i]['status']}" data-id="${response.task_relation[i]['id']}" ${response.task_relation[i]['status'] == 1 ?'checked':'' } onchange="updateStatusTask('${response.task_relation[i].id}','${response.task_relation[i].status}','${select_project}')">
+                                    </div>
+                                    <div class="p-0 col-9 mt-2">
+                                        <label ${style}>${response.task_relation[i].detail_relation.name}</label>
+                                        <p ${style}>${response.task_relation[i].name}</p>
+                                        </div>
+                                        <div class="p-0 col-1 mt-3">
+                                            <button class="btn btn-sm btn-info rounded" onclick="detail(${response.task_relation[i].id})" data-toggle="modal" data-target="#detailTimelineModal" title="Detail Information">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="p-0 col-1 mt-3">
+                                            <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#updateDailyModal">
+                                                <i class="fa-solid fa-book"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>`
+                    }else{
+                        task = ''
+                    }
+                    if(task !=''){
+                        data_1 +=`
+                            ${task}
+                        `;
+                    }
                 }
-                if(authId == pic && response.task_relation[i].status ==0 ){
-                    task =`<li class="list-group-item mx-4 p-0" style="max-height:60px !important">
-                                <div class="row p-0">
-                               <div class="p-0 col-1 checkbox-container">
-                                    <input type="checkbox" id="check" name="check" class="is_checked" value="${response.task_relation[i]['id']}" data-status="${response.task_relation[i]['status']}" data-id="${response.task_relation[i]['id']}" ${response.task_relation[i]['status'] == 1 ?'checked':'' } onchange="updateStatusTask('${response.task_relation[i].id}','${response.task_relation[i].status}','${select_project}')">
-                                </div>
-                                <div class="p-0 col-9 mt-2">
-                                    <label ${style}>${response.task_relation[i].detail_relation.name}</label>
-                                    <p ${style}>${response.task_relation[i].name}</p>
-                                    </div>
-                                    <div class="p-0 col-1 mt-3">
-                                        <button class="btn btn-sm btn-info rounded" onclick="detail(${response.task_relation[i].id})" data-toggle="modal" data-target="#detailTimelineModal" title="Detail Information">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <div class="p-0 col-1 mt-3">
-                                        <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#updateDailyModal">
-                                            <i class="fa-solid fa-book"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>`
+                console.log(data_1)
+                if(data_1 === ''){
+                    $('#task_container').html(`
+                    <img src="{{asset('no_data.jpg')}}" style="width:60% !important; display: block; margin-left: auto; margin-right: auto;" alt="Girl in a jacket">
+                    `)
+                }else{
+                    $('#task_container').html(data_1)
                 }
-                data_1 +=`
-                    ${task}
-                `;
-            }
-            $('#task_container').html(data_1)
+            
         }
         function detail(id){
             $('#log_task_table').DataTable().clear();
@@ -305,22 +319,29 @@
         function mappingDaily(response){
             $('#daily_container').empty()
             var task =''
-            for(i =0; i < response.length; i++){
-                    task +=`<li class="list-group-item mx-4 p-0" style="max-height:60px !important">
-                                <div class="row p-0">
-                                <div class="p-0 col-10 mt-2">
-                                    <label>${response[i].name}</label>
-                                    <p>${response[i].remark}</p>
+            if(response.length ==0){
+                $('#daily_container').html(`
+                    <img src="{{asset('no_data.jpg')}}" style="width:60% !important; display: block; margin-left: auto; margin-right: auto;" alt="Girl in a jacket">
+                    `)
+            }else{
+                for(i =0; i < response.length; i++){
+                        task +=`<li class="list-group-item mx-4 p-0" style="max-height:60px !important">
+                                    <div class="row p-0">
+                                    <div class="p-0 col-10 mt-2">
+                                        <label>${response[i].name}</label>
+                                        <p>${response[i].remark}</p>
+                                        </div>
+                                        <div class="p-0 col-2 mt-3">
+                                          <button class="btn btn-sm btn-info rounded" onclick="detailActivity('${response[i].id}')" title ="Detail" data-toggle="modal" data-target="#detailDailyModal">
+                                            <i class="fa-solid fa-eye"></i>
+                                          </button>
+                                        </div>
                                     </div>
-                                    <div class="p-0 col-2 mt-3">
-                                      <button class="btn btn-sm btn-info rounded" onclick="detailActivity('${response[i].id}')" title ="Detail" data-toggle="modal" data-target="#detailDailyModal">
-                                        <i class="fa-solid fa-eye"></i>
-                                      </button>
-                                    </div>
-                                </div>
-                            </li>`
+                                </li>`
+                }
+                $('#daily_container').html(task)
+
             }
-            $('#daily_container').html(task)
            
         }
         function reportDaily(id){

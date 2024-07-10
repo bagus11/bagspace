@@ -3,6 +3,10 @@
 @extends('timeline.kanban.admin_kanban')
 @section('title', $data->name)
 @section('content')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
+<link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+
 <style>
         .nav-tabs .nav-link {
             color: #F9F2ED;
@@ -132,13 +136,24 @@
         <div class="justify-content-center row p-0" style="margin-top:-20px">
             <input type="hidden" id="request_code" value="{{$request_code}}" >
             <input type="hidden" id="status_module" value="" >
-            <div class="mt-4">
-                <div id="gantt-chart" class="row">
-                    <!-- Gantt chart will be rendered here -->
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div id="gantt_here" style='width:100%; min-height: 600px !important; border-radius:15px !important;'></div>
+           
+            <div class="mt-4 card">
+                <div class="card-header p-0 my-1">
+                    <div class="card-tools">
+                        <button id="export-btn" class="btn btn-sm btn-success" title="" style="float: right">
+                            <i class="fa-solid fa-file-excel"></i> Export to Excell
+                        </button>
+                    </div>
+                    
+                </div>
+                <div class="card-body p-0">
+                    <div id="gantt-chart" class="row">
+                        <!-- Gantt chart will be rendered here -->
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div id="gantt_here" style='width:100%; min-height: 600px !important; border-radius:15px !important;'></div>
+                                </div>
                             </div>
                         </div>
                     </div>
