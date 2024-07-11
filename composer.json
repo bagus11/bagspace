@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "carlos-meneses/laravel-mpdf": "^2.1",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "hnhdigital-os/laravel-number-converter": "^1.6",
@@ -16,7 +17,10 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "munafio/chatify": "^1.6",
-        "spatie/laravel-permission": "^6.4"
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.6",
+        "spatie/laravel-permission": "^6.4",
+        "tecnickcom/tcpdf": "^6.7"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

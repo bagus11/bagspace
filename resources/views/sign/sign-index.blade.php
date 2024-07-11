@@ -10,35 +10,81 @@
     <div class="container-fluid">
         <div class="justify-content-center">
             <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-3">
-                            <p class="title-head">Sign Transaction</p>
-                        </div>
-                        <div class="col-9">
-                            <button class="btn btn-sm btn-success" id="btn_add_sign" style="float: right"
-                                data-toggle="modal" data-target="#addSignModal">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="list-sign" data-toggle="tab" data-target="#list-sign-pane"
+                            type="button" role="tab" aria-controls="list-sign-pane" aria-selected="true">List
+                            Sign</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="approve-sign" data-toggle="tab" data-target="#approve-sign-pane"
+                            type="button" role="tab" aria-controls="approve-sign-pane" aria-selected="false">Approve
+                            Sign</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="list-sign-pane" role="tabpanel" aria-labelledby="list-sign"
+                        tabindex="0">
+                        <div class="card-header" id="list_sign_transaction" style="padding: 1.0rem !important;">
+                            <div class="row">
+                                <div class="col-3">
+                                    <p class="title-head">Sign Transaction</p>
+                                </div>
+                                <div class="col-9">
+                                    <button class="btn btn-sm btn-success" id="btn_add_sign" style="float: right"
+                                        data-toggle="modal" data-target="#addSignModal">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body" style="padding: 1rem !important;">
+                                <table class="datatable-stepper" id="sign_table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col" class="sort" data-sort="no">No</th>
+                                            <th scope="col" class="sort" data-sort="sign">Transaction Sign Number</th>
+                                            <th scope="col" class="sort" data-sort="action">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <table class="datatable-stepper" id="sign_table">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col" class="sort" data-sort="no">No</th>
-                                    <th scope="col" class="sort" data-sort="sign">Transaction Sign Number</th>
-                                    <th scope="col" class="sort" data-sort="action">Action</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="tab-pane fade" id="approve-sign-pane" role="tabpanel" aria-labelledby="approve-sign"
+                        tabindex="0">
+                        <div class="card-header" id="list_approve_sign_transaction" style="padding: 1.0rem !important;">
+                            <div class="row">
+                                <div class="col-3">
+                                    <p class="title-head">Approve Sign</p>
+                                </div>
+                                {{-- <div class="col-9">
+                                    <button class="btn btn-sm btn-success" id="btn_add_sign" style="float: right"
+                                        data-toggle="modal" data-target="#">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div> --}}
+                            </div>
+                            <div class="card-body" style="padding: 1rem !important;">
+                                <table class="datatable-stepper" id="approve_sign_table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col" class="sort" data-sort="no">No</th>
+                                            <th scope="col" class="sort" data-sort="sign">Transaction Sign Number</th>
+                                            <th scope="col" class="sort" data-sort="action">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
         @include('sign.sign-modal_create')
         @include('sign.sign-modal_detail')
-    @endsection()
-    @push('custom-js')
-        @include('sign.sign_js')
-    @endpush
+@endsection()
+{{-- {{ asset('storage/attachments/sign/1-NHR-VI-24.pdf') }} --}}
+@push('custom-js')
+    @include('sign.sign_js')
+@endpush

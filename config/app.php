@@ -169,7 +169,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Mccarlosen\LaravelMpdf\LaravelMpdfServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -234,7 +234,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'NumConvert' => 'HnhDigital\LaravelNumberConverter\Facade',
-
+        'mPDF' => Mccarlosen\LaravelMpdf\Facades\LaravelMpdf::class
     ],
 
 ];
