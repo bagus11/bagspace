@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class AddDailyRequest extends FormRequest
 {
@@ -21,12 +22,20 @@ class AddDailyRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
-        return [
-            'daily_name'    =>'required',
-            'daily_description'    =>'required',
-            'daily_status'    =>'required',
-        ];
+        $post =[];
+        if($request->subdetail_code == null){
+            $post =[
+                'daily_name'    =>'required',
+                'daily_description'    =>'required',
+                'daily_status'    =>'required',
+            ];
+        }else{
+            $post =[
+                'daily_description'    =>'required',
+            ];
+        }
+        return $post;
     }
 }

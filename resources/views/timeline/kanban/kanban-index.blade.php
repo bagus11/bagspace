@@ -163,7 +163,7 @@
     </div>
 
     <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
-        <div class="justify-content-center row p-0 mt-2" style="margin-top:-20px">
+        <div class="justify-content-center row mt-2" style="margin-top:-20px">
             <div class="col-12">
                 <div class="card" style="border-radius:15px !important;">
                     <div class="card-body" style="border-radius:15px !important;">
@@ -197,7 +197,7 @@
                                         <p>Progress : <b>{{$data->percentage}}%</b></p>
                                     </div>
                             </div>
-                            <div class="row mt-2 p-0">
+                            <div class="row mt-2 mx-2">
                                 <div class="col-5">
                                     <div class="accordion no-shadow " id="accordionExample" style="border:1px solid #524C42;border-radius:15px !important;max-height:400px !important;overflow-y:auto">
                                     <div id="moduleContainerLabel"></div>

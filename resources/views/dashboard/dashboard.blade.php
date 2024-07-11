@@ -55,7 +55,7 @@
                     <button class="btn btn-sm btn-danger ml-2" style="float: right" onclick="reportDaily(12)" title="Export To PDF">
                       <i class="fas fa-file"></i>
                     </button>
-                    <button class=" btn btn-sm btn-success" style="float: right" title="Daily Activity"  data-toggle="modal" data-target="#addDailyModal">
+                    <button class=" btn btn-sm btn-success" style="float: right" id="btn_add_daily" title="Daily Activity"  data-toggle="modal" data-target="#addDailyModal">
                       <i class="fa-solid fa-plus"></i>
                     </button>
                   </div>

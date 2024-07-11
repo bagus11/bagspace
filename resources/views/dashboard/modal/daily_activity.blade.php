@@ -10,14 +10,17 @@
             </div>
             <form class="form" id="form_serialize" enctype="multipart/form-data">
                 <div class="modal-body">
-                <div class="row">
+                <div class="row" id="title_label">
                     <div class="col-2 mt-2">
                         <p>Title</p>
                     </div>
-                    <div class="col-10">
+                    <div class="col-10"> 
+                        <input type="hidden" class="form-control" id="subdetail_code">  
                         <input type="text" class="form-control" id="daily_name">  
                         <span  style="color:red;" class="message_error text-red block daily_name_error"></span>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-2 mt-2">
                         <p>Description</p>
                     </div>
@@ -34,7 +37,7 @@
                         <input type="file" class="form-control" id="daily_attachment">
                     </div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-2" id="status_label">
                     <div class="col-2 mt-2">
                         <p>Status</p>
                     </div>

@@ -26,9 +26,14 @@
         }
     })
     onChange('select_status','daily_status')
+    $('#btn_add_daily').on('click', function(){
+        $('#status_label').prop('hidden', false)
+        $('#title_label').prop('hidden', false)
+    })
     $('#btn_save_daily').on('click', function(e){
         e.preventDefault();
         var data = new FormData();
+        data.append('subdetail_code',$('#subdetail_code').val())
         data.append('daily_name',$('#daily_name').val())
         data.append('daily_description',$('#daily_description').val())
         data.append('daily_status',$('#daily_status').val())
@@ -106,7 +111,7 @@
             var data_1 =''
             $('#task_container').empty()
             var select_project = $('#select_project').val()
-            console.log(response.task_relation.length)
+          
           
                 for(i =0; i < response.task_relation.length; i++){
                     var task =''
@@ -135,7 +140,7 @@
                                             </button>
                                         </div>
                                         <div class="p-0 col-1 mt-3">
-                                            <button class="daily btn btn-sm btn-primary" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#updateDailyModal">
+                                            <button class="daily btn btn-sm btn-primary" onClick="getDetailDaily('${response.task_relation[i].subdetail_code}')" title="Update Activity" data-id="${response.task_relation[i].id}" data-task="${response.task_relation[i].subdetail_code}" data-toggle="modal" data-target="#addDailyModal">
                                                 <i class="fa-solid fa-book"></i>
                                             </button>
                                         </div>
@@ -150,7 +155,7 @@
                         `;
                     }
                 }
-                console.log(data_1)
+             
                 if(data_1 === ''){
                     $('#task_container').html(`
                     <img src="{{asset('no_data.jpg')}}" style="width:60% !important; display: block; margin-left: auto; margin-right: auto;" alt="Girl in a jacket">
@@ -366,6 +371,11 @@
                 $('#daily_attachment_label').html(': ' +  attachment)
 
             })
+        }
+        function getDetailDaily(id){
+            $('#subdetail_code').val(id)
+            $('#status_label').prop('hidden', true)
+            $('#title_label').prop('hidden', true)
         }
     // Function
 </script>

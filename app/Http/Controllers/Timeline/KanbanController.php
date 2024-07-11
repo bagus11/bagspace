@@ -689,6 +689,7 @@ class KanbanController extends Controller
         try {    
             $addDailyRequest->validated();
             $attachmentPath = '';
+            $daily = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
             // Check if a file is uploaded
             if ($request->hasFile('daily_attachment')) {
                 $file = $request->file('daily_attachment');
@@ -697,18 +698,18 @@ class KanbanController extends Controller
                 $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
             }
             $post =[
-                'subdetail_code'          => '-',
+                'subdetail_code'        => $request->subdetail_code == null ? '-' : $request->subdetail_code,
                 'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
-                'name'                  => $request->daily_name,
-                'start_date'            => date('Y-m-d'),
-                'end_date'              => date('Y-m-d'),
-                'amount'                => 0,
+                'name'                  => $request->subdetail_code === null ? $request->daily_name :$daily->name ,
+                'start_date'            => $request->subdetail_code === null ? date('Y-m-d') : $daily->start_date,
+                'end_date'              => $request->subdetail_code === null ? date('Y-m-d') : $daily->end_date,
+                'amount'                => $request->subdetail_code === null ? 0 : $daily->amount,
                 'pic'                   => auth()->user()->id,
                 'user_id'               => auth()->user()->id,
                 'remark'                => $request->daily_description,
-                'description'                => $request->daily_description,
+                'description'           => $request->subdetail_code === null ? $request->daily_description : $daily->description,
                 'created_at'            => date('Y-m-d H:i:s'),
-                'status'                => $request->daily_status
+                'status'                => $request->subdetail_code === null ? $request->daily_status : '1'
             ];
             TimelineSubDetailLog::create($post);
            

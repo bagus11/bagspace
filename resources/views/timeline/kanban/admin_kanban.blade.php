@@ -176,7 +176,7 @@
         color: white;
     }
     .kanban-cards{
-      max-height: 500px !important;
+      max-height: 520px !important;
       overflow-y: auto !important; 
     }
         /* Change milestone color */
