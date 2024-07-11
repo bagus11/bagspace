@@ -15,6 +15,9 @@ class TimelineDetail extends Model
     function userRelation(){
         return $this->hasOne(User::class,'id','user_id');
     }
+    function subDetailRelation() {
+        return $this->hasMany(TimelineSubDetail::class, 'detail_code','detail_code');
+    }
 
 
 }

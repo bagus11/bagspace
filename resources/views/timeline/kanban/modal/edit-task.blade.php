@@ -1,8 +1,8 @@
 <div class="modal fade" id="updateTaskModal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-dark">
-            <div class="modal-header bg-mainCore">
-                <b style="font-size: 12px;color:white">Form Add Task</b>
+        <div class="modal-content">
+            <div class="modal-header">
+                <b style="font-size: 12px;">Form Add Task</b>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

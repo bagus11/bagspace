@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
 </head>
 <body>
     @include('timeline.kanban.navbar')
@@ -33,6 +35,9 @@
       <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+      <script src="https://cdn.dhtmlx.com/gantt/7.1.10/gantt.js"></script>
+      <link href="https://cdn.dhtmlx.com/gantt/7.1.10/gantt.css" rel="stylesheet">
       <!-- Core -->
     <!-- Argon JS -->
     <script src="{{asset('assets/js/argon.js?v=1.2.0')}}"></script>
@@ -107,18 +112,25 @@
     @stack('custom-js')
   </body>
   <style>
+    @import url('https://fonts.cdnfonts.com/css/poppins');
+    html{
+      font-family: "Poppins" !important;
+        line-height: 1.15;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
     body{
         /* background-color: #35374B !important; */
         /* background-color: #61677A !important; */
-        background-image:url('{{ asset('bg-kanban-1.png')}}');
-        /* background-image:url('{{ asset('men.jpg')}}'); */
+        /* background-image:url('{{ asset('bg-kanban-1.png')}}'); */
+        background-image:url('{{ asset('login.png')}}');
         &::after {
             content: '';
             opacity: 3.8;
             position: cover;
             background-image: url('https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100');
         }
-        background-size: cover;
+        background-size :cover;
         font-family: Poppins;
     }
     .bg-1{
@@ -139,19 +151,24 @@
     }
     .b-head{
         font-size: 12px !important;
-        color: white;
+        color: #4793AF;
 
     }
     .radius{
         border-radius: 50%;
-        background-color: #35374B;
+        background-color: white;
     }
     .card-parent{
         border-radius: 20px  !important;
     }
     .card-child{
         border-radius: 10px  !important;
-        background: #31363F;
+        background: white;
+        color: #4793AF;
+    }
+    .card-child:hover{
+        border-radius: 10px  !important;
+        background: #4793AF;
         color: white;
     }
     .card-parent-footer{
@@ -161,6 +178,21 @@
     .kanban-cards{
       max-height: 500px !important;
       overflow-y: auto !important; 
+    }
+        /* Change milestone color */
+    .gantt_task .gantt_task_line.milestone {
+        background-color: #f39c12; /* Example color */
+        border-color: #e67e22; /* Example border color */
+    }
+
+    /* Scale down the milestone */
+    .gantt_task .gantt_task_line.milestone .gantt_task_progress {
+        transform: scale(0.3) !important; /* Scale down to 50% */
+        transform-origin: center;
+    }
+    .gantt_task_line.overdue {
+        background-color: #C80036 !important; /* Red color */
+        border-color: #C80036 !important; /* Red border */
     }
 </style>
 
@@ -226,8 +258,8 @@
         font-size:9px;
     }
     p{
-    font-size: 12px !important;
-    color: #cacaca !important;
+    font-size: 11px !important;
+    /* color: #cacaca !important; */
     }
     .open\:bg-green-200[open] {
     --tw-bg-opacity: 1;
@@ -285,95 +317,36 @@
     tr.shown td.subdetails-click {
         background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
     }
-    .rating {
-    position: relative;
-    width: 180px;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: .3em;
-    padding: 5px;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: 0 0 2px #b3acac;
-    }
-
-    .rating__result {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateY(-10px) translateX(-5px);
-    z-index: -9;
-    font: 3em Arial, Helvetica, sans-serif;
-    color: #ebebeb8e;
-    pointer-events: none;
-    }
-
-    .rating__star {
-    font-size: 1.3em;
-    cursor: pointer;
-    color: #dabd18b2;
-    transition: filter linear .3s;
-    }
-
-    .rating__star:hover {
-    filter: drop-shadow(1px 1px 4px gold);
-    }
     .datatable-stepper{
-    /* font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    font-size: 12px;
-    overflow-x:auto !important; */
-    width: 100% !important;
-    font-family: Poppins;
-    border-collapse: collapse;
-    border-spacing: 0;
-    font-size: 9px;
-    width: 100% !important;
-    border: 1px solid #ddd;
-    
-    }
-    .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
-
-    .datatable-stepper tr:hover {background-color: #ddd;}
-
-    .datatable-stepper th {
-    border: 1px solid #ddd;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    text-align: center;
-    
-    color: black;
-    overflow-x:auto !important;
-    }
-    .datatable-stepper td, .datatable-stepper th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        
+        font-family: Poppins;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 9px;
+        width: 100% !important;
+        /* border: 1px solid #ddd; */
         }
+        .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
+
+        .datatable-stepper tr:hover {background-color: #ddd;}
+
+        .datatable-stepper th {
+        /* border: 1px solid #ddd; */
+        text-align: center;
+        color: white;
+        /* color: black; */
+        overflow-x:auto !important;
+        background-color: #F6995C !important;
+        padding: 10px;
+          font-weight: bold;
+        } 
+        .datatable-stepper td {
+              /* border: 1px solid #ddd; */
+              padding: 5px;
+          }
     .headerTitle{
         font-size: 14px;
 
     }
-        fieldset.scheduler-border {
-            border: 1px groove #ddd !important;
-            padding: 0 1.5em 1.5em 1.5em !important;
-            margin: 0 0 1.5em 0 !important;
-            -webkit-box-shadow:  0px 0px 0px 0px #000;
-                    box-shadow:  0px 0px 0px 0px #000;
-        }
-
-        legend.scheduler-border {
-        font-size: 12px !important;
-        font-weight: bold !important;
-        text-align: left !important;
-    }
-        .legend1
-        {
-        margin-bottom:0px;
-        margin-left:16px;
-        }
         .btnAction  {
         appearance: none;
         backface-visibility: hidden;
@@ -471,25 +444,7 @@
             -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
             filter: alpha(opacity=20);
         }
-        .datatable-stepper tr:nth-child(even){background-color: #f2f2f2;}
 
-        .datatable-stepper tr:hover {background-color: #ddd;}
-
-        .datatable-stepper th {
-        /* border: 1px solid #ddd; */
-        text-align: center;
-        color: white;
-        /* color: black; */
-        overflow-x:auto !important;
-        background-color: #F6995C !important;
-        padding: 10px;
-        font-weight: bold;
-        } 
-  .datatable-stepper td {
-      /* border: 1px solid #ddd; */
-      background-color:#EEEEEE;
-      padding: 5px;
-  }
   .form-control{
     height: 30px;
     font-size: 9px !important;
@@ -546,26 +501,7 @@
     font-family: Poppins !important;
     font-weight: bold !important
   }
-  legend {
-    /* background-color: #76ABAE; */
-    color: #fff;
-    /* color:black; */
-    margin-top:-20px;
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 10%;
-    max-width : 40%;
-    padding-right: 20px !important;
-    font-size: 12px !important;
-    }
-    .legend1 {
-        border: 1px solid #35374B; /* Adding border */
-        padding: 10px; /* Adding padding for spacing */
-        margin: 20px; /* Adding margin for spacing */
-    }
-    .legend1 legend {
-        display: inline; /* Making the legend display inline */
-    }
+ 
 
   .dataTables_wrapper .dataTables_paginate .paginate_button
     {
@@ -582,6 +518,33 @@
       color: #008DDA;
     }
     
+</style>
+<style>
+  .accordionSubDetail {
+  margin: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.5);
+}
+.accordionSubDetail-label {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+}
+.accordionSubDetail-content {
+  max-height: 0;
+  padding: 0 1em;
+  background: white;
+  transition: all 0.35s;
+}
+input:checked ~ .accordion-content {
+  max-height: 100vh;
+  padding: 1em;
+}
 </style>
 
 <style>
@@ -638,8 +601,8 @@
 }
 
 .percentage {
-  /* fill: #666; */
-  fill: white;
+  fill: #666;
+  /* fill: white; */
 
   font-family: sans-serif;
   font-size: 0.5em;
@@ -665,6 +628,48 @@
 
 .fade-out {
     opacity: 0;
+}
+            
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 5px grey;  */
+  border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+  /* background:#E68369;  */
+  background:#E68369; 
+  padding-bottom: 10px;
+  border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+  background:#EEEDEB
+  }
+  fieldset {
+    font-family: Poppins;
+    border: 1px solid #B9B4C7;
+    /* border-radius: 15px; */
+    padding-right: 5px;
+    padding-left: 5px;
+  
+}
+
+fieldset legend {
+    color: black;
+    background: white;
+    font-size: 12px;
+    /* border-radius: 5px; */
+    margin-top: -10px !important;
+    margin-left: 20px;
+    max-width: 130px !important;
+}
+.legend1{
+  margin-bottom : 10px;
 }
 </style>
   </html>

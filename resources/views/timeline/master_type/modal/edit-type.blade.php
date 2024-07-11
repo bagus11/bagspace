@@ -18,12 +18,14 @@
                         <span class="message_error name_edit_error text-red block "></span>
                     </div>
                </div>
+              
             </div>
             <div class="modal-footer justify-content-end">
                 <button id="btn_update_type" type="button" class="btn btn-sm btn-success">
                     <i class="fa-solid fa-check"></i>
                 </button>
             </div>
+            
         </div>
     </div>
 </div>

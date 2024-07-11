@@ -1,5 +1,5 @@
 <div class="modal fade" id="editTimelineHeader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header pb-0 ">
             <b style="font-size: 12px"class="ml-2">Form Update Project</b>
@@ -72,6 +72,7 @@
                         </div>
                     </div>
             </fieldset>
+         
         </div>
       </div>
     </div>

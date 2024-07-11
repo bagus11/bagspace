@@ -10,6 +10,7 @@ use App\Models\logTimelineHistoryDate;
 use App\Models\Timeline\DetailTeamTimeline;
 use App\Models\Timeline\TimelineHeader;
 use App\Models\Timeline\TimelineSubDetail;
+use App\Models\Timeline\TimelineSubDetailLog;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use NumConvert;
@@ -20,7 +21,25 @@ class MonitoringTimelineController extends Controller
         return view('timeline.monitoring_timeline.monitoring_timeline-index');
     }
     function getTimelineHeader(){
-        $data = TimelineHeader::with(['officeRelation','teamRelation','typeRelation'])->get();
+        if(auth()->user()->hasPermissionTo('get-only_admin-monitoring_timeline'))
+        {
+            $data = TimelineHeader::with(['officeRelation','teamRelation','typeRelation'])->get();
+        }else{
+            $data = TimelineHeader::with([
+                'officeRelation',
+                'teamRelation',
+                'typeRelation',
+                'teamRelation.detailRelation.UserRelation',
+                'taskRelation',
+                'taskRelation.detailRelation',
+                'detailRelation',
+                ])->
+            whereHas('teamRelation.detailRelation.UserRelation', function($q){
+                $q->where('id',auth()->user()->id);
+            })->get();
+        }
+       
+        
         return response()->json([
             'data'=>$data,
         ]);
@@ -37,8 +56,13 @@ class MonitoringTimelineController extends Controller
                                 whereHas('teamRelation.detailRelation.UserRelation', function($q){
                                     $q->where('id',auth()->user()->id);
                                 })->get();
+        $daily = TimelineSubDetailLog::where('user_id',auth()->user()->id)
+                                        ->where('subdetail_code','-')
+                                        ->where('start_date', date('Y-m-d'))
+                                        ->get();
         return response()->json([
             'data'=>$data,
+            'daily'=>$daily,
         ]);
     }
     function getTimelineHeaderDetail(Request $request) {

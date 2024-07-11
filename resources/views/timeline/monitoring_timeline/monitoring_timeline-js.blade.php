@@ -179,7 +179,15 @@
                 })
         })
     })
+    $('#timeline_header_table').on('click', '.export', function(){
+        var request_code = $(this).data('request')
+        var id = $(this).data('id')
+        var data ={
+            'id':id,
+            'request_code': request_code
+        }
 
+    })
     function mappingTable(response){
         var data =''
             
@@ -236,17 +244,18 @@
                                                 <button title="Detail" class="detail btn btn-sm btn-info rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#detailTimelineHeader">
                                                     <i class="fas fa-solid fa-eye"></i>
                                                 </button>   
+                                                  
+                                                @can('update-monitoring_timeline')
+                                                <button title="Update Dateline" class="edit btn btn-sm btn-warning rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#editTimelineHeader">
+                                                    <i class="fas fa-solid fa-edit"></i>
+                                                </button>  
                                                 <button title="Create Telegram BOT" class="bot btn btn-sm btn-primary rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#botTimelineModal" ${response[i].status_bot != 0 ? 'hidden' : ''}>
                                                     <i class="fa-solid fa-robot"></i>
-                                                </button>   
-                                                <button title="Detail" class="edit btn btn-sm btn-warning rounded"data-id="${response[i]['id']}" data-toggle="modal" data-target="#editTimelineHeader">
-                                                    <i class="fas fa-solid fa-edit"></i>
-                                                </button>   
+                                                </button> 
+                                                @endcan
+                                             
                                                 <button title="Go To Project" class="project btn btn-sm btn-dark rounded"data-id="${response[i]['id']}" data-toggle="modal" data-request="${response[i]['request_code']}" data-target="#addTeamDetail" ${response[i].link =='' ? 'disabled' :''} data-link ="${response[i].link}">
                                                     <i class="fa-solid fa-diagram-project"></i>
-                                                </button>
-                                                <button title="Export GanttChart" class="export btn btn-sm btn-success rounded" data-id="${response[i]['id']}" data-request="${response[i]['request_code']}">
-                                                    <i class="fa-solid fa-chart-gantt"></i>
                                                 </button>
                                         </td>
                                 </tr>

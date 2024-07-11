@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Timeline;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddDailyRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Timeline\ChatTimelineModel;
 use App\Models\Timeline\DetailTeamTimeline;
 use App\Models\Timeline\TimelineDetail;
+use App\Models\Timeline\TimelineDetailLog;
 use App\Models\Timeline\TimelineHeader;
 use App\Models\Timeline\TimelineSubDetail;
 use App\Models\Timeline\TimelineSubDetailLog;
@@ -16,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use NumConvert;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use \Mpdf\Mpdf as PDF;
 
 class KanbanController extends Controller
 {
@@ -33,7 +36,7 @@ class KanbanController extends Controller
         return view('timeline.kanban.kanban-index',$data);
     }
     function getTImelineDetail(Request $request) {
-        $data   = TimelineDetail ::with(['userRelation'])->where('request_code',$request->request_code)->get();
+        $data   = TimelineDetail ::with(['userRelation','subDetailRelation','subDetailRelation.userRelation','subDetailRelation.logRelation','subDetailRelation.logRelation.userRelation'])->where('request_code',$request->request_code)->get();
         $detail = TimelineHeader ::where('request_code', $request->request_code)->first();
       
         $array = [];
@@ -71,7 +74,6 @@ class KanbanController extends Controller
             $post = [
                 'data'=>$data,
                 'detail'=>$detail,
-              
                 'array'=>$array,  
             ];
         }
@@ -101,10 +103,12 @@ class KanbanController extends Controller
         $data       = TimelineSubDetail::with(['userRelation'])->where('detail_code', $request->detail_code)->orderBy('start_date','asc')->get();
         $detail     = TimelineDetail::with(['userRelation']) ->where('detail_code', $request->detail_code)->first();
         $chat       = ChatTimelineModel::with(['userRelation'])->where('detail_code',$request->detail_code)->get();
+        $log        = TimelineDetailLog::with(['userRelation'])->where('detail_code',$request->detail_code)->get();
         return response()->json([
             'data'=>$data,
             'chat'=>$chat,
             'detail'=>$detail,
+            'log'=>$log,
         ]); 
     }
     function getChat(Request $request) {
@@ -112,6 +116,10 @@ class KanbanController extends Controller
         return response()->json([
             'chat'=>$chat,
         ]); 
+    }
+    function getGanttChart(Request $request) {
+            $data = TimelineHeader::with(['detailRelation','detailRelation.subDetailRelation'])->where('request_code',$request->request_code)->get();
+            return response()->json($data);
     }
     function sendChat(Request $request) {
         try {    
@@ -143,6 +151,44 @@ class KanbanController extends Controller
             return ResponseFormatter::error(
                 $th,
                 'Chat failed to add',
+                500
+            );
+        }
+    }
+    function updateDaily(Request $request) {
+        try {    
+            $attachmentPath = '';
+            $header = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
+            // Check if a file is uploaded
+            if ($request->hasFile('daily_attachment')) {
+                $file = $request->file('daily_attachment');
+                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+                $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+            }
+            $post =[
+                'subdetail_code'          => $request->subdetail_code,
+                'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
+                'name'                  => $header->name,
+                'start_date'            => $header->start_date,
+                'end_date'              => $header->end_date,
+                'amount'                => $header->amount,
+                'pic'                   => $header->pic,
+                'user_id'               => auth()->user()->id,
+                'remark'                => $request->daily_description,
+                'user_id'               => auth()->user()->id,
+                'created_at'            => date('Y-m-d H:i:s')
+            ];
+            TimelineSubDetailLog::create($post);
+           
+            return ResponseFormatter::success(   
+                $post,                              
+                'Activity successfully update progress, thanks :)'
+            );            
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Activity failed to add',
                 500
             );
         }
@@ -183,16 +229,20 @@ class KanbanController extends Controller
                 'plan'                  => $header->type_id ==1 ?0: $request->plan_amount
             ];
             // dd($post);
-            $post_chat=[
-                'request_code'          => $request->request_code,
-                'attachment'            => '',
-                'detail_code'           => $ticket_code,
-                'remark'                => ' has created this module',
-                'user_id'               => auth()->user()->id,
-                'created_at'            => date('Y-m-d H:i:s')
+            $postLog = [
+                'request_code'  => $request->request_code,
+                'detail_code'   => $ticket_code,
+                'start_date'    => $request->start_date_module,
+                'end_date'      => $request->end_date_module,
+                'name'          => $request->name_module,
+                'plan'          => $header->type_id ==1 ?0: $request->plan_amount,
+                'description'   => $request->description_module,
+                'user_id'       => auth()->user()->id,
+                'remark'        =>'Has create this module',
             ];
             // dd($post);
              TimelineDetail::insert($post);
+             TimelineDetailLog::create($postLog);
             //  ChatTimelineModel::insert($post_chat);
              
             return ResponseFormatter::success(   
@@ -590,5 +640,156 @@ class KanbanController extends Controller
             $id,                              
             'Task successfully updated'
         );    
+    }
+    function updateModule(Request $request) {
+        try{
+                $detail = TimelineDetail::where('detail_code', $request->detail_code)->first();
+                $post = [
+                    'start_date'    => $request->start_date_module_edit,
+                    'end_date'      => $request->end_date_module_edit,
+                    'name'          => $request->name_module_edit,
+                    'plan'          => $request->plan_amount_edit,
+                    'description'   => $request->description_module_edit,
+                ];
+                $postLog = [
+                    'request_code'  => $detail->request_code,
+                    'detail_code'   => $detail->detail_code,
+                    'start_date'    => $request->start_date_module_edit,
+                    'end_date'      => $request->end_date_module_edit,
+                    'name'          => $request->name_module_edit,
+                    'plan'          => $request->plan_amount_edit,
+                    'description'   => $request->description_module_edit,
+                    'user_id'       => auth()->user()->id,
+                    'remark'        => $request->reason_module_edit,
+                ];
+
+                TimelineDetail::where('detail_code', $request->detail_code)->update($post);
+                TimelineDetailLog::create($postLog);
+                return ResponseFormatter::success(   
+                    $post,                              
+                    'Module successfully updated'
+                );            
+          } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Task failed to add',
+                500
+            );
+        }  
+    }
+    function getLogTask(Request $request) {
+        $detail = TimelineSubDetail::with(['userRelation'])->where('subdetail_code',$request->subdetail_code)->first();
+        $data   = TimelineSubDetailLog::with(['userRelation','creatorRelation'])->where('subdetail_code',$request->subdetail_code)->get();
+        return response()->json([
+            'detail'        =>$detail,
+            'data'       =>$data,
+        ]); 
+    }
+    function addDaily(Request $request, AddDailyRequest $addDailyRequest) {
+        try {    
+            $addDailyRequest->validated();
+            $attachmentPath = '';
+            // Check if a file is uploaded
+            if ($request->hasFile('daily_attachment')) {
+                $file = $request->file('daily_attachment');
+                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+                $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+            }
+            $post =[
+                'subdetail_code'          => '-',
+                'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
+                'name'                  => $request->daily_name,
+                'start_date'            => date('Y-m-d'),
+                'end_date'              => date('Y-m-d'),
+                'amount'                => 0,
+                'pic'                   => auth()->user()->id,
+                'user_id'               => auth()->user()->id,
+                'remark'                => $request->daily_description,
+                'description'                => $request->daily_description,
+                'created_at'            => date('Y-m-d H:i:s'),
+                'status'                => $request->daily_status
+            ];
+            TimelineSubDetailLog::create($post);
+           
+            return ResponseFormatter::success(   
+                $post,                              
+                'Activity successfully update progress, thanks :)'
+            );            
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Activity failed to add',
+                500
+            );
+        }
+    }
+    function print_daily($id) {
+        $log = TimelineSubDetailLog::with([
+                                    'creatorRelation'
+                                    ])->where(DB::raw('DATE(created_at)'),date('Y-m-d'))
+                                    ->where('pic',auth()->user()->id)
+                                    ->get();
+        $name               = auth()->user()->name;
+        // dd($log);
+        $data               =[
+            'log'=>$log,
+            'name'=>$name,
+        ];
+        $cetak              = view('report.report_daily',$data);
+        $imageLogo          = '<img src="'.public_path('icon.png').'" width="70px" style="float: right;"/>';
+        $header             = '';
+        $header             .= '<table width="100%">
+                                    <tr>
+                                    <td style="padding-left:10px;">
+                                    <span style="font-size: 6px; font-weight: bold;margin-top:-10px"> '.$imageLogo.'</span>
+                                    <br>
+                                    <span style="font-size:8px;">Synergy Building #08-08</span> 
+                                    <br>
+                                    <span style="font-size:8px;">Jl. Jalur Sutera Barat 17 Alam Sutera, Serpong Tangerang 15143 - Indonesia</span>
+                                    <br>
+                                    <span style="font-size:8px;">Tangerang 15143 - Indonesia +62 21 304 38808</span>
+                                </td>
+                                    </tr>
+                                    
+                                </table>
+                               ';
+        
+        $footer             = '<hr>
+                                <table width="100%" style="font-size: 10px;">
+                                    <tr>
+                                        <td width="90%" align="left"><b>Disclaimer</b><br>this document is strictly private, confidential and personal to recipients and should not be copied, distributed or reproduced in whole or in part, not passed to any third party.</td>
+                                        <td width="10%" style="text-align: right;"> {PAGENO}</td>
+                                    </tr>
+                                </table>';
+
+        
+            $mpdf           = new PDF();
+            $mpdf->SetHTMLHeader($header);
+            $mpdf->SetHTMLFooter($footer);
+            $mpdf->AddPage(
+                'L', // L - landscape, P - portrait 
+                '',
+                '',
+                '',
+                '',
+                5, // margin_left
+                5, // margin right
+                25, // margin top
+                20, // margin bottom
+                5, // margin header
+                5
+            ); // margin footer
+            $mpdf->WriteHTML($cetak);
+            // Output a PDF file directly to the browser
+            ob_clean();
+            $mpdf->Output('Report Daily'.'('.date('Y-m-d').').pdf', 'I');
+    }
+    function detailActivity(Request $request) {
+        $detail = TimelineSubDetailLog::with(['creatorRelation'])->find($request->id);
+        return response()->json([
+            'detail'        =>$detail,
+        ]); 
+        
     }
 }

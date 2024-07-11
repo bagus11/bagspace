@@ -21,6 +21,8 @@ class TimelineSubDetail extends Model
     function headerRelation() {
         return $this->hasOne(TimelineHeader::class,'request_code','request_code');
     }
-
+    function logRelation() {
+        return $this->hasMany(TimelineSubDetailLog::class,'subdetail_code','sub_detail_code');
+    }
 
 }
