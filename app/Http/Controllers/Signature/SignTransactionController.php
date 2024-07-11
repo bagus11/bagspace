@@ -14,6 +14,8 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Helpers\MonthRomawi;
+// use Barryvdh\DomPDF\Facade\Pdf;
+use mPDF;
 use NumConvert;
 class SignTransactionController extends Controller
 {
@@ -145,5 +147,26 @@ class SignTransactionController extends Controller
         } catch (\Throwable $th) {
             return ResponseFormatter::error(null, $th->getMessage(), 500);
         }
+    }
+    public function signDocument()
+    {
+        return view('sign.approval_sign.index');
+    }
+    public function viewPdf($filename)
+    {
+        set_time_limit(0);
+        $path = public_path('storage/attachments/sign/' . $filename);
+
+        // dd($path);
+        if (!file_exists($path)) {
+            abort(404, 'File not found');
+        }
+        // Memuat konten file PDF
+        $pdf_content = file_get_contents($path);
+        $pdf = mPDF::loadView('sign.approval_sign.pdf_view', compact('pdf_content'));
+
+        // Tampilkan PDF di browser
+        // return $pdf->stream($filename);
+        return response($pdf_content, 200)->header('Content-Type', 'application/pdf');
     }
 }

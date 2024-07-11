@@ -216,6 +216,9 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('list-user-approval', [SignTransactionController::class,'fetchUserApproval'])->name('list-user-approval');
         Route::get('detail-sign', [SignTransactionController::class,'detailSign'])->name('detail-sign');
         Route::post('create-sign', [SignTransactionController::class,'createSignTransaction'])->name('create-sign');
+
+        Route::get('sign-document', [SignTransactionController::class,'signDocument'])->name('sign-document');
+        Route::get('view-pdf/{filename}', [SignTransactionController::class,'viewPdf']);
         // signature transaction
 
 });
