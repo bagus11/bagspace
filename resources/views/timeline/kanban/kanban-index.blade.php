@@ -244,6 +244,7 @@
 @include('timeline.kanban.modal.detail-taskModal')
 @include('timeline.kanban.modal.edit-task')
 @include('timeline.kanban.modal.edit-module')
+@include('timeline.kanban.modal.task_done')
 @include('timeline.kanban.modal.detail-taskModal')
 @endsection
 @push('custom-js')

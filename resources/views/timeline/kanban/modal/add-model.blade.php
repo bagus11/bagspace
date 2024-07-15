@@ -1,7 +1,7 @@
 <div class="modal fade" id="addCardModal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header p-0 mx-2 my-2 ">
                 <b style="font-size: 12px;"> Form Add Module</b>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

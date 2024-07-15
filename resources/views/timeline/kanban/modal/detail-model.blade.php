@@ -59,7 +59,7 @@
                         <div class="col-md-12">
                         <div class="row">
                             <div class="col-12">
-                                <button class="btn btn-sm rounded-circle" id="btn_add_task" style="float: right;margin-top:-12px;margin-bottom:5px" data-toggle="modal" data-target="#addTaskModal" title="Create Task Here">
+                                <button class="btn btn-sm btn-success rounded-circle" id="btn_add_task" style="float: right;margin-top:-12px;margin-bottom:5px" data-toggle="modal" data-target="#addTaskModal" title="Create Task Here">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>

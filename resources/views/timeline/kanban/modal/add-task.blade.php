@@ -1,7 +1,7 @@
 <div class="modal fade" id="addTaskModal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header p-0 mx-2 my-2 ">
                 <b style="font-size: 12px;">Form Add Task</b>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -32,13 +32,13 @@
                         <input type="text" class="form-control" id="name_sub_module">
                         <span style="color:red;" class="message_error text-red block name_sub_module_error"></span>
                     </div>
-                    <div class="col-2 mt-2" id="actual_label">
+                    {{-- <div class="col-2 mt-2" id="actual_label">
                         <p>Actual</p>
                     </div>
                     <div class="col-4" id="amount_container">
                         <input type="text" class="form-control" id="actual_amount">
                         <span style="color:red;" class="message_error text-red block actual_amount_error"></span>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="row">
                     <div class="col-2 mt-2">

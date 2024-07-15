@@ -1,13 +1,13 @@
 <div class="modal fade" id="updateTaskModal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <b style="font-size: 12px;">Form Add Task</b>
+            <div class="modal-header p-0 mx-2 my-2 ">
+                <b style="font-size: 12px;">Form Edit Task</b>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body my-0">
+            <div class="modal-body p-0 my-0 mx-2 ">
                 <fieldset class="legend1 mx-0 my-0">
                     <legend>General Transaction</legend>
                     <div class="row">
@@ -62,7 +62,7 @@
                             <span style="color:red;" class="message_error text-red block pic_id_edit_error"></span>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-2 mt-2">
                             <p>Remark</p>
                         </div>
@@ -75,7 +75,7 @@
                 <br>
              
             </div>
-            <div class="modal-footer justify-content-end">
+            <div class="modal-footer justify-content-end p-0 mx-2">
                 <button id="btn_edit_task" type="button" class="btn btn-sm btn-success">
                     <i class="fa-solid fa-check"></i>
                 </button>

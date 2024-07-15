@@ -85,6 +85,7 @@ class KanbanController extends Controller
                                                 'userRelation',
                                                 'creatorRelation',
                                             ])->where('subdetail_code', $detail->subdetail_code)
+                                            ->orderBy('created_at','desc')
                                             ->get();
         return response()->json([
             'detail'=>$detail,
@@ -159,10 +160,11 @@ class KanbanController extends Controller
         try {    
             $attachmentPath = '';
             $header = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
+            $head   = TimelineHeader:: where('request_code', $header->request_code)->first();
             // Check if a file is uploaded
             if ($request->hasFile('daily_attachment')) {
                 $file = $request->file('daily_attachment');
-                $timestamp = now()->format('Ymd_His'); // Get current date and time
+                $timestamp = now()->format('Ymd_His'); // Get current date and tiheme
                 $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
                 $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
             }
@@ -179,7 +181,16 @@ class KanbanController extends Controller
                 'user_id'               => auth()->user()->id,
                 'created_at'            => date('Y-m-d H:i:s')
             ];
+            $text = "<b style='text-align:center'>" . $head->name . "</b>\n\n"
+            . "PIC          : " . auth()->user()->name . "\n"
+            . "Task       :  <b>$header->name</b>  \n"
+            . "Update Progress       :   $request->daily_description";
             TimelineSubDetailLog::create($post);
+            Telegram::sendMessage([
+                'chat_id' => $head->id_channel,
+                'parse_mode' => 'HTML',
+                'text' => $text
+            ]);
            
             return ResponseFormatter::success(   
                 $post,                              
@@ -297,7 +308,7 @@ class KanbanController extends Controller
                 'end_date'              => $request->end_date_sub_module,
                 'pic'                   => $request->pic_id,
                 'status'                => 0,
-                'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount,
+                'amount'                =>  0,
                 'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
             ];
             $post_bot =[
@@ -306,7 +317,7 @@ class KanbanController extends Controller
                 'description'           => $request->description_sub_module,
                 'start_date'            => $request->start_date_sub_module,
                 'end_date'              => $request->end_date_sub_module,
-                'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount,
+                'amount'                => 0,
                 'pic'                   => $request->pic_id, 
                 'created_at'            => date('Y-m-d H:i:s'),
                 'user_id'               => auth()->user()->id,
@@ -363,15 +374,23 @@ class KanbanController extends Controller
     function updateStatusTask(Request $request) {
         $status         = 500;
         $message        = 'Failed Update Progress, please contact ICT Dev';
-        $task           = TimelineSubDetail::where('id', $request->id)->first();
+        $task           = TimelineSubDetail::where('id', $request->done_id)->first();
+        $attachmentPath='';
         $headerTimeline = TimelineHeader::where('request_code', $task->request_code)->first();
         $leader         = DetailTeamTimeline::where('team_id',$headerTimeline->team_id)->where('position', 2)->first();
+        if ($request->hasFile('attachment_done')) {
+            $file = $request->file('attachment_done');
+            $timestamp = now()->format('Ymd_His'); // Get current date and time
+            $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
+            $attachmentPath = $file->storeAs('GalleryTask', $fileName, 'public'); // Save file to storage/AttachmentTask
+        }
         $post_update    = [
-            'status'    => $task->status ==1 ?0 : 1,
-            'update_done'  =>$task->status ==1 ?null : date('Y-m-d H:i:s'),
+            'status'        => $task->status == 1 ?0 : 1,
+            'update_done'   => $task->status == 1 ? null : date('Y-m-d H:i:s'),
+            'amount'        => $task->status == 1 ? $task->amount : $request->actual_done
             
         ];
-        $statusMessage =  $task->status ==0 ? "Has finished task " : "Has unchecked task ";
+        $statusMessage  =  $task->status ==0 ? "Has finished task : <b> $task->name </b>" : $request->reason_done;
         $activate = $request->status == 1 ?'Cancel' :'DONE';
         $post_chat=[
             'request_code'          => $task->request_code,
@@ -391,7 +410,9 @@ class KanbanController extends Controller
             'pic'                   => $task->pic,  
             'created_at'            => date('Y-m-d H:i:s'),
             'user_id'               => auth()->user()->id,
-            'remark'                => $statusMessage.' : <b>'.$task->name.'</b>',
+            'remark'                => $statusMessage,
+            'status'                => $request->done_status == 0 ? 2 : 1 ,
+            'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
         ];
         $bot=[];
         if((auth()->user()->id == $task->pic) || (auth()->user()->id == $leader->user_id)){
@@ -399,7 +420,7 @@ class KanbanController extends Controller
             $update = TimelineSubDetail::where([
                 'request_code' =>$task->request_code,
                 'detail_code' =>$task->detail_code,
-                'id'            =>$request->id
+                'id'            =>$request->done_id
             ])->update($post_update);
             if($update){
                 $statusDone     =   TimelineSubDetail::select(DB::raw('count(id) as percentage'))->where('detail_code',$task->detail_code)->where('status',1)->first();
@@ -500,7 +521,7 @@ class KanbanController extends Controller
             }
             // dd($request->status);
             if($request->status == 2){
-                $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+                $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
                 . "PIC          : " . auth()->user()->name . "\n"
                 . "Module       :  <b>$detail->name</b>  \n"
                 . "Status       :   Pending";
@@ -512,7 +533,7 @@ class KanbanController extends Controller
             }
             if($detail->status == 2){
                 
-                $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+                $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
                 . "PIC          : " . auth()->user()->name . "\n"
                 . "Module       :  <b>$detail->name</b>  \n"
                 . "Status       :  $status ";
@@ -527,6 +548,20 @@ class KanbanController extends Controller
                 $status         = 200;
                 $message        = 'Successfully Update Status ';
             }
+            $status = $request->status == 2 ? 'pending' : 'change';
+            
+            $post_log =[
+                'request_code' =>$detail->request_code,
+                'detail_code' =>$detail->detail_code,
+                'name' =>$detail->name,
+                'start_date' =>$detail->start_date,
+                'end_date' =>$detail->end_date,
+                'description' =>$detail->description,
+                'plan' =>$detail->plan,
+                'user_id' =>auth()->user()->id,
+                'remark' =>auth()->user()->name." has $status status this module"
+            ];
+            TimelineDetailLog::create($post_log);
         }
       
         return response()->json([
@@ -539,7 +574,7 @@ class KanbanController extends Controller
         // dd($request);
         $header = TimelineHeader::where('request_code', $request->request_code)->first();
         // dd($header);
-        $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+        $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
         . "PIC          : " . $request->user . "\n"
         . "Task         :  <b>$request->task</b>  \n"
         . "Status       :   $request->activate \n";
@@ -567,7 +602,7 @@ class KanbanController extends Controller
             'description'           => $request->description_edit_sub_module,
             'start_date'            => $request->start_date_edit_sub_module,
             'end_date'              => $request->end_date_edit_sub_module,
-            'amount'                => $id->amount ==0 ? 0 : $request->actual_amount_edit,
+            'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount_edit,
             'pic'                   => $request->pic_id_edit,
         ];
    
@@ -577,7 +612,7 @@ class KanbanController extends Controller
             'description'           => $request->description_edit_sub_module,
             'start_date'            => $request->start_date_edit_sub_module,
             'end_date'              => $request->end_date_edit_sub_module,
-            'amount'                => $id->amount ==0 ? 0 : $request->actual_amount_edit,
+            'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount_edit,
             'pic'                   => $request->pic_id_edit,
             'created_at'            => date('Y-m-d H:i:s'),
             'user_id'               => auth()->user()->id,
@@ -589,33 +624,33 @@ class KanbanController extends Controller
          $newPIC = User::find( $request->pic_id_edit);
         //  dd($user);
         if($id->amount ==0){
-            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
             ."Old Task : \n \n \n"
             . "PIC          : " .$id->userRelation->name . "\n"
             . "Task         :  <b>$id->name</b>  \n"
             . "Start Date   :   $id->start_date \n"
             . "End Date   :   $id->end_date \n"
-            . "Description   :   $id->description \n\n\n\n"
+            . "Description   :   $id->description \n\n"
             
             ."New Task : \n \n \n "
             . "PIC          : " . $newPIC->name . "\n"
             . "Task         :  <b>$request->name_edit_sub_module</b>  \n"
             . "Start Date   :   $request->start_date_edit_sub_module \n"
             . "End Date   :   $request->end_date_edit_sub_module \n"
-            . "Description   :   $request->description_edit_sub_module \n\n\n\n"
+            . "Description   :   $request->description_edit_sub_module \n\n"
             
             ."Updated By  : $user
             ";
 
         }else{
-            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n\n\n"
+            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
             ."Old Task : \n \n \n"
             . "PIC              : " .$id->userRelation->name . "\n"
             . "Task             :  <b>$id->name</b>  \n"
             . "Start Date       :   $id->start_date \n"
             . "End Date         :   $id->end_date \n"
             . "Actual           :   $id->amount \n"
-            . "Description      :   $id->description \n\n\n\n"
+            . "Description      :   $id->description \n\n"
             
             ."New Task : \n \n \n "
             . "PIC          : " . $newPIC->name . "\n"
@@ -623,7 +658,7 @@ class KanbanController extends Controller
             . "Start Date   :   $request->start_date_edit_sub_module \n"
             . "End Date   :   $request->end_date_edit_sub_module \n"
             . "Actual           :   $request->actual_amount_edit \n"
-            . "Description   :   $request->description_edit_sub_module \n\n\n\n"
+            . "Description   :   $request->description_edit_sub_module \n\n"
             
             ."Updated By  : $user
             ";

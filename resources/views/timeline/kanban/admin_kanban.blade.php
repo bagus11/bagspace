@@ -198,13 +198,13 @@
 
 <style>
        .selectOption2{
-        font-size:9px;
+        font-size:10px;
     }
     .datatable-bordered{
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100% !important;
-  font-size: 9px;
+  font-size: 10px;
   overflow-x:auto !important;
   
   }
@@ -237,28 +237,28 @@
         }
     .select2{
         width: 100% !important;
-        font-size:9px;
+        font-size:10px;
     }
     .select2-selection__rendered {
         line-height: 25px !important;
-        font-size:9px;
+        font-size:10px;
     
     }
     .select2-container .select2-selection--single {
         height: 35px !important;
-        font-size:9px;
+        font-size:10px;
     }
     .select2-selection__arrow {
         height: 34px !important;
-        font-size:9px;
+        font-size:10px;
     }
 
     .dataTables_scrollHeadInner, .table{
         width:100%!important; 
-        font-size:9px;
+        font-size:10px;
     }
     p{
-    font-size: 11px !important;
+    font-size: 12px !important;
     /* color: #cacaca !important; */
     }
     .open\:bg-green-200[open] {
@@ -321,7 +321,7 @@
         font-family: Poppins;
         border-collapse: collapse;
         border-spacing: 0;
-        font-size: 9px;
+        font-size: 10px;
         width: 100% !important;
         /* border: 1px solid #ddd; */
         }
@@ -353,7 +353,7 @@
         background-color: #27ae60;
         border-radius: 8px;
         border-style: none;
-        box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+        box-shadow: rgba(39, 174, 96, .15) 0 4px 10px;
         box-sizing: border-box;
         color: #fff;
         cursor: pointer;
@@ -394,7 +394,7 @@
         box-shadow: rgba(39, 174, 96, .2) 0 6px 12px;
         }
         .myFont{
-        font-size:9px !important
+        font-size:10px !important
         }
         .bg-core {
         background-color: #213555 !important;
@@ -447,57 +447,57 @@
 
   .form-control{
     height: 30px;
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .select2{
       width: 100% !important;
-      font-size:9px;
+      font-size:10px;
   }
   .select2-selection__rendered {
       line-height: 30px !important;
       margin-top:-7px;
-      font-size:9px;
+      font-size:10px;
   }
   .select2-container .select2-selection--single {
       height: 35px !important;
-      font-size:9px;
+      font-size:10px;
   }
   .modal {
     overflow-y:auto !important;
   }
   .select2-selection__arrow {
       height: 34px !important;
-      font-size:9px;
+      font-size:10px;
   }
-  .dataTables_length, .dataTables_length select{ font-size: 9px !important;}
+  .dataTables_length, .dataTables_length select{ font-size: 10px !important;}
   .dataTables_info{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .dataTables_filter{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .select2-dropdown{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .selectOption2{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .select2-dropdown--below{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .select2-results__option{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .select2-search__field{
     height: 35px !important;
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
   .title-head{
     font-size: 14px !important;
     font-weight:bold
   }
   .toast-message{
-    font-size: 9px !important;
+    font-size: 10px !important;
     font-family: Poppins !important;
     font-weight: bold !important
   }
@@ -506,7 +506,7 @@
   .dataTables_wrapper .dataTables_paginate .paginate_button
     {
         width: 40px !important;
-        font-size: 9px !important;
+        font-size: 10px !important;
     }
     .dataTables_scroll{
       width: 100% !important;

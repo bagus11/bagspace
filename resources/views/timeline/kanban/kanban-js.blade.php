@@ -4,10 +4,6 @@
   var dataStart ={
     'request_code' : request_code
   }
-//   $(document).ready(function () {
- 
-
-//   })
   $(document).ready(function () {
         $('#addTaskModal').on('show.bs.modal', function () {
             $('#detailCardModal').css('z-index', 1039);
@@ -33,127 +29,122 @@
   var header_type = $('#header_type').val()
   getData(dataStart)
 //   Update Status When Drag Kanban
+ 
+// Action
     document.addEventListener('DOMContentLoaded', function () {
-            // Set up Dragula for the kanban board
-            const kanbanBoard = document.getElementById('kanban-board');
-            const in_progress = document.getElementById('in-progress');
-            const pending = document.getElementById('pending');
-            const done = document.getElementById('done');
-            const columns = Array.from(document.querySelectorAll('.kanban-cards'));
-            const drake = dragula(columns);
+                // Set up Dragula for the kanban board
+        const kanbanBoard = document.getElementById('kanban-board');
+        const in_progress = document.getElementById('in-progress');
+        const pending = document.getElementById('pending');
+        const done = document.getElementById('done');
+        const columns = Array.from(document.querySelectorAll('.kanban-cards'));
+        const drake = dragula(columns);
 
-            // Add event listeners for when a card is dropped
-            drake.on('drop', async function (el, target, source, sibling) {
-                    // Handle the card's new position and update status
-                    const cardId = el.id;
-                    const oldColumn = source.parentElement.id;
-                    const newColumn = target.parentElement.id;
-                    // Example: If moving from "To Do" to "In Progress," update status
-                    await updateStatus(cardId, newColumn);
+        // Add event listeners for when a card is dropped
+        drake.on('drop', async function (el, target, source, sibling) {
+                // Handle the card's new position and update status
+                const cardId = el.id;
+                const oldColumn = source.parentElement.id;
+                const newColumn = target.parentElement.id;
+                // Example: If moving from "To Do" to "In Progress," update status
+                await updateStatus(cardId, newColumn);
 
-                    // Add more conditions for other column transitions as needed
-                });
-
-                // Simulate an asynchronous update function (replace with your actual logic)
-                async function updateStatus(cardId, newStatus) {
-                var status = 0
-                if(newStatus =='parent1'){
-                    status = 0
-                }else if(newStatus =='parent2'){ 
-                    status = 1
-                }else if(newStatus =='parent3'){ 
-                    status = 2
-                }
-                else if(newStatus =='parent4'){ 
-                    status = 3
-                }
-                var data ={
-                    'detail_code' : cardId,
-                    'status' : status,
-                }
-                $.ajax({
-                        headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        url: "{{route('updateTimelineDetailStatus')}}",
-                        type: "post",
-                        dataType: 'json',
-                        async: true,
-                        data: data,
-                        success: function(response) {
-                            $('.message_error').html('')
-                            if(response.status == 200){
-                                toastr['success'](response.message);
-                            }else{
-                                toastr['error'](response.message);
-                                getDataNoSwal(dataStart)
-                            }
-                            // getDataNoSwal(dataStart)
-                            
-                        },
-                        error: function(xhr, status, error) {
-                            swal.close();
-                            toastr['error']('Failed to get data, please contact ICT Developer');
-                        }
-                    });
-                
-                }
+                // Add more conditions for other column transitions as needed
             });
-            $(document).ready(function () {
-            $('#detailCardModal').on('hidden.bs.modal', function () {
-            // var detail_code = $('#detail_code_chat').val()
-            clearInterval(chat);
-            getDataNoSwal(dataStart)
-            })
-    })
-    $('#send_chat').on('click', function(){
-            $('.message_error').html('')
-            $('#send_chat').prop('disabled',true)
-            var formData        = new FormData();    
-            var detail_code     = $('#detail_code_chat').val()
-            var remark_chat     = $('#remark_chat').val()
-            formData.append('detail_code', detail_code)
-            formData.append('remark_chat',$('#remark_chat').val())
-            formData.append('file_attach',$('#file_attach')[0].files[0]);
-            formData.append('request_code_chat',$('#request_code_chat').val())
-            if(remark_chat == ''){
-                $('.remark_chat_error').html('remark is required')
-                $('#send_chat').prop('disabled',false)
-            }else{
-                $.ajax({
+
+            // Simulate an asynchronous update function (replace with your actual logic)
+            async function updateStatus(cardId, newStatus) {
+            var status = 0
+            if(newStatus =='parent1'){
+                status = 0
+            }else if(newStatus =='parent2'){ 
+                status = 1
+            }else if(newStatus =='parent3'){ 
+                status = 2
+            }
+            else if(newStatus =='parent4'){ 
+                status = 3
+            }
+            var data ={
+                'detail_code' : cardId,
+                'status' : status,
+            }
+            $.ajax({
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: "{{route('sendChat')}}",
+                    url: "{{route('updateTimelineDetailStatus')}}",
                     type: "post",
                     dataType: 'json',
                     async: true,
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    beforeSend: function() {
-                        // SwalLoading('Inserting progress, please wait .');
-                        $('#send_chat').prop('disabled',true)
-                    },
+                    data: data,
                     success: function(response) {
-                            $('.message_error').html('')
-                            $('#send_chat').prop('disabled',false)
-                            showNoSwal(detail_code)
-                            $('#remark_chat').val('')
-                
+                        $('.message_error').html('')
+                        if(response.status == 200){
+                            toastr['success'](response.message);
+                        }else{
+                            toastr['error'](response.message);
+                            getDataNoSwal(dataStart)
+                        }
+                        // getDataNoSwal(dataStart)
+                        
                     },
                     error: function(xhr, status, error) {
-                        // swal.close();
+                        swal.close();
                         toastr['error']('Failed to get data, please contact ICT Developer');
                     }
                 });
+            
             }
-        // uploadFile('save_wo',formData,'work_order_list')
+    });
+
+    $('#send_chat').on('click', function(){
+        $('.message_error').html('')
+        $('#send_chat').prop('disabled',true)
+        var formData        = new FormData();    
+        var detail_code     = $('#detail_code_chat').val()
+        var remark_chat     = $('#remark_chat').val()
+        formData.append('detail_code', detail_code)
+        formData.append('remark_chat',$('#remark_chat').val())
+        formData.append('file_attach',$('#file_attach')[0].files[0]);
+        formData.append('request_code_chat',$('#request_code_chat').val())
+        if(remark_chat == ''){
+            $('.remark_chat_error').html('remark is required')
+            $('#send_chat').prop('disabled',false)
+        }else{
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('sendChat')}}",
+                type: "post",
+                dataType: 'json',
+                async: true,
+                processData: false,
+                contentType: false,
+                data: formData,
+                beforeSend: function() {
+                    // SwalLoading('Inserting progress, please wait .');
+                    $('#send_chat').prop('disabled',true)
+                },
+                success: function(response) {
+                        $('.message_error').html('')
+                        $('#send_chat').prop('disabled',false)
+                        showNoSwal(detail_code)
+                        $('#remark_chat').val('')
+            
+                },
+                error: function(xhr, status, error) {
+                    // swal.close();
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            });
+        }
+    // uploadFile('save_wo',formData,'work_order_list')
     })
     $('.btn_module').on('click',function(){
         $('#name_module').val('')
         $('#description_module').val('')
-      
         if(header_type != 1){
             $('#purchase_container').prop('hidden', false)
         }else{
@@ -161,30 +152,36 @@
         }
     })
     $("#plan_amount").on({
-                    keyup: function() {
-                    formatCurrency($(this));
-                    },
-                    blur: function() { 
-                    formatCurrency($(this), "blur");
-                    }
+                keyup: function() {
+                formatCurrency($(this));
+                },
+                blur: function() { 
+                formatCurrency($(this), "blur");
+                }
     });
-    
     $("#plan_amount_edit").on({
-                    keyup: function() {
-                    formatCurrency($(this));
-                    },
-                    blur: function() { 
-                    formatCurrency($(this), "blur");
-                    }
+                keyup: function() {
+                formatCurrency($(this));
+                },
+                blur: function() { 
+                formatCurrency($(this), "blur");
+                }
     });
-
     $("#actual_amount").on({
-                    keyup: function() {
-                    formatCurrency($(this));
-                    },
-                    blur: function() { 
-                    formatCurrency($(this), "blur");
-                    }
+                keyup: function() {
+                formatCurrency($(this));
+                },
+                blur: function() { 
+                formatCurrency($(this), "blur");
+                }
+    });
+    $("#actual_done").on({
+                keyup: function() {
+                formatCurrency($(this));
+                },
+                blur: function() { 
+                formatCurrency($(this), "blur");
+                }
     });
     $('#btn_save_ticket').on('click',function(){
         var plan_amount = $('#plan_amount').val()
@@ -222,35 +219,35 @@
                 toastr['error']('Failed to get data, please contact ICT Developer');
             }
         });
- 
+
     })
     $('#btn_new_module').on('click', function(){
-        $('#status_module').val(0)
+    $('#status_module').val(0)
     })
     $('#btn_on_progress_module').on('click', function(){
-        $('#status_module').val(1)
+    $('#status_module').val(1)
     })
     $('#btn_pending_module').on('click', function(){
-        $('#status_module').val(2)
+    $('#status_module').val(2)
     })
     $('#btn_done_module').on('click', function(){
-        $('#status_module').val(3)
+    $('#status_module').val(3)
     })
     $('#btn_add_task').on('click', function(){
-        var detail_code = $('#detail_code_chat').val()
-        $('#name_sub_module').val('')
-        $('#description_sub_module').val('')
-        $('#pic_id').val('')
-        $('#select_pic').val('')
-        $('#select_pic').select2().trigger('change')
-        $('#actual_amount').val('')
-        if(header_type == 1){
-            $('#actual_label').prop('hidden', true)
-            $('#amount_container').prop('hidden', true)
-        }else{
-            $('#actual_label').prop('hidden', false)
-            $('#amount_container').prop('hidden', false)
-        }
+    var detail_code = $('#detail_code_chat').val()
+    $('#name_sub_module').val('')
+    $('#description_sub_module').val('')
+    $('#pic_id').val('')
+    $('#select_pic').val('')
+    $('#select_pic').select2().trigger('change')
+    $('#actual_amount').val('')
+    if(header_type == 1){
+        $('#actual_label').prop('hidden', true)
+        $('#amount_container').prop('hidden', true)
+    }else{
+        $('#actual_label').prop('hidden', false)
+        $('#amount_container').prop('hidden', false)
+    }
         $.ajax({
             headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -260,7 +257,7 @@
             dataType: 'json',
             async: true,
             data:{
-              'request_code' : $('#request_code').val(),
+            'request_code' : $('#request_code').val(),
             },
             success: function(response) {
                 $('#select_pic').empty()
@@ -278,18 +275,8 @@
     onChange('select_pic','pic_id')
     $('#btn_save_task').on('click', function(){
         var detail_code = $('#detail_code_chat').val()
-        var actual_amount = $('#actual_amount').val()
-        var actual_amount_convert = parseFloat(actual_amount.replace(/,/g, ''));
-        var data ={
-            'request_code'      : $('#request_code').val(),
-            'detail_code'       : $('#detail_code_chat').val(),
-            'name_sub_module'   : $('#name_sub_module').val(),
-            'start_date_sub_module'   : $('#start_date_sub_module').val(),
-            'end_date_sub_module'   : $('#end_date_sub_module').val(),
-            'description_sub_module'   : $('#description_sub_module').val(),
-            'pic_id'   : $('#pic_id').val(),
-            'actual_amount'   : actual_amount_convert,
-        }
+        // var actual_amount = $('#actual_amount').val()
+        // var actual_amount_convert = parseFloat(actual_amount.replace(/,/g, ''));
         var formData        = new FormData();    
             formData.append('request_code',$('#request_code').val())
             formData.append('detail_code',$('#detail_code_chat').val())
@@ -298,9 +285,9 @@
             formData.append('end_date_sub_module',$('#end_date_sub_module').val())
             formData.append('description_sub_module',$('#description_sub_module').val())
             formData.append('pic_id',$('#pic_id').val())
-            formData.append('actual_amount',actual_amount_convert)
+            // formData.append('actual_amount',actual_amount_convert)
             formData.append('attachment_task',$('#attachment_task')[0].files[0]);
-        
+
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -339,400 +326,442 @@
                 }
             }
         });  
-       
+
     })
     $('#btn_edit_module').on('click', function(){
         var data ={
             'detail_code' : $('#detail_code_chat').val()
         }
-       
+
     })
-//   Update Status When Drag Kanban
+    //   Update Status When Drag Kanban
     $('#task_subdetail_table').on('change', '.is_checked', function(){
         var id      = $(this).data('id')
         var status  = $(this).data('status')
         var detail_code = $('#detail_code_chat').val()
-        var data ={
-            'id':id,
-            'status':status
+        $('#done_status').val(status)
+        $('#done_id').val(id)
+        $('#taskDoneModal').modal('show')
+      
+        if(status == 1){
+            $('#reason_done_label').prop('hidden', false)
+            $('#actual_done_label').prop('hidden', true)
+            $('#attachment_done_label').prop('hidden', true)
+        }else{
+            $('#reason_done_label').prop('hidden', true)
+            $('#actual_done_label').prop('hidden', false)
+            $('#attachment_done_label').prop('hidden', false)
         }
-        $.ajax({
+
+    })
+    $('#task_subdetail_table').on('click', '.detail', function(){
+    var id = $(this).data('id')
+    $('#log_task_table').DataTable().clear();
+    $('#log_task_table').DataTable().destroy();
+    $.ajax({
                 headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{route('updateStatusTask')}}",
-                type: "post",
+                url: "{{route('getSubDetailTimeline')}}",
+                type: "get",
                 dataType: 'json',
                 async: true,
-                data: data,
+                data:{
+                    'id' :id
+                },
                 success: function(response) {
-                    if(response.status==500){
-                        toastr['warning'](response.message);
-                        showNoSwal(detail_code)
-                       
+                    $('#start_date_sub_task_label').val(response.detail.start_date)
+                    $('#end_date_task_label').val(response.detail.end_date)
+                    $('#name_task_label').html(': ' + response.detail.name)
+                    $('#select_pic_task').html(': ' + response.detail.user_relation.name)
+                    var attachment_label ='-'
+                    if(response.detail.attachment !==''){
+                        attachment_label =`<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.detail.attachment}')}}" target="_blank">
+                            <i class="fa-solid fa-file-pdf"></i> Click Here
+                            </a>`
                     }
-                    else{
-                        toastr['success'](response.message);
-                        showNoSwal(detail_code)
-                        postBot(response.bot)
+                    $('#attachment_label').html(': ' + attachment_label)
+                    if(header_type != 1){
+                        $('#actual_amount_label').html(': ' + convertToRupiah(response.detail.amount))
+                    }else{
+                        $('#actual_amount_label').html(': - ')
                     }
+                    $('#description_task_label').html(': ' + response.detail.description)
                     
+                    var mapping_data =''
+        
+                            
+                    for(i = 0; i < response.log_task.length; i++ )
+                        {
+                            const d = new Date(response.log_task[i].created_at)
+                            const date = d.toISOString().split('T')[0];
+                            const time = d.toTimeString().split(' ')[0];
+                            var status =response.log_task[i].status == 1 ? "On Progress" : "DONE"
+
+                                mapping_data += `<tr style="text-align: center;">
+                                                    <td style="text-align:center;width:15%">${date} ${time}</td>
+                                                    <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
+                                               
+                                                    <td style="text-align:left;width:10%">${response.log_task[i].user_relation.name}</td>
+                                                    <td style="text-align:center;">${convertDate(response.log_task[i].start_date)}</td>
+                                                    <td style="text-align:center;">${convertDate(response.log_task[i].end_date)}</td>
+                                                    <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
+                                                    <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
+                                                    <td style="text-align:left;width:10%">${status}</td>
+                                                </tr>
+                                        `;
+                        }
+                    $('#log_task_table > tbody:first').html(mapping_data);
+                    $('#log_task_table').DataTable({
+                        // scrollX  : true,
+                        ordering: true,
+                        language: {
+                                            'paginate': {
+                                                    'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                                    'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                            }
+                                        },
+                        columns: [
+                            { type: 'date' }, // Assuming the first column is date-like
+                            null, // Assuming other columns don't need special sorting
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                        ]
+                    }).columns.adjust()
                 },
                 error: function(xhr, status, error) {
                     swal.close();
-                    toastr['error']('Failed to get data, please contact ICT Developer');
+                    toastr['warning']('Failed to get data, please contact ICT Developer');
                 }
             });
     })
-    $('#task_subdetail_table').on('click', '.detail', function(){
-        var id = $(this).data('id')
-        $('#log_task_table').DataTable().clear();
-        $('#log_task_table').DataTable().destroy();
-        $.ajax({
-                    headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "{{route('getSubDetailTimeline')}}",
-                    type: "get",
-                    dataType: 'json',
-                    async: true,
-                    data:{
-                        'id' :id
-                    },
-                    success: function(response) {
-                        $('#start_date_sub_task_label').val(response.detail.start_date)
-                        $('#end_date_task_label').val(response.detail.end_date)
-                        $('#name_task_label').html(': ' + response.detail.name)
-                        $('#select_pic_task').html(': ' + response.detail.user_relation.name)
-                        var attachment_label ='-'
-                        if(response.detail.attachment !==''){
-                            attachment_label =`<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.detail.attachment}')}}" target="_blank">
-                                <i class="fa-solid fa-file-pdf"></i> Click Here
-                                </a>`
-                        }
-                        $('#attachment_label').html(': ' + attachment_label)
-                        if(header_type != 1){
-                            $('#actual_amount_label').html(': ' + convertToRupiah(response.detail.amount))
-                        }else{
-                            $('#actual_amount_label').html(': - ')
-                        }
-                        $('#description_task_label').html(': ' + response.detail.description)
-                        
-                        var mapping_data =''
-            
-                                
-                        for(i = 0; i < response.log_task.length; i++ )
-                            {
-                                const d = new Date(response.log_task[i].created_at)
-                                const date = d.toISOString().split('T')[0];
-                                const time = d.toTimeString().split(' ')[0];
-
-                                    mapping_data += `<tr style="text-align: center;">
-                                                        <td style="text-align:center;width:10%">${convertDate(date)} ${time}</td>
-                                                        <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
-                                                        <td style="text-align:left;width:10%">${response.log_task[i].name}</td>
-                                                        <td style="text-align:left;width:15%">${response.log_task[i].user_relation.name}</td>
-                                                        <td style="text-align:center;width:10%">${convertDate(response.log_task[i].start_date)}</td>
-                                                        <td style="text-align:center;width:10%">${convertDate(response.log_task[i].end_date)}</td>
-                                                        <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
-                                                        <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
-                                                    </tr>
-                                            `;
-                            }
-                        $('#log_task_table > tbody:first').html(mapping_data);
-                        $('#log_task_table').DataTable({
-                            // scrollX  : true,
-                            language: {
-                                                'paginate': {
-                                                        'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
-                                                        'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
-                                                }
-                                            },
-                        }).columns.adjust()
-                    },
-                    error: function(xhr, status, error) {
-                        swal.close();
-                        toastr['warning']('Failed to get data, please contact ICT Developer');
-                    }
-                });
-    })
     $('#task_subdetail_table').on('click','.update', function(){
-        $('#remark_edit').val('')
-        $.ajax({
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: "{{route('getTeam')}}",
-            type: "get",
-            dataType: 'json',
-            async: true,
-            data:{
-              'request_code' : $('#request_code').val(),
-            },
-            success: function(response) {
-                $('#select_pic_edit').empty()
-                    $.each(response.data,function(i,data){
-                        $('#select_pic_edit').append('<option data-name="'+ data.user_relation.name +'" value="'+data.user_id+'">' + data.user_relation.name +'</option>');
-                    });
-            },
-            error: function(xhr, status, error) {
-                toastr['error']('Failed to get data, please contact ICT Developer');
-            }
-        });
-
-        var id = $(this).data('id')
-        
-        var data ={
-            'id': id
+    $('#remark_edit').val('')
+    $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: "{{route('getTeam')}}",
+        type: "get",
+        dataType: 'json',
+        async: true,
+        data:{
+        'request_code' : $('#request_code').val(),
+        },
+        success: function(response) {
+            $('#select_pic_edit').empty()
+                $.each(response.data,function(i,data){
+                    $('#select_pic_edit').append('<option data-name="'+ data.user_relation.name +'" value="'+data.user_id+'">' + data.user_relation.name +'</option>');
+                });
+        },
+        error: function(xhr, status, error) {
+            toastr['error']('Failed to get data, please contact ICT Developer');
         }
-      
-        $.ajax({
-                    headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "{{route('getSubDetailTimeline')}}",
-                    type: "get",
-                    dataType: 'json',
-                    async: true,
-                    data:data,
-                    beforeSend: function() {
-                        SwalLoading('Please wait ...');
-                    },
-                    success: function(response) {
-                        swal.close()
-                        if(response.detail.amount == 0 || response.detail.amount == null){
-                            $('#amount_container_edit').prop('hidden', true)
-                            $('#actual_label_edit').prop('hidden', true)
-                        }else{
-                            $('#amount_container_edit').prop('hidden', false)
-                            $('#actual_label_edit').prop('hidden', false)
-                        }
-                        $('#start_date_edit_sub_module').val(response.detail.start_date)
-                        $('#end_date_edit_sub_module').val(response.detail.end_date)
-                        $('#name_edit_sub_module').val(response.detail.name)
-                        $('#actual_amount_edit').val(response.detail.amount)
-                        $('#description_edit_sub_module').val(response.detail.description)
-                        $('#select_pic_edit').val(response.detail.pic)
-                        $('#select_pic_edit').select2().trigger('change')
-                        $('#taskId').val(id)
-                    },
-                    
-                    error: function(xhr, status, error) {
-                        swal.close();
-                        toastr['warning']('Failed to get data, please contact ICT Developer');
+    });
+
+    var id = $(this).data('id')
+
+    var data ={
+        'id': id
+    }
+
+    $.ajax({
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('getSubDetailTimeline')}}",
+                type: "get",
+                dataType: 'json',
+                async: true,
+                data:data,
+                beforeSend: function() {
+                    SwalLoading('Please wait ...');
+                },
+                success: function(response) {
+                    swal.close()
+                    if(header_type == 1){
+                        $('#amount_container_edit').prop('hidden', true)
+                        $('#actual_label_edit').prop('hidden', true)
+                    }else{
+                        $('#amount_container_edit').prop('hidden', false)
+                        $('#actual_label_edit').prop('hidden', false)
                     }
-        });
+                    $('#start_date_edit_sub_module').val(response.detail.start_date)
+                    $('#end_date_edit_sub_module').val(response.detail.end_date)
+                    $('#name_edit_sub_module').val(response.detail.name)
+                    $('#actual_amount_edit').val(response.detail.amount)
+                    $('#description_edit_sub_module').val(response.detail.description)
+                    $('#select_pic_edit').val(response.detail.pic)
+                    $('#select_pic_edit').select2().trigger('change')
+                    $('#taskId').val(id)
+                },
+                
+                error: function(xhr, status, error) {
+                    swal.close();
+                    toastr['warning']('Failed to get data, please contact ICT Developer');
+                }
+    });
 
     })
     $('#task_subdetail_table').on('click', '.daily', function(){
-        var task = $(this).data('task')
-        $('#daily_task').val(task)
+    var task = $(this).data('task')
+    $('#daily_task').val(task)
     })
     onChange('select_pic_edit','pic_id_edit')
     $('#btn_edit_task').on('click', function(){
-        var data = {
-            'name_edit_sub_module' : $('#name_edit_sub_module').val(),
-            'start_date_edit_sub_module' : $('#start_date_edit_sub_module').val(),
-            'end_date_edit_sub_module' : $('#end_date_edit_sub_module').val(),
-            'actual_amount_edit' : $('#actual_amount_edit').val(),
-            'description_edit_sub_module' : $('#description_edit_sub_module').val(),
-            'remark_edit' : $('#remark_edit').val(),
-            'pic_id_edit' : $('#pic_id_edit').val(),
-            'id'    :$('#taskId').val(),
-        }
-        $.ajax({
-            url: "{{route('updateTask')}}",
-            type: "post",
-            dataType: 'json',
-            data:data,
-            async: true,
-            beforeSend: function() {
-                SwalLoading('Please wait ...');
-            },
-            success:function(response){
-                swal.close()
-                $('#updateTaskModal').modal('hide')
-                toastr['success'](response.meta.message);
-                showNoSwal(response.data.detail_code)
-            },
-            error: function(response) {
-                $('.message_error').html('')
-                swal.close();
-                if(response.status == 500){
-                    toastr['error'](response.responseJSON.meta.message);
-                    return false
-                }
-                if(response.status === 422)
-                {
-                    $.each(response.responseJSON.errors, (key, val) => 
-                        {
-                            $('span.'+key+'_error').text(val)
-                        });
-                }else{
-                    toastr['error']('Failed to get data, please contact ICT Developer');
-                }
+    var data = {
+        'name_edit_sub_module' : $('#name_edit_sub_module').val(),
+        'start_date_edit_sub_module' : $('#start_date_edit_sub_module').val(),
+        'end_date_edit_sub_module' : $('#end_date_edit_sub_module').val(),
+        'actual_amount_edit' : $('#actual_amount_edit').val(),
+        'description_edit_sub_module' : $('#description_edit_sub_module').val(),
+        'remark_edit' : $('#remark_edit').val(),
+        'pic_id_edit' : $('#pic_id_edit').val(),
+        'id'    :$('#taskId').val(),
+    }
+    $.ajax({
+        url: "{{route('updateTask')}}",
+        type: "post",
+        dataType: 'json',
+        data:data,
+        async: true,
+        beforeSend: function() {
+            SwalLoading('Please wait ...');
+        },
+        success:function(response){
+            swal.close()
+            $('#updateTaskModal').modal('hide')
+            toastr['success'](response.meta.message);
+            showNoSwal(response.data.detail_code)
+        },
+        error: function(response) {
+            $('.message_error').html('')
+            swal.close();
+            if(response.status == 500){
+                toastr['error'](response.responseJSON.meta.message);
+                return false
             }
-        });  
+            if(response.status === 422)
+            {
+                $.each(response.responseJSON.errors, (key, val) => 
+                    {
+                        $('span.'+key+'_error').text(val)
+                    });
+            }else{
+                toastr['error']('Failed to get data, please contact ICT Developer');
+            }
+        }
+    });  
     })
     $('#btn_update_module').on('click', function(){
-        var detail_code =  $('#detail_code_chat').val()
-        var plan        = $('#plan_amount_edit').val()
-        var plan_convert = parseFloat(plan.replace(/,/g, ''));
-        var data ={
-            'start_date_module_edit'        : $('#start_date_module_edit').val(),
-            'end_date_module_edit'          : $('#end_date_module_edit').val(),
-            'name_module_edit'              : $('#name_module_edit').val(),
-            'description_module_edit'       : $('#description_module_edit').val(),
-            'plan_amount_edit'              : plan_convert,
-            'reason_module_edit'            : $('#reason_module_edit').val(),
-            'detail_code'                   : detail_code
-        }
-        $.ajax({
-            url: "{{route('updateModule')}}",
-            type: "post",
-            dataType: 'json',
-            data:data,
-            async: true,
-            beforeSend: function() {
-                SwalLoading('Please wait ...');
-            },
-            success:function(response){
-                swal.close()
-                $('#editModuleModal').modal('hide')
-                toastr['success'](response.meta.message);
-                showNoSwal(detail_code)
-            },
-            error: function(response) {
-                $('.message_error').html('')
-                swal.close();
-                if(response.status == 500){
-                    toastr['error'](response.responseJSON.meta.message);
-                    return false
-                }
-                if(response.status === 422)
-                {
-                    $.each(response.responseJSON.errors, (key, val) => 
-                        {
-                            $('span.'+key+'_error').text(val)
-                        });
-                }else{
-                    toastr['error']('Failed to get data, please contact ICT Developer');
-                }
+    var detail_code =  $('#detail_code_chat').val()
+    var plan        = $('#plan_amount_edit').val()
+    var plan_convert = parseFloat(plan.replace(/,/g, ''));
+    var data ={
+        'start_date_module_edit'        : $('#start_date_module_edit').val(),
+        'end_date_module_edit'          : $('#end_date_module_edit').val(),
+        'name_module_edit'              : $('#name_module_edit').val(),
+        'description_module_edit'       : $('#description_module_edit').val(),
+        'plan_amount_edit'              : plan_convert,
+        'reason_module_edit'            : $('#reason_module_edit').val(),
+        'detail_code'                   : detail_code
+    }
+    $.ajax({
+        url: "{{route('updateModule')}}",
+        type: "post",
+        dataType: 'json',
+        data:data,
+        async: true,
+        beforeSend: function() {
+            SwalLoading('Please wait ...');
+        },
+        success:function(response){
+            swal.close()
+            $('#editModuleModal').modal('hide')
+            toastr['success'](response.meta.message);
+            showNoSwal(detail_code)
+        },
+        error: function(response) {
+            $('.message_error').html('')
+            swal.close();
+            if(response.status == 500){
+                toastr['error'](response.responseJSON.meta.message);
+                return false
             }
-        });  
+            if(response.status === 422)
+            {
+                $.each(response.responseJSON.errors, (key, val) => 
+                    {
+                        $('span.'+key+'_error').text(val)
+                    });
+            }else{
+                toastr['error']('Failed to get data, please contact ICT Developer');
+            }
+        }
+    });  
 
     })
 
     // Gantt Chart
-            $('#gantt-tab').on('click', function(){
-                $.ajax({
-                    url: "{{route('getGanttChart')}}",
-                    data : dataStart,
-                    type: 'GET',
-                    dataType: 'json',  // Assuming response will be JSON
-                    success: function(data) {
-                        updateGanttChart(data);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error response
-                        console.error('Error fetching data:', error);
-                        // Example: Show error message to user
-                        alert('Error fetching data. Please try again later.');
-                    }
-                });
-            })
-             
-            function formatDate(dateStr) {
-                var date = new Date(dateStr);
-                return date.getFullYear() + '-' +
-                    ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
-                    ('0' + date.getDate()).slice(-2);
-            }
-
-            function calculateDuration(startDateStr, endDateStr) {
-                var startDate = new Date(startDateStr);
-                var endDate = new Date(endDateStr);
-                var duration = (endDate - startDate) / (1000 * 60 * 60 * 24);
-                return Math.round(duration);
-            }
-            // Set custom task type for milestones
-            gantt.templates.task_class = function (start, end, task) {
-                if (task.type == 'milestone') {
-                    return "milestone";
-                } else if (task.overdue) {
-                    return "overdue";
+        $('#gantt-tab').on('click', function(){
+            $.ajax({
+                url: "{{route('getGanttChart')}}",
+                data : dataStart,
+                type: 'GET',
+                dataType: 'json',  // Assuming response will be JSON
+                success: function(data) {
+                    updateGanttChart(data);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error('Error fetching data:', error);
+                    // Example: Show error message to user
+                    alert('Error fetching data. Please try again later.');
                 }
-                return "";
-            };
-
-            gantt.templates.tooltip_text = function(start, end, task) {
-                var text = '<b>Task:</b> ' + task.text + '<br>';
-                text += '<b>Start Date:</b> ' + gantt.templates.tooltip_date_format(start) + '<br>';
-                text += '<b>End Date:</b> ' + gantt.templates.tooltip_date_format(end) + '<br>';
-                text += '<b>Progress:</b> ' + (task.progress * 100).toFixed(2) + '%<br>';
-                if (task.type === 'milestone') {
-                    text += '<b>Type:</b> Milestone<br>';
-                } else if (task.overdue) {
-                    text += '<b>Status:</b> Overdue<br>';
-                } else {
-                    text += '<b>Status:</b> On Time<br>';
-                }
-                return text;
-            };
-            // Initialize Gantt chart
-            gantt.config.xml_date = "%Y-%m-%d";
-            gantt.config.readonly = true; // Set Gantt chart to read-only
-            gantt.init("gantt_here");
-
-            // Export Gantt Chart
-            document.getElementById('export-btn').addEventListener('click', function() {
-                exportGanttToExcel();
             });
-            function exportGanttToExcel() {
-                var data = gantt.serialize();
-                var tasks = data.data;
-                
-                // Prepare Excel data
-                var excelData = [];
-                tasks.forEach(function(task) {
-                    var row = {
-                        // "ID": task.id,
-                        "Title": task.text,
-                        "Start Date": task.start_date,
-                        "Duration": task.duration,
-                        "Progress (%)": task.progress * 100,
-                        // "Parent": task.parent || '',
-                        // "Type": task.type || 'task',
-                        "Overdue": task.overdue ? 'Yes' : 'No'
-                    };
-                    excelData.push(row);
-                });
+        })
+        
+        function formatDate(dateStr) {
+            var date = new Date(dateStr);
+            return date.getFullYear() + '-' +
+                ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+                ('0' + date.getDate()).slice(-2);
+        }
 
-                // Create a worksheet
-                var ws = XLSX.utils.json_to_sheet(excelData);
-                var wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Gantt Chart");
-
-                // Export to Excel
-                XLSX.writeFile(wb, "gantt_chart.xlsx");
+        function calculateDuration(startDateStr, endDateStr) {
+            var startDate = new Date(startDateStr);
+            var endDate = new Date(endDateStr);
+            var duration = (endDate - startDate) / (1000 * 60 * 60 * 24);
+            return Math.round(duration);
+        }
+        // Set custom task type for milestones
+        gantt.templates.task_class = function (start, end, task) {
+            if (task.type == 'milestone') {
+                return "milestone";
+            } else if (task.overdue) {
+                return "overdue";
             }
+            return "";
+        };
 
-            // Export Gantt Chart
+        gantt.templates.tooltip_text = function(start, end, task) {
+            var text = '<b>Task:</b> ' + task.text + '<br>';
+            text += '<b>Start Date:</b> ' + gantt.templates.tooltip_date_format(start) + '<br>';
+            text += '<b>End Date:</b> ' + gantt.templates.tooltip_date_format(end) + '<br>';
+            text += '<b>Progress:</b> ' + (task.progress * 100).toFixed(2) + '%<br>';
+            if (task.type === 'milestone') {
+                text += '<b>Type:</b> Milestone<br>';
+            } else if (task.overdue) {
+                text += '<b>Status:</b> Overdue<br>';
+            } else {
+                text += '<b>Status:</b> On Time<br>';
+            }
+            return text;
+        };
+        // Initialize Gantt chart
+        gantt.config.xml_date = "%Y-%m-%d";
+        gantt.config.readonly = true; // Set Gantt chart to read-only
+        gantt.init("gantt_here");
+
+        // Export Gantt Chart
+        document.getElementById('export-btn').addEventListener('click', function() {
+            exportGanttToExcel();
+        });
+        function exportGanttToExcel() {
+            var data = gantt.serialize();
+            var tasks = data.data;
+            
+            // Prepare Excel data
+            var excelData = [];
+            tasks.forEach(function(task) {
+                var row = {
+                    // "ID": task.id,
+                    "Title": task.text,
+                    "Start Date": task.start_date,
+                    "Duration": task.duration,
+                    "Progress (%)": task.progress * 100,
+                    // "Parent": task.parent || '',
+                    // "Type": task.type || 'task',
+                    "Overdue": task.overdue ? 'Yes' : 'No'
+                };
+                excelData.push(row);
+            });
+
+            // Create a worksheet
+            var ws = XLSX.utils.json_to_sheet(excelData);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Gantt Chart");
+
+            // Export to Excel
+            XLSX.writeFile(wb, "gantt_chart.xlsx");
+        }
+
+        // Export Gantt Chart
     // Gantt Chart
 
     // Dauly Activity
-        $('#btn_save_daily').on('click', function(e){
+    $('#btn_save_daily').on('click', function(e){
+        e.preventDefault()
+        var formData        = new FormData();    
+        var subdetail_code     = $('#daily_task').val()
+        formData.append('subdetail_code', subdetail_code)
+        formData.append('daily_description',$('#daily_description').val())
+        formData.append('daily_attachment',$('#daily_attachment')[0].files[0]);
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('updateDaily')}}",
+            type: "post",
+            dataType: 'json',
+            async: true,
+            processData: false,
+            contentType: false,
+            data: formData,
+            beforeSend: function() {
+                SwalLoading('Inserting progress, please wait .');
+            },
+            success: function(response) {
+                    swal.close()
+                    $('.message_error').html('')
+                    var detail_code = $('#detail_code_chat').val()
+                    showNoSwal(detail_code)
+                    $('#daily_description').val('')
+                    $('#addDailyModal').modal('hide')
+                    toastr['success'](response.meta.message);
+        
+            },
+            error: function(xhr, status, error) {
+                // swal.close();
+                toastr['error']('Failed to get data, please contact ICT Developer');
+            }
+        });
+    })
+    // Dauly Activity
+
+    // Done Task
+        $('#btn_done_task').on('click', function(e){
             e.preventDefault()
             var formData        = new FormData();    
-            var subdetail_code     = $('#daily_task').val()
-            formData.append('subdetail_code', subdetail_code)
-            formData.append('daily_description',$('#daily_description').val())
-            formData.append('daily_attachment',$('#daily_attachment')[0].files[0]);
+            var detail_code     = $('#detail_code_chat').val()
+            formData.append('detail_code', detail_code)
+            formData.append('done_id',$('#done_id').val())
+            formData.append('reason_done',$('#reason_done').val())
+            formData.append('done_status',$('#done_status').val())
+            const actual_done = $('#actual_done').val()
+            var actual_done_string = parseFloat(actual_done.replace(/,/g, ''));
+            formData.append('actual_done',actual_done_string)
+            formData.append('attachment_done',$('#attachment_done')[0].files[0]);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{route('updateDaily')}}",
+                url: "{{route('updateStatusTask')}}",
                 type: "post",
                 dataType: 'json',
                 async: true,
@@ -740,16 +769,14 @@
                 contentType: false,
                 data: formData,
                 beforeSend: function() {
-                    SwalLoading('Inserting progress, please wait .');
+                    // SwalLoading('Inserting progress, please wait .');
+                    $('#send_chat').prop('disabled',true)
                 },
                 success: function(response) {
-                        swal.close()
                         $('.message_error').html('')
-                        var detail_code = $('#detail_code_chat').val()
+                        $('#taskDoneModal').modal('hide')
+                        toastr['success'](response.message);
                         showNoSwal(detail_code)
-                        $('#daily_description').val('')
-                        $('#addDailyModal').modal('hide')
-                        toastr['success'](response.meta.message);
             
                 },
                 error: function(xhr, status, error) {
@@ -757,8 +784,11 @@
                     toastr['error']('Failed to get data, please contact ICT Developer');
                 }
             });
+
+
         })
-    // Dauly Activity
+    // Done Task
+// Action
 //   Function 
         function getData(data) {
             $('#kanban_new').empty();
@@ -1914,4 +1944,40 @@
         }
 
 //   Function 
+
+// Setup Interval
+        $(document).ready(function () {
+            var typingInterval = 10000; // 1 second interval
+            var typingDelay = 10000; // 2 seconds delay for typing detection
+            var typingTimer;
+            function startLooping(){
+                var id = $('#detail_code_chat').val()
+                    chat = setInterval(function() {
+                    showNoSwal(id);
+                }, typingInterval);
+            }
+            $('#detailCardModal').on('hidden.bs.modal', function () {
+                clearInterval(chat);
+                getDataNoSwal(dataStart)
+            })
+            $('#taskDoneModal').on('show.bs.modal', function () {
+                clearInterval(chat);
+            })
+            $('#taskDoneModal').on('hidden.bs.modal', function () {
+                startLooping()
+            })
+            $("#remark_chat").focus(function(){
+                clearInterval(chat);
+            });
+            $("#remark_chat").blur(function() {
+                typingTimer = setTimeout(startLooping, typingDelay);
+            });
+            $("#remark_chat").on('input', function() {
+                // clearTimeout(typingTimer);
+                // typingTimer = setTimeout(startLooping, typingDelay);
+                clearInterval(chat);
+            });
+          
+        })
+// Setup Interval
 </script>
