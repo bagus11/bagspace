@@ -161,6 +161,7 @@ class KanbanController extends Controller
             $attachmentPath = '';
             $header = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
             $head   = TimelineHeader:: where('request_code', $header->request_code)->first();
+            $module = TimelineDetail::where('detail_code', $header->detail_code)->first();
             // Check if a file is uploaded
             if ($request->hasFile('daily_attachment')) {
                 $file = $request->file('daily_attachment');
@@ -183,6 +184,7 @@ class KanbanController extends Controller
             ];
             $text = "<b style='text-align:center'>" . $head->name . "</b>\n\n"
             . "PIC          : " . auth()->user()->name . "\n"
+            . "Module          : $module->name \n"
             . "Task       :  <b>$header->name</b>  \n"
             . "Update Progress       :   $request->daily_description";
             TimelineSubDetailLog::create($post);
