@@ -744,6 +744,7 @@ class KanbanController extends Controller
             $attachmentPath = '';
             $daily = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
             // Check if a file is uploaded
+       
             if ($request->hasFile('daily_attachment')) {
                 $file = $request->file('daily_attachment');
                 $timestamp = now()->format('Ymd_His'); // Get current date and time
@@ -765,7 +766,36 @@ class KanbanController extends Controller
                 'status'                => $request->subdetail_code === null ? $request->daily_status : '1'
             ];
             TimelineSubDetailLog::create($post);
-           
+            if($request->subdetail_code != null){
+                $subdetail  = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
+                $head       = TimelineHeader::where('request_code', $subdetail->request_code)->first();
+                $module     = TimelineDetail::where('detail_code', $subdetail->detail_code)->first();
+                $text = "<b style='text-align:center'>" . $head->name . "</b>\n\n"
+                . "PIC          : " . auth()->user()->name . "\n"
+                . "Module          : $module->name \n"
+                . "Task       :  <b>$subdetail->name</b>  \n"
+                . "Update Progress       :   $request->daily_description";
+                TimelineSubDetailLog::create($post);
+                if (isset($attachmentPath)) {
+                    // Prepare the full path to the stored file
+                    $filePath = storage_path('app/public/' . $attachmentPath);
+                
+                    // Send the document with caption
+                    Telegram::sendDocument([
+                        'chat_id' => $head->id_channel,
+                        'document' => InputFile::create($filePath, $fileName),
+                        'caption' => $text,
+                        'parse_mode' => 'HTML'
+                    ]);
+                } else {
+                    // If no attachment, send only the text message
+                    Telegram::sendMessage([
+                        'chat_id' => $head->id_channel,
+                        'parse_mode' => 'HTML',
+                        'text' => $text
+                    ]);
+                }
+            }
             return ResponseFormatter::success(   
                 $post,                              
                 'Activity successfully update progress, thanks :)'
