@@ -901,6 +901,9 @@
                                                 </div>
                                                 <div class="row mt-2">
                                                         <div class="col-12">
+                                                            <span style ="font-size:11px" >Progress : ${response.data[i].percentage} %</span>
+                                                        </div>
+                                                        <div class="col-12">
                                                             <span style ="font-size:11px" >Start Date : ${convertDate(response.data[i].start_date)}</span>
                                                         </div>
                                                         <div class="col-12">
@@ -1885,8 +1888,8 @@
                 var actual = response.detail.amount > 0 ? formatRupiah(response.detail.amount) : '-'
                 var chat = ''
                var detail =`
-                        <fieldset class="legend1">
-                                <legend style="width:100% !important">${response.detail.name}</legend>
+                        <fieldset class="legend1" style="border-radius: 15px 15px 0px 0px; ">
+                                <legend style="width:100% !important;font-size:13px">${response.detail.name}</legend>
 
                                 <div class="row">
                                         <div class="col-12">

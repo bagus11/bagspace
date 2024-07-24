@@ -72,8 +72,11 @@
                         </div>
                     </div>
                 </div>
-                
-               
+            </div>
+            <div class="card-footer p-0 mb-0">
+                <button style="float: right" class="btn btn-sm btn-warning mt-2"  data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
+                    <i class="fas fa-key"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -171,6 +174,7 @@
     
     </div>
     </div>
+    @include('setting.account.modal.change-password')
 @endsection
 @push('custom-js')
 @include('setting.account.setting_account-js')

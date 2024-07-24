@@ -96,12 +96,13 @@
         padding: 10px;
           font-weight: bold;
         } 
+    
         .datatable-stepper td {
               /* border: 1px solid #ddd; */
               padding: 5px;
           }
           p{
-            font-size: 9px !important;
+            font-size: 11px !important;
           }
           .form-control{
             height: 30px;
@@ -109,7 +110,7 @@
           }
           .select2{
               width: 100% !important;
-              font-size:9px;
+              font-size:11px;
           }
           .select2-selection__rendered {
               line-height: 30px !important;

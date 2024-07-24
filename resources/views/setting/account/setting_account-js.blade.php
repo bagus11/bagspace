@@ -8,6 +8,22 @@
         $('#task_label').html(response.all)
        
     })
+    $('#btn_update_password').on('click', function(){
+        var data ={
+            'current_password': $('#current_password').val(),
+            'new_password': $('#new_password').val(),
+            'confirm_password': $('#confirm_password').val()
+        }
+        $('.message_error').html('')
+        postCallback('update_password', data, function(response){
+            swal.close()
+            $('#changePasswordModal').modal('hide')
+            $('#current_password').val('')
+            $('#new_password').val('')
+            $('#confirm_password').val('')
+            toastr['success'](response.meta.message)
+        })
+    })
      function mappingTableTimeline(response){
             var data =''
             $('#progress_track_container').empty()

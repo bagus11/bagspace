@@ -39,14 +39,15 @@
                                 <div class="col-3 mt-2"><p id="module_request_code_label"></p></div>
                                 <div class="col-3 mt-2"><p>Detail Code</p></div>
                                 <div class="col-3 mt-2"><p id="module_detail_code_label"></p></div>
-                                <div class="col-3 mt-2"><p>Module Name</p></div>
-                                <div class="col-3 mt-2"><p id="module_name_label"></p></div>
-                                <div class="col-3 mt-2"><p>Status</p></div>
-                                <div class="col-3 mt-2"><p id="module_status_label"></p></div>
                                 <div class="col-3 mt-2"><p>Start Date</p></div>
                                 <div class="col-3"><input type="date" class="form-control" id="module_start_date_label"></div>
                                 <div class="col-3 mt-2"><p>End Date</p></div>
                                 <div class="col-3"><input type="date" class="form-control" id="module_end_date_label"></div>
+                                <div class="col-3 mt-2"><p>Module Name</p></div>
+                                <div class="col-9 mt-2"><p id="module_name_label"></p></div>
+                                <div class="col-3 mt-2"><p>Status</p></div>
+                                <div class="col-9 mt-2"><p id="module_status_label"></p></div>
+                              
                                 <div class="col-3 mt-2"><p>Plan</p></div>
                                 <div class="col-3 mt-2"><p id="plan_label"></p></div>
                             </div>

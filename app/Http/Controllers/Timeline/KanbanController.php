@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use NumConvert;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use \Mpdf\Mpdf as PDF;
+use Telegram\Bot\FileUpload\InputFile;
 
 class KanbanController extends Controller
 {
@@ -169,6 +170,7 @@ class KanbanController extends Controller
                 $fileName = $timestamp . '_' . $file->getClientOriginalName(); // Format file name
                 $attachmentPath = $file->storeAs('AttachmentTask', $fileName, 'public'); // Save file to storage/AttachmentTask
             }
+           
             $post =[
                 'subdetail_code'          => $request->subdetail_code,
                 'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
@@ -188,6 +190,15 @@ class KanbanController extends Controller
             . "Task       :  <b>$header->name</b>  \n"
             . "Update Progress       :   $request->daily_description";
             TimelineSubDetailLog::create($post);
+            if ($request->hasFile('daily_attachment')) {
+                $filePath = storage_path('app/public/' . $attachmentPath);
+
+                // Send the document
+                Telegram::sendDocument([
+                    'chat_id' => $head->id_channel,
+                    'document' => InputFile::create($filePath, $fileName)
+                ]);
+            }
             Telegram::sendMessage([
                 'chat_id' => $head->id_channel,
                 'parse_mode' => 'HTML',
