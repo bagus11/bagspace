@@ -190,20 +190,25 @@ class KanbanController extends Controller
             . "Task       :  <b>$header->name</b>  \n"
             . "Update Progress       :   $request->daily_description";
             TimelineSubDetailLog::create($post);
-            if ($request->hasFile('daily_attachment')) {
+            if (isset($attachmentPath)) {
+                // Prepare the full path to the stored file
                 $filePath = storage_path('app/public/' . $attachmentPath);
-
-                // Send the document
+            
+                // Send the document with caption
                 Telegram::sendDocument([
                     'chat_id' => $head->id_channel,
-                    'document' => InputFile::create($filePath, $fileName)
+                    'document' => InputFile::create($filePath, $fileName),
+                    'caption' => $text,
+                    'parse_mode' => 'HTML'
+                ]);
+            } else {
+                // If no attachment, send only the text message
+                Telegram::sendMessage([
+                    'chat_id' => $head->id_channel,
+                    'parse_mode' => 'HTML',
+                    'text' => $text
                 ]);
             }
-            Telegram::sendMessage([
-                'chat_id' => $head->id_channel,
-                'parse_mode' => 'HTML',
-                'text' => $text
-            ]);
            
             return ResponseFormatter::success(   
                 $post,                              
