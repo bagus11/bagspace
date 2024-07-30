@@ -29,6 +29,8 @@
     $('#btn_add_daily').on('click', function(){
         $('#status_label').prop('hidden', false)
         $('#title_label').prop('hidden', false)
+        $('#subdetail_code').val('')
+
     })
     $('#btn_save_daily').on('click', function(e){
         e.preventDefault();

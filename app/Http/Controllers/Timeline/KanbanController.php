@@ -739,10 +739,11 @@ class KanbanController extends Controller
         ]); 
     }
     function addDaily(Request $request, AddDailyRequest $addDailyRequest) {
-        try {    
+        // try {    
             $addDailyRequest->validated();
             $attachmentPath = '';
             $daily = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
+            $fileName ='';
             // Check if a file is uploaded
        
             if ($request->hasFile('daily_attachment')) {
@@ -765,7 +766,6 @@ class KanbanController extends Controller
                 'created_at'            => date('Y-m-d H:i:s'),
                 'status'                => $request->subdetail_code === null ? $request->daily_status : '1'
             ];
-            TimelineSubDetailLog::create($post);
             if($request->subdetail_code != null){
                 $subdetail  = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
                 $head       = TimelineHeader::where('request_code', $subdetail->request_code)->first();
@@ -775,12 +775,10 @@ class KanbanController extends Controller
                 . "Module          : $module->name \n"
                 . "Task       :  <b>$subdetail->name</b>  \n"
                 . "Update Progress       :   $request->daily_description";
-                TimelineSubDetailLog::create($post);
-                if (isset($attachmentPath)) {
-                    // Prepare the full path to the stored file
+                // dd($attachmentPath);
+                if ($fileName !=="") {
                     $filePath = storage_path('app/public/' . $attachmentPath);
                 
-                    // Send the document with caption
                     Telegram::sendDocument([
                         'chat_id' => $head->id_channel,
                         'document' => InputFile::create($filePath, $fileName),
@@ -796,17 +794,18 @@ class KanbanController extends Controller
                     ]);
                 }
             }
+            TimelineSubDetailLog::create($post);
             return ResponseFormatter::success(   
                 $post,                              
                 'Activity successfully update progress, thanks :)'
             );            
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error(
-                $th,
-                'Activity failed to add',
-                500
-            );
-        }
+        // } catch (\Throwable $th) {
+        //     return ResponseFormatter::error(
+        //         $th,
+        //         'Activity failed to add',
+        //         500
+        //     );
+        // }
     }
     function print_daily($id) {
         $log = TimelineSubDetailLog::with([
