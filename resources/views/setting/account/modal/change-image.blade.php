@@ -20,8 +20,8 @@
                     <div class="container">
                         <div class="col-12" id="cropContainer" style="display:none;">
                             <img id="cropImage" style="max-width: 100%;">
-                            <button id="cropButton" class="btn btn-primary mt-2">
-
+                            <button id="cropButton" class="btn btn-primary mt-2 btn-sm" style="font-size: 12px">
+                                <i class="fas fa-check"></i> Save
                             </button>
                         </div>
                     </div>
