@@ -210,6 +210,7 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('setting_account', [SettingAccountController::class, 'index'])->name('setting_account');
                 Route::get('getCalculation', [SettingAccountController::class, 'getCalculation'])->name('getCalculation');
                 Route::post('update_password', [SettingAccountController::class, 'update_password'])->name('update_password');
+                Route::post('changeImage', [SettingAccountController::class, 'changeImage'])->name('changeImage');
         // Setting
         // signature transaction
         Route::get('sign', [SignTransactionController::class,'index'])->name('sign');

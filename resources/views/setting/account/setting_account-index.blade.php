@@ -37,8 +37,9 @@
         @php
             $auth= auth()->user()->avatar;
         @endphp
-         
-    <img src="{{asset('storage/users-avatar/'.$auth)}}" class="rounded-circle">
+         <div id="image_profile">
+             <img src="{{asset('storage/users-avatar/'.$auth)}}" class="rounded-circle">
+         </div>
     </a>
     </div>
     </div>
@@ -76,6 +77,9 @@
             <div class="card-footer p-0 mb-0">
                 <button style="float: right" class="btn btn-sm btn-warning mt-2"  data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
                     <i class="fas fa-key"></i>
+                </button>
+                <button style="float: right" class="btn btn-sm btn-info mt-2 mr-2"  data-toggle="modal" data-target="#changeImageModal" title="Change Image">
+                    <i class="fa-solid fa-image"></i>
                 </button>
             </div>
         </div>
@@ -174,6 +178,7 @@
     
     </div>
     </div>
+    @include('setting.account.modal.change-image')
     @include('setting.account.modal.change-password')
 @endsection
 @push('custom-js')

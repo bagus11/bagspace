@@ -9,6 +9,8 @@ use App\Models\Timeline\TimelineSubDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SettingAccountController extends Controller
 {
@@ -46,6 +48,41 @@ class SettingAccountController extends Controller
             return ResponseFormatter::error(
                 $th,
                 'Roles failed to add',
+                500
+            );
+        }
+    }
+    function changeImage(Request $request ) {
+        
+        try {
+            $fileName = '';
+        if ($request->hasFile('profile_image')) {
+            $user = User::where('id',auth()->user()->id)->first();
+            $currentAvatar = $user->avatar;
+        
+            // Check if current avatar is not the default one
+            if ($currentAvatar != 'avatar.png') {
+                // Delete the existing avatar image
+                Storage::disk('public')->delete('users-avatar/' . $currentAvatar);
+            }
+        
+            $file = $request->file('profile_image');
+            $fileName = Str::slug(date('YmdHis')) . '.png';
+            $path = $file->storeAs('users-avatar', $fileName, 'public');
+        
+            User::where('id',auth()->user()->id)->update([
+                'avatar' => $fileName
+            ]);
+        
+            return ResponseFormatter::success(
+                $path,
+                'Profile successfully updated'
+            );
+        }
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th->getMessage(),
+                'Profile failed to update',
                 500
             );
         }

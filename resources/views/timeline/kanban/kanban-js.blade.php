@@ -398,6 +398,12 @@
                             const time = d.toTimeString().split(' ')[0];
                             var status =response.log_task[i].status == 1 ? "On Progress" : "DONE"
 
+                            var attachment_remark = ''
+                            if(response.log_task[i].attachment !== null){
+                                attachment_remark =`<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.log_task[i].attachment}')}}" target="_blank">
+                            <i class="fa-solid fa-file-pdf"></i> Click Here
+                            </a>`
+                    }
                                 mapping_data += `<tr style="text-align: center;">
                                                     <td style="text-align:center;width:15%">${date} ${time}</td>
                                                     <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
@@ -406,7 +412,7 @@
                                                     <td style="text-align:center;">${convertDate(response.log_task[i].start_date)}</td>
                                                     <td style="text-align:center;">${convertDate(response.log_task[i].end_date)}</td>
                                                     <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
-                                                    <td style="text-align:left;width:20%">${response.log_task[i].remark}</td>
+                                                    <td style="text-align:left;width:20%">${attachment_remark} ${response.log_task[i].remark}</td>
                                                     <td style="text-align:left;width:10%">${status}</td>
                                                 </tr>
                                         `;
@@ -834,7 +840,7 @@
                                         card =`
                                             <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
                                                 <div class="card-body detail_kanban p-2">
-                                                    <p class="mb-0 hover" style="font-weight:bold;font-size:12px;color:black">${response.data[i].name}</p>
+                                                     <p class="mb-0 hover" style="font-weight:bold;font-size:12px; !important">${response.data[i].name}</p>
                                                     <div class="text-right p-0">
                                                     <small class="text-muted mb-1 d-inline-block hover" style="font-size:9px;font-weight:bold;color:black !important">${response.data[i].percentage}%</small>
                                                     </div>
@@ -1057,16 +1063,16 @@
                                         card =`
                                     <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
                                         <div class="card-body detail_kanban p-2">
-                                            <p class="mb-0" style="font-weight:bold;font-size:12px;">${response.data[i].name}</p>
+                                              <p class="mb-0 hover" style="font-weight:bold;font-size:12px; !important">${response.data[i].name}</p>
                                             <div class="text-right p-0">
                                             <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
                                             </div>
                                             <div class="progress" style="height: 5px;">
                                             <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                             </div>
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px">
-                                            <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
-                                            </div>
+                                             <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                                    <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
+                                                    </div>
                                         </div>
                                         </div>
                                     `

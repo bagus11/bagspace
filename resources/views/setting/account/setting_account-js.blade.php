@@ -24,6 +24,97 @@
             toastr['success'](response.meta.message)
         })
     })
+
+    // Change Image 
+    $(document).ready(function() {
+        var cropper;
+        var image = document.getElementById('cropImage');
+        var input = document.getElementById('profileImageInput');
+
+        input.addEventListener('change', function(e) {
+            var files = e.target.files;
+            var done = function(url) {
+                input.value = '';
+                image.src = url;
+                $('#cropContainer').show();
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+                
+                cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 3,
+                });
+            };
+            var reader;
+            var file;
+            var url;
+
+            if (files && files.length > 0) {
+                file = files[0];
+
+                if (URL) {
+                    done(URL.createObjectURL(file));
+                } else if (FileReader) {
+                    reader = new FileReader();
+                    reader.onload = function(e) {
+                        done(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        $('#cropButton').click(function() {
+            if (cropper) {
+                var canvas = cropper.getCroppedCanvas({
+                    width: 160,
+                    height: 160,
+                });
+
+                if (canvas) {
+                    canvas.toBlob(function(blob) {
+                        var formData = new FormData();
+                        formData.append('profile_image', blob);
+
+                        $.ajax({
+                            url: '{{ route("changeImage") }}',
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            beforeSend : function(){
+                                SwalLoading('Please wait ...');
+                            },
+                            success: function(response) {
+                                swal.close()
+                                toastr['success'](response.meta.message)
+                                $('#image_profile').empty()
+                                console.log(response.data)
+                                $('#image_profile').html(`
+                                    <img src="{{URL::asset('storage/${response.data}')}}" class="rounded-circle">
+                                `)
+                                $('#changeImageModal').modal('hide');
+                            },
+                            error: function() {
+                                console.log('Upload error');
+                            }
+                        });
+                    });
+                } else {
+                    console.log('Canvas is null');
+                }
+            } else {
+                console.log('Cropper instance is not initialized');
+            }
+        });
+
+        $('#btn_update_profile').click(function() {
+            $('#cropButton').click();
+        });
+    });
+    // Change Image 
      function mappingTableTimeline(response){
             var data =''
             $('#progress_track_container').empty()
