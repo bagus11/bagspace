@@ -1,4 +1,3 @@
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.4/signature_pad.js" integrity="sha512-j36pYCzm3upwGd6JGq6xpdthtxcUtSf5yQJSsgnqjAsXtFT84WH8NQy9vqkv4qTV9hK782TwuHUTSwo2hRF+/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
 <script>
     $(document).ready(function() {
         $('#approval_type').select2({
@@ -6,9 +5,6 @@
         })
         $('.approval_list_data').select2({
             dropdownParent: $('#addSignModal')
-        })
-        $('#detail_approval_type').select2({
-            dropdownParent: $('#detailSignModal')
         })
         $('#sign_table').DataTable({
             processing: true,
@@ -27,11 +23,21 @@
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
+                    "data": "title",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
                     'data': null,
                     // title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-sign_transaction_id="'+ item.id +'" class="btn btn-outline-info btn-sm mt-2 detail_sign_transaction" data-toggle="modal" data-target="#detailSignModal">View</button>'
+                        return `
+                        <button type="button" data-sign_transaction_id="${item.id}" class="btn btn-info btn-sm mt-2 detail_sign_transaction" data-toggle="modal" data-target="#detailSignModal"><i class="fas fa-eye"></i></button>
+
+                      <button type="button" style="background-color:#76ABAE !important;color:white" class="btn btn-sm mt-2 sign" title="Click Here For Attachment" data-id ="${item.signature_code}"><i class="fa-solid fa-file-pdf"></i>
+                        </button>
+                        
+                        `
 
                     }
                 },
@@ -44,26 +50,16 @@
             },
         })
 
+        $(document).on('click', '.sign', function(e) {
+                var id = $(this).data('id')
+                replace = id.replaceAll('/','_');
+                window.open(`view-pdf/${replace}`,'_blank');
+        })
+
         $(document).on('click', '#btn_add_sign', function(e) {
             e.preventDefault()
             $('#form_create_sign_transaction')[0].reset()
             $('#table_approver_data').hide()
-            // $.ajax({
-            //     url: "{{ route('list-user-approval') }}",
-            //     type: "get",
-            //     dataType: 'json',
-            //     // data:data,
-            //     success: function(res) {
-            //         // mappingDetail(res.data)
-                    
-            //     },
-            //     error: function(xhr, status, error) {
-            //         swal.close();
-            //         toastr['error']('Failed to get data, please contact ICT Developer');
-            //     }
-            // });
-            // $('#list_sign_approval').DataTable().clear();
-            // $('#list_sign_approval').DataTable().destroy();
         })
 
         $(document).on('change', '#total_approval_sign', function() {
@@ -95,14 +91,6 @@
                                     </td>
                                 </tr>
                             `)
-                            // $('#form_list_approval').append(`
-                            //     <div class="mb-3">
-                            //         <select class="form-control approval_list_data" name="approval_list_data[]" id="approval_list_data_${i}">
-                            //             <option value="0">Hirarki</option>
-                            //             <option value="1">Non Hirarki</option>
-                            //         </select>
-                            //     </div>
-                            // `)
                         }
                         $('.approval_list_data').empty()
                         $('.approval_list_data').append(`<option value="">Choose Approver</option>`)
@@ -163,17 +151,24 @@
                     $('#addSignModal').modal('hide')
                     toastr['success'](res.meta.message);
                 },
-                error: function(xhr) {
+                error: function(response) {
                     // console.log(xhr.responseText);
+                    $('.message_error').html('')
                     swal.close();
-                    let response_error = JSON.parse(xhr.responseText)
-                    $.each(response_error.meta.message.errors, function(i, value) {
-                        Swal.fire({
-                            icon: "error",
-                            title: 'Error!',
-                            text: value
-                        })
-                    })
+                    // console.log(response.status)
+                    if(response.status == 500){
+                        toastr['error'](response.responseJSON.meta.message);
+                        return false
+                    }
+                    else if(response.status === 422)
+                    {
+                        $.each(response.responseJSON.meta.message.errors, (key, val) => 
+                            {
+                                $('span.'+key+'_error').text(val)
+                            });
+                    }else{
+                        toastr['error']('Failed to get data, please contact ICT Developer');
+                    }
                 }
             })
         })
@@ -199,22 +194,14 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
-                    let approve_type_data = ['Hirarki', 'Non Hirarki']
-                    $('#detail_approval_type').empty()
-                    for (let i = 0; i < approve_type_data.length; i++) {
-                        $('#detail_approval_type').append(`
-                            <option value="${i}" ${res.data[0].approval_type == i ? 'selected' : ''}>${approve_type_data[i]}</option>
-                        `)
-                    }
-                    $('#detail_approval_type').val()
-                    $('#detail_title_sign').val(res.data[0].title)
-                    $('#detail_description_sign').val(res.data[0].description)
-                    $('#detail_total_approval_sign').val(res.data[0].step_approval)
-                    $('#detail_total_approval_sign').val(res.data[0].step_approval)
+                    console.log(res.data[0].approval_type)
+                    $('#detail_approval_type').html( res.data[0].approval_type == 1 ?': Hirarki' :': Non Hirarki')
+                    $('#detail_title_sign').html(': ' + res.data[0].title)
+                    $('#detail_description_sign').html(': ' + res.data[0].description)
+                    $('#detail_total_approval_sign').html(': ' + res.data[0].step_approval)
                     let data_attachment = res.data[0].attachment
                     let link_attachment = "{{ asset('') }}"+data_attachment
                     $('#detail_attachment_sign').attr('href', link_attachment)
-                    console.log(link_attachment);
                     $('#table_list_detail_approval').empty()
                     let number_user = 1
                     $.each(res.data[0].signature_detail, function(i, user) {
@@ -222,34 +209,10 @@
                             <tr>
                                 <td>${number_user++}</td>
                                 <td>${user.user.name}</td>
-                                <td>${user.status}</td>
+                                <td>${user.status == 0 ? 'Required' : 'DONE' }</td>
                             </tr>
                         `)
                     })
-                    // for (let i = 0; i < res.data[0].signature_detail.length; i++) {
-                    //     $('#form_detail_list_approval').append(`
-                    //         <div class="mb-3">
-                    //             <label for="detail_approval_list_data_${i}" class="form-label">User Approval</label>
-                    //             <select class="form-control detail_approval_list_data" name="detail_approval_list_data[]" id="detail_approval_list_data_${i}">
-                    //             </select>
-                    //         </div>
-                    //     `)
-                    // }
-                    
-                    // $('.detail_approval_list_data').empty()
-                    // for (let i = 0; i < res.data[0].signature_detail.length; i++) {
-                    //     $('.detail_approval_list_data').append(`
-                    //         <option value="${res.data[0].signature_detail[i].user_id}">${res.data[0].signature_detail[i].user.name}</option>
-                    //     `)
-                    // }
-                    // for (let i = 0; i < res.data['user'].length; i++) {
-                    //     $('.detail_approval_list_data').append(`
-                    //     `)
-                        
-                    // }
-                    // $('.detail_approval_list_data').select2({
-                    //     dropdownParent: $('#detailSignModal')
-                    // })
                 }
             })
         })

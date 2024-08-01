@@ -181,7 +181,7 @@
             $(".select2").select2({ dropdownCssClass: "myFont" });
         }
         function getApproval(response,title){
-            // getActiveItems('getUser',null,title,'Approver')wkwkw
+            // getActiveItems('getUser',null,title,'Approver')
             getCallbackNoSwal('getUser',null, function(res){
                 $('#'+title).empty()
                 $('#'+title).append('<option value ="">Choose Approver </option>');

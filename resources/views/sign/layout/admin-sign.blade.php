@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sf-bootstrap-pincode-input@1.5.0/css/bootstrap-pincode-input.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
   
+  
 
   {{-- <link href="{{ asset('assets/sweetalert2/sweetalert2.css') }}" rel="stylesheet"> --}}
   {{-- Customization --}}
@@ -224,11 +225,10 @@
 
 <body class="g-sidenav-show nav-open g-sidenav-pinned">
   <!-- Sidenav -->
-    @include('layouts.sidebar')
   <!-- Main content -->
   <div class="main-content" id="panel">
     <!-- Topnav -->
-    @include('layouts.navbar')
+    @include('sign.layout.navbar-sign')
     <!-- Main Content -->
     <div class="mt-2">
       <input type="hidden" id="authId" value="{{auth()->user()->id}}">
@@ -246,10 +246,10 @@
   <script src="{{asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js')}}"></script>
   <script src="{{asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
   <script src="{{ asset('assets/sweetalert2/sweetalert.min.js') }}"></script>
+  <script src="{{ asset('assets/pdf/pdf.min.js') }}"></script>
   <script src="{{ asset('assets/select2/select2.full.min.js') }}"></script>
   {{-- <script src="{{ asset('assets/select2/select2.min.js') }}"></script> --}}
   <script src="{{ asset('assets/select2/select2.full.min.js') }}"></script>
-
 
     <!-- Core -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>

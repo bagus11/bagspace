@@ -9,57 +9,48 @@
                 </button>
             </div>
             <form id="form_detail_sign_transaction">
-                <div class="modal-body">
+                <div class="modal-body p-0 mt-2 mx-2 my-1">
+                  <fieldset>
+                    <legend>General Information</legend>
                     <div class="row">
-                        <div class="col-3 mt-2">
+                        <div class="col-2">
                             <p>Approval Type</p>
                         </div>
-                        <div class="col-9">
-                            <select class="form-control" name="detail_approval_type" id="detail_approval_type">
-                                
-                            </select>
-                            <span style="color:red;" class="message_error text-red block detail_approval_type_error"></span>
+                        <div class="col-4">
+                           <p id="detail_approval_type"></p>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3 mt-2">
-                            <p>Title</p>
-                        </div>
-                        <div class="col-9">
-                            <input type="text" class="form-control" name="detail_title_sign" id="detail_title_sign">
-                            <span style="color:red;" class="message_error text-red block detail_title_sign_error"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3 mt-2">
-                            <p>Description</p>
-                        </div>
-                        <div class="col-9">
-                            <input type="text" class="form-control" name="detail_description_sign" id="detail_description_sign">
-                            <span style="color:red;" class="message_error text-red block detail_description_sign_error"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3 mt-2">
+                        <div class="col-2">
                             <p>Step Approval</p>
                         </div>
-                        <div class="col-9">
-                            <input type="number" class="form-control" name="detail_total_approval_sign" id="detail_total_approval_sign" min="0">
-                            <span style="color:red;" class="message_error text-red block detail_total_approval_sign_error"></span>
+                        <div class="col-4">
+                            <p id="detail_total_approval_sign"></p>
+                        </div>
+                        <div class="col-2">
+                            <p>Title</p>
+                        </div>
+                        <div class="col-4">
+                          <p id="detail_title_sign"></p>
+                        </div>
+                        <div class="col-2">
+                            <p>Attachment</p>
+                        </div>
+                        <div class="col-4">
+                            <p>
+                                <a href="" id="detail_attachment_sign" target="_blank"><i class="fas fa-file"></i> Click Here</a>
+                            </p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3 mt-2">
-                            <p>Attachment</p>
+                        <div class="col-2">
+                            <p>Description</p>
                         </div>
-                        <div class="col-9">
-                            <p>
-                                <a href="" id="detail_attachment_sign" target="_blank"><i class="fas fa-file"></i> Link Attachment</a>
-                            </p>
-                            {{-- <input type="file" class="form-control" name="detail_attachment_sign" id="detail_attachment_sign" style="height: 40px !important;"> --}}
-                            <span style="color:red;" class="message_error text-red block detail_attachment_sign_error"></span>
+                        <div class="col-10">
+                          <p id="detail_description_sign"></p>
                         </div>
-                    </div>
+                  </fieldset>
+           
+                  <fieldset class="mt-2">
+                    <legend>Step Approval</legend>
                     <div class="row">
                         <div class="col-sm-12">
                             <table class="datatable-stepper">
@@ -68,7 +59,6 @@
                                         <th scope="col" class="sort" data-sort="no">No</th>
                                         <th scope="col" class="sort" data-sort="user_approval">Approver</th>
                                         <th scope="col" class="sort" data-sort="status">Status</th>
-
                                     </tr>
                                 </thead>
                                 <tbody id="table_list_detail_approval">
@@ -76,13 +66,10 @@
                             </table>
                         </div>
                     </div>
+                  </fieldset>
                 </div>
                 <div class="modal-footer">
-                    {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> --}}
-                    <button id="btn_update_sign_transaction" type="button" class="btn btn-sm btn-danger" data-dismiss="modal">
-                        <i class="fas fa-xmark"></i>
-                        {{-- <i class="fa-solid fa-x"></i> --}}
-                    </button>
+                  
                 </div>
             </form>
         </div>

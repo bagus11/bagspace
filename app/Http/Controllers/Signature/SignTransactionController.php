@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Helpers\MonthRomawi;
 // use Barryvdh\DomPDF\Facade\Pdf;
 use mPDF;
 use NumConvert;
@@ -77,7 +76,7 @@ class SignTransactionController extends Controller
             $date_month =strtotime(date('Y-m-d'));
             $month =idate('m', $date_month);
             $month_romawi = NumConvert::roman($month);
-            // $month_romawi = MonthRomawi::romawi(now()->format('m'));
+      
             $this_year = now()->format('y');
 
             $result_signature_code = $count_sign.'/'.$sign_type.'/'.$month_romawi.'/'.$this_year;
@@ -152,21 +151,14 @@ class SignTransactionController extends Controller
     {
         return view('sign.approval_sign.index');
     }
-    public function viewPdf($filename)
+    public function viewPdf($id)
     {
-        set_time_limit(0);
-        $path = public_path('storage/attachments/sign/' . $filename);
+        $signature_code   = str_replace('_','/',$id);
+        $head = SignatureHeader::where('signature_code', $signature_code)->first();
 
-        // dd($path);
-        if (!file_exists($path)) {
-            abort(404, 'File not found');
-        }
-        // Memuat konten file PDF
-        $pdf_content = file_get_contents($path);
-        $pdf = mPDF::loadView('sign.approval_sign.pdf_view', compact('pdf_content'));
-
-        // Tampilkan PDF di browser
-        // return $pdf->stream($filename);
-        return response($pdf_content, 200)->header('Content-Type', 'application/pdf');
+        $data =[
+            'head'      => $head,
+        ];
+        return view('sign.approval_sign.pdf_view',$data);
     }
 }
