@@ -29,9 +29,24 @@
                         <div class="col-3">
                             <input type="text" id="page_location" class="form-control" disabled>
                         </div>
+                       
 
                     </div>
                     <div class="row">
+                        <div class="col-3 mt-2">
+                            <p>Type</p>
+                        </div>
+                        <div class="col-6">
+                            <select name="select_type" class="select2" id="select_type">
+                                <option value="">Choose Sign Type</option>
+                                <option value="1">Sign</option>
+                                <option value="2">Paraf</option>
+                            </select>
+                            <input type="hidden"  id="type_id" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+
                         <div class="col-3 mt-2">
                             <p>User</p>
                         </div>

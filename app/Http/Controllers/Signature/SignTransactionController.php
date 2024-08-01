@@ -9,6 +9,7 @@ use App\Models\SignatureHeader;
 use App\Models\SignatureDetail;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\ResponseFormatter;
+use App\Models\Sign\ApprovalSign;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
@@ -40,18 +41,16 @@ class SignTransactionController extends Controller
             return ResponseFormatter::error($th->getMessage(),'user approval sign fetched error');
         }
     }
+    function getApprovalSign(Request $request) {
+        $data = ApprovalSign::where('signature_code', $request->signature_code)->get();
+        return response()->json([
+            'data'=>$data,  
+        ]);  
+    }
     public function createSignTransaction(Request $request)
     {
-        try {
-            // $count_sign = SignatureHeader::count() + 1;
-            // $sign_type = $request->approval_type == 0 ? 'HRK' : 'NHR';
-            // $date_month =strtotime(date('Y-m-d'));
-            // $month =idate('m', $date_month);
-            // $month_romawi = NumConvert::roman($month);
-            // $this_year = now()->format('y');
-            // $result_file_name = $count_sign.'-'.$sign_type.'-'.$month_romawi.'-'.$this_year;
-            // $file_name_attachment = public_path('storage/attachments/sign/').$result_file_name;
-            // dd($file_name_attachment);
+        // try {
+       
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'approval_type'=> 'required',
@@ -96,38 +95,22 @@ class SignTransactionController extends Controller
                 // 'attachment'=> $file_name_attachment,
                 'step_approval'=> $request->total_approval_sign,
                 'status'=> 0,
-                'step_approval_id'=> $request->approval_list_data[0],
+                'step_approval_id'=> 0,
                 'signature_code'=> $result_signature_code,
             ];
 
             $sign = SignatureHeader::create($sign_data);
 
-            $data_approver = [];
-            $list_approver = [];
-            for ($i=0; $i < count($request->approval_list_data); $i++) { 
-                $list_approver = [
-                    'signature_id' => $sign->id,
-                    'detail_signature_code'=> now()->format('Y-m-d H:i:s'),
-                    'user_id' => $request->approval_list_data[$i],
-                    'step' => $request->step_approval[$i],
-                    'attachment' => $sign_attachment_name,
-                    'created_at' => now()->format('Y-m-d H:i:s'),
-                ];
-                array_push($data_approver, $list_approver);
-            }
-
-            $data_approver = SignatureDetail::insert($data_approver);
-
             DB::commit();
             return ResponseFormatter::success($sign, 'sign transaction created successfully');
-        } catch (ValidationException $e) {
-            // Return validation errors as JSON response
-            DB::rollback();
-            return ResponseFormatter::error(null, ['errors' => $e->errors()], 422);
-        } catch (\Throwable $th) {
-            DB::rollback();
-            return ResponseFormatter::error(null, $th->getMessage(), 500);
-        }
+        // } catch (ValidationException $e) {
+        //     // Return validation errors as JSON response
+        //     DB::rollback();
+        //     return ResponseFormatter::error(null, ['errors' => $e->errors()], 422);
+        // } catch (\Throwable $th) {
+        //     DB::rollback();
+        //     return ResponseFormatter::error(null, $th->getMessage(), 500);
+        // }
     }
     public function detailSign(Request $request)
     {
@@ -136,11 +119,10 @@ class SignTransactionController extends Controller
             $month =idate('m', $date_month);
             NumConvert::roman($month);
 
-            $sign_transaction = SignatureHeader::with(['SignatureDetail.user'])->where('id', $request->sign_id)->first();
+            $sign_transaction = SignatureHeader::find( $request->sign_id);
             // $user = User::get(['id', 'name']);
             $data = [
-                $sign_transaction,
-                // 'user' => $user
+                $sign_transaction
             ];
             return ResponseFormatter::success($data,'sign transaction fetched successfully');
         } catch (\Throwable $th) {
@@ -155,10 +137,48 @@ class SignTransactionController extends Controller
     {
         $signature_code   = str_replace('_','/',$id);
         $head = SignatureHeader::where('signature_code', $signature_code)->first();
-
         $data =[
             'head'      => $head,
         ];
         return view('sign.approval_sign.pdf_view',$data);
     }
+    function updateApprovalSign(Request $request) {
+        try {
+            $validating = ApprovalSign::where('signature_code',$request->signature_code)->count();
+            $array_post=[];
+            foreach($request->user_array as $row){
+                $post = [
+                    'user_id'           => $row['user_id'],
+                    'step'              => $row['step'],
+                    'signature_code'       => $request->signature_code,
+                    'created_at'        =>date('Y-m-d H:i:s')
+                ];
+                array_push($array_post, $post);
+            }
+            DB::transaction(function() use($validating,$array_post,$request) {
+                if($validating > 0){
+                    ApprovalSign::where('approval_id',$request->approval_id)->delete();
+                    ApprovalSign::insert($array_post);
+                }else{
+                    ApprovalSign::insert($array_post);
+                }
+            });
+            return ResponseFormatter::success(   
+                $post,                              
+                'Approver successfully updated'
+            );            
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error(
+                $th,
+                'Approver failed to update',
+                500
+            );
+        }
+    }
+    function getUserSign(Request $request) {
+        $data = ApprovalSign::with(['userRelation'])->where('signature_code',$request->signature_code)->get();
+       return response()->json([
+           'data'=>$data,  
+       ]);    
+   }
 }

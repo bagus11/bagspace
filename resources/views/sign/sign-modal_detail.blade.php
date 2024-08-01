@@ -48,25 +48,6 @@
                           <p id="detail_description_sign"></p>
                         </div>
                   </fieldset>
-           
-                  <fieldset class="mt-2">
-                    <legend>Step Approval</legend>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table class="datatable-stepper">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="sort" data-sort="no">No</th>
-                                        <th scope="col" class="sort" data-sort="user_approval">Approver</th>
-                                        <th scope="col" class="sort" data-sort="status">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table_list_detail_approval">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                  </fieldset>
                 </div>
                 <div class="modal-footer">
                   

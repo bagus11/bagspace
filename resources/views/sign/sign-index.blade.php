@@ -40,6 +40,7 @@
         </div>
         @include('sign.sign-modal_create')
         @include('sign.sign-modal_detail')
+        @include('sign.approval-sign')
 @endsection()
 {{-- {{ asset('storage/attachments/sign/1-NHR-VI-24.pdf') }} --}}
 @push('custom-js')

@@ -158,11 +158,12 @@ class KanbanController extends Controller
         }
     }
     function updateDaily(Request $request) {
-        try {    
+        // try {    
             $attachmentPath = '';
             $header = TimelineSubDetail::where('subdetail_code', $request->subdetail_code)->first();
             $head   = TimelineHeader:: where('request_code', $header->request_code)->first();
             $module = TimelineDetail::where('detail_code', $header->detail_code)->first();
+            $fileName ='';
             // Check if a file is uploaded
             if ($request->hasFile('daily_attachment')) {
                 $file = $request->file('daily_attachment');
@@ -190,7 +191,7 @@ class KanbanController extends Controller
             . "Task       :  <b>$header->name</b>  \n"
             . "Update Progress       :   $request->daily_description";
             TimelineSubDetailLog::create($post);
-            if (isset($attachmentPath)) {
+            if ($fileName !='') {
                 // Prepare the full path to the stored file
                 $filePath = storage_path('app/public/' . $attachmentPath);
             
@@ -214,13 +215,13 @@ class KanbanController extends Controller
                 $post,                              
                 'Activity successfully update progress, thanks :)'
             );            
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error(
-                $th,
-                'Activity failed to add',
-                500
-            );
-        }
+        // } catch (\Throwable $th) {
+        //     return ResponseFormatter::error(
+        //         $th,
+        //         'Activity failed to add',
+        //         500
+        //     );
+        // }
     }
     function createModule(Request $request) {
         // try {    

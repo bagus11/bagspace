@@ -129,4 +129,5 @@ class MasterApprovalController extends Controller
             'data'=>$data,  
         ]);   
     }
+ 
 }

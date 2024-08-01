@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('editMasterApproval', [MasterApprovalController::class, 'editMasterApproval'])->name('editMasterApproval');
        
             Route::get('getApprover', [MasterApprovalController::class, 'getApprover'])->name('getApprover');
+           
         // Approval
 
 
@@ -218,7 +219,9 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('list-user-approval', [SignTransactionController::class,'fetchUserApproval'])->name('list-user-approval');
         Route::get('detail-sign', [SignTransactionController::class,'detailSign'])->name('detail-sign');
         Route::post('create-sign', [SignTransactionController::class,'createSignTransaction'])->name('create-sign');
-
+        Route::get('getApprovalSign', [SignTransactionController::class,'getApprovalSign'])->name('getApprovalSign');
+        Route::post('updateApprovalSign', [SignTransactionController::class,'updateApprovalSign'])->name('updateApprovalSign');
+        Route::get('getUserSign', [SignTransactionController::class, 'getUserSign'])->name('getUserSign');
         Route::get('sign-document', [SignTransactionController::class,'signDocument'])->name('sign-document');
         Route::get('view-pdf/{filename}', [SignTransactionController::class,'viewPdf']);
         // signature transaction
