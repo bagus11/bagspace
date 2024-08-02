@@ -161,10 +161,40 @@
         $('#user_id').val(id);
     });
 
-    $('#btn_send').on('click', function(e){
-        e.preventDefault();
+    $('#btn_send').on('click', function(){
         var data = { 'array': array_user };
-        console.log(data);
+        $.ajax({
+            url: "{{route('getUserSign')}}",
+            type: "post",
+            dataType: 'json',
+            data:data,
+            async: true,
+            beforeSend: function() {
+                SwalLoading('Please wait ...');
+            },
+            success:function(response){
+                swal.close()
+                
+            },
+            error: function(response) {
+                $('.message_error').html('')
+                swal.close();
+                if(response.status == 500){
+                    console.log(response)
+                    toastr['error'](response.responseJSON.meta.message);
+                    return false
+                }
+                if(response.status === 422)
+                {
+                    $.each(response.responseJSON.errors, (key, val) => 
+                        {
+                            $('span.'+key+'_error').text(val)
+                        });
+                }else{
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            }
+        });  
     });
 
     function mappingUser(response) {
@@ -208,7 +238,7 @@
         context.strokeRect(x, y, scaledWidth, scaledHeight);
 
         // Draw the name inside the rectangle, centered
-        context.font = '16px Poppins';
+        context.font = '12px Poppins';
         context.fillStyle = 'black';
         context.textAlign = 'center';
         context.textBaseline = 'middle';

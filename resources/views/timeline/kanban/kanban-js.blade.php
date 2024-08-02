@@ -1296,12 +1296,12 @@
                             var btn_update =''
                             var log_activity =''
                             if(task.status == 0){
+                                btn_update =`
+                                <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
+                                            <i class="fas fa-edit"></i>
+                                    </button>
+                                `
                                 if(auth_id == task.pic){
-                                    btn_update =`
-                                    <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
-                                                <i class="fas fa-edit"></i>
-                                        </button>
-                                    `
                                 }
                             }
                             if(auth_id == task.pic){
@@ -1573,12 +1573,13 @@
                                     var btn_update =''
                                     var log_activity =''
                                     if(task.status == 0){
-                                        if(auth_id == task.pic){
-                                            btn_update =`
+                                        btn_update =`
                                                 <button class="update btn btn-sm btn-warning" title="Update Task" data-id="${response.data[i]['id']}" data-toggle="modal" data-target="#updateTaskModal">
                                                         <i class="fas fa-edit"></i>
                                                 </button>
                                             `
+                                       
+                                        if(auth_id == task.pic){
                                         }
                                     }
                                     if(auth_id == task.pic){
