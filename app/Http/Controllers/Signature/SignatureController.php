@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class SignatureController extends Controller
 {
-    function getValidationSign() {
+    function getValidationSignExist() {
         $count = MasterSignature::where('user_id', auth()->user()->id)->count();
         return response()->json([
             'count'        =>$count,

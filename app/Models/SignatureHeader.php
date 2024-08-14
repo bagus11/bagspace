@@ -15,4 +15,7 @@ class SignatureHeader extends Model
     {
         return $this->hasMany(SignatureDetail::class, 'signature_id', 'id');
     }
+    function userRelation() {
+        return $this->hasOne(User::class,'id','user_id');
+    }
 }

@@ -1,5 +1,8 @@
 <script>
     $(document).ready(function() {
+        $('#btnRefresh').on('click', function(){
+            $('#sign_table').DataTable().ajax.reload();
+        })
         $('#approval_type').select2({
             dropdownParent: $('#addSignModal')
         })
@@ -31,15 +34,45 @@
                     // title: 'Action',
                     wrap: true,
                     "render": function(item) {
+                        var status = '';
+                        switch(item.status) {
+                            case 0:
+                                status ='New'
+                                break;
+                            case 1:
+                                status ='On Progress'
+                                break;
+                            default:
+                                status ='DONE'
+                            }
+                        return `
+                        ${status}
+                        `
+
+                    }
+                },
+                {
+                    'data': null,
+                    // title: 'Action',
+                    wrap: true,
+                    "render": function(item) {
+                        var button_custom =''
+                        var button_approval =''
+                        if(item.status == 0){
+                            button_custom =`   
+                            <button type="button" style="background-color:#76ABAE !important;color:white" class="btn btn-sm mt-2 sign" title="Click Here For Attachment" data-id ="${item.signature_code}"><i class="fa-solid fa-file-pdf"></i>
+                                </button>
+                            `
+                            button_approval =`
+                             <button type="button" data-sign="${item.signature_code}" data-id="${item.id}" data-step="${item.step_approval}" class="btn btn-warning btn-sm mt-2 approval" data-toggle="modal" data-target="#approvalModal">
+                                <i class="fa-solid fa-users"></i>
+                            </button>
+                            `
+                        }
                         return `
                         <button type="button" data-sign_transaction_id="${item.id}" class="btn btn-info btn-sm mt-2 detail_sign_transaction" data-toggle="modal" data-target="#detailSignModal"><i class="fas fa-eye"></i></button>
-
-                        <button type="button" data-sign="${item.signature_code}" data-id="${item.id}" data-step="${item.step_approval}" class="btn btn-warning btn-sm mt-2 approval" data-toggle="modal" data-target="#approvalModal">
-                            <i class="fa-solid fa-users"></i>
-                        </button>
-
-                      <button type="button" style="background-color:#76ABAE !important;color:white" class="btn btn-sm mt-2 sign" title="Click Here For Attachment" data-id ="${item.signature_code}"><i class="fa-solid fa-file-pdf"></i>
-                        </button>
+                        ${button_approval}
+                        ${button_custom}
                         
                         `
 
@@ -173,8 +206,7 @@
         $(document).on('click', '.detail_sign_transaction', function(e) {
             e.preventDefault()
             let sign_id = $(this).data('sign_transaction_id')
-            // alert(sign_id)
-            $('#form_detail_sign_transaction')[0].reset()
+            $('#detail_container').prop('hidden',true)
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -187,25 +219,44 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
-                    console.log(res.data[0].approval_type)
-                    $('#detail_approval_type').html( res.data[0].approval_type == 1 ?': Hirarki' :': Non Hirarki')
-                    $('#detail_title_sign').html(': ' + res.data[0].title)
-                    $('#detail_description_sign').html(': ' + res.data[0].description)
-                    $('#detail_total_approval_sign').html(': ' + res.data[0].step_approval)
-                    let data_attachment = res.data[0].attachment
+                    $('#detail_approval_type').html( res.detail.approval_type == 1 ?': Hirarki' :': Non Hirarki')
+                    $('#detail_title_sign').html(': ' + res.detail.title)
+                    $('#detail_description_sign').html(': ' + res.detail.description)
+                    $('#detail_total_approval_sign').html(': ' + res.detail.step_approval)
+                    let data_attachment = res.detail.attachment
                     let link_attachment = "{{ asset('') }}"+data_attachment
                     $('#detail_attachment_sign').attr('href', link_attachment)
                     $('#table_list_detail_approval').empty()
                     let number_user = 1
-                    // $.each(res.data[0].signature_detail, function(i, user) {
-                    //     $('#table_list_detail_approval').append(`
-                    //         <tr>
-                    //             <td>${number_user++}</td>
-                    //             <td>${user.user.name}</td>
-                    //             <td>${user.status == 0 ? 'Required' : 'DONE' }</td>
-                    //         </tr>
-                    //     `)
-                    // })
+
+                    if(res.data.length > 0){
+                        $('#detail_container').prop('hidden',false)
+                        var data=''
+                        $('#detail_sign_table').DataTable().clear();
+                        $('#detail_sign_table').DataTable().destroy();
+                        for(i = 0; i < res.data.length ; i++){
+                            var status = res.data[i].status == 0 ? 'Not yet' : 'Finished'
+                            data +=`
+                                <tr>
+                                    <td style="width: 5%; text-align:center">${res.data[i].step}</td>
+                                    <td>${res.data[i].user_relation.name}</td>
+                                    <td style="width: 10%; text-align:center">${status}</td>
+                                </tr>
+                            `
+                        }
+                        $('#detail_sign_table > tbody:first').html(data);
+                            $('#detail_sign_table').DataTable({
+                                scrollX  : false,
+                                searching  :true,
+                                language: {
+                                    'paginate': {
+                                    'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                                    'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                                    }
+                                },
+                            }).columns.adjust()
+                    }
+                  
                 }
             })
         })

@@ -8,7 +8,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="form_detail_sign_transaction">
+          
                 <div class="modal-body p-0 mt-2 mx-2 my-1">
                   <fieldset>
                     <legend>General Information</legend>
@@ -48,11 +48,23 @@
                           <p id="detail_description_sign"></p>
                         </div>
                   </fieldset>
+
+                  <fieldset id="detail_container">
+                    <legend>Detail Sign</legend>
+                    <table class="datatable-stepper" id="detail_sign_table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="name">Step</th>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="name">Name</th>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="name">Status</th>
+                            </tr>
+                        </thead>
+                    </table>
+                  </fieldset>
                 </div>
                 <div class="modal-footer">
                   
                 </div>
-            </form>
         </div>
     </div>
 </div>

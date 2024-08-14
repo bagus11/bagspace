@@ -192,7 +192,7 @@ Route::group(['middleware' => ['auth']], function() {
             // Master Category
 
             // Signature
-                Route::get('getValidationSign', [SignatureController::class, 'getValidationSign'])->name('getValidationSign');
+                Route::get('getValidationSignExist', [SignatureController::class, 'getValidationSignExist'])->name('getValidationSignExist');
                 Route::post('saveSignature', [SignatureController::class, 'saveSignature'])->name('saveSignature');
             // Signature
         // Timeline Project
@@ -221,9 +221,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('create-sign', [SignTransactionController::class,'createSignTransaction'])->name('create-sign');
         Route::get('getApprovalSign', [SignTransactionController::class,'getApprovalSign'])->name('getApprovalSign');
         Route::post('updateApprovalSign', [SignTransactionController::class,'updateApprovalSign'])->name('updateApprovalSign');
+        Route::post('sendSign', [SignTransactionController::class,'sendSign'])->name('sendSign');
         Route::get('getUserSign', [SignTransactionController::class, 'getUserSign'])->name('getUserSign');
         Route::get('sign-document', [SignTransactionController::class,'signDocument'])->name('sign-document');
         Route::get('view-pdf/{filename}', [SignTransactionController::class,'viewPdf']);
         // signature transaction
-
-});
+        
+    });
+    Route::get('validationSign/{link}', [SignTransactionController::class, 'validationSign'])->name('validationSign');
+    Route::get('getValidationSign', [SignTransactionController::class, 'getValidationSign'])->name('getValidationSign');
+    Route::post('postValidationSign', [SignTransactionController::class, 'postValidationSign'])->name('postValidationSign');

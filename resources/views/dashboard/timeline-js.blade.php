@@ -1,7 +1,9 @@
 <script>
     getCallbackNoSwal('getTimelineHeaderUser',null,function(response){
         mappingTableTimeline(response.data)
-        mappingTask(response.data[0])
+        if(response.data.length > 0 ){
+            mappingTask(response.data[0])
+        }
         mappingDaily(response.daily)
         $('#select_project').empty()
         $.each(response.data,function(i,data){
@@ -10,6 +12,7 @@
         
     })
     $('#pincode-input1').pincodeInput({inputs:4});
+
     $('#select_project').on('change',function(){
         var select_project = $('#select_project').val()
         var data ={
@@ -19,7 +22,7 @@
             mappingTask(response.data[0])
         })
     })
-    getCallbackNoSwal('getValidationSign', null,function(response){
+    getCallbackNoSwal('getValidationSignExist', null,function(response){
         if(response.count == 0){
             toastr['info']('Please set your digital signature and set PIN code for validation, thank you ');
             $('#addSignModal').modal('show')

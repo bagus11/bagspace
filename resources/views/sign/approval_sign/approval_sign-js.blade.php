@@ -162,9 +162,13 @@
     });
 
     $('#btn_send').on('click', function(){
-        var data = { 'array': array_user };
+        var data = { 
+            'array': array_user ,
+            'signature_code': $('#signature_code').val() ,
+
+        };
         $.ajax({
-            url: "{{route('getUserSign')}}",
+            url: "{{route('sendSign')}}",
             type: "post",
             dataType: 'json',
             data:data,
@@ -174,7 +178,15 @@
             },
             success:function(response){
                 swal.close()
-                
+                Swal.fire({
+                    icon: "info",
+                    title: 'Success',
+                    text: response.meta.message,
+                    });
+                setTimeout(function() {
+                window.close();
+            }, 5000);
+
             },
             error: function(response) {
                 $('.message_error').html('')

@@ -50,6 +50,7 @@ class MonitoringTimelineController extends Controller
                                     'teamRelation',
                                     'teamRelation.detailRelation.UserRelation',
                                     'taskRelation',
+                                    'typeRelation',
                                     'taskRelation.detailRelation',
                                     'detailRelation',
                                     ])->

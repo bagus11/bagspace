@@ -20,6 +20,9 @@
                                 data-toggle="modal" data-target="#addSignModal">
                                 <i class="fas fa-plus"></i>
                             </button>
+                            <button class="btn btn-sm btn-info mr-2" id="btnRefresh" style="float: right">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -29,6 +32,7 @@
                                     <th scope="col" class="sort" data-sort="no">No</th>
                                     <th scope="col" class="sort" data-sort="sign">Transaction Sign Number</th>
                                     <th scope="col" class="sort" data-sort="title">Title</th>
+                                    <th scope="col" class="sort" data-sort="status">Status</th>
                                     <th scope="col" class="sort" data-sort="action">Action</th>
                                 </tr>
                             </thead>

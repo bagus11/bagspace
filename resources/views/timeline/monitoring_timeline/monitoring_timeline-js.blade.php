@@ -1,10 +1,10 @@
 <script>
-    getCallback('getTimelineHeader',null, function(response){
+    getCallback('getTimelineHeaderUser',null, function(response){
         swal.close()
         mappingTable(response.data)
     })
     $('#btnRefresh').on('click',function(){
-        getCallback('getTimelineHeader',null, function(response){
+        getCallback('getTimelineHeaderUser',null, function(response){
         swal.close()
         mappingTable(response.data)
     })
@@ -54,7 +54,7 @@
             $('.message_error').html('')
                 $('#addTimelineHeader').modal('hide')
                 toastr['success'](response.meta.message);
-                getCallbackNoSwal('getTimelineHeader', null,function(response){
+                getCallbackNoSwal('getTimelineHeaderUser', null,function(response){
                     mappingTable(response.data)
                 })
         })
@@ -150,7 +150,7 @@
             swal.close()
             $('#botTimelineModal').modal('hide')
             toastr['success'](response.meta.message);
-            getCallbackNoSwal('getTimelineHeader',null, function(response){
+            getCallbackNoSwal('getTimelineHeaderUser',null, function(response){
                 mappingTable(response.data)
             })
         })
