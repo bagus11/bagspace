@@ -25,6 +25,7 @@ class ValidationSignRequest extends FormRequest
      */
     public function rules(Request $request)
     {
+        // dd($request);
         return [
             'pincode' => ['required', new ValidationPinCode($request->signature_code,$request->step,$request->pincode)],
         ];

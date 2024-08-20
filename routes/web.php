@@ -3,8 +3,6 @@
 use App\Http\Controllers\Booking\BookingController;
 use App\Http\Controllers\Booking\MasterApprovalController;
 use App\Http\Controllers\Booking\MasterRoomController;
-use App\Http\Controllers\Chat\Master\SettingChatController;
-use App\Http\Controllers\Chat\Transaction\ChatController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Setting\RolePermissionController;
 use App\Http\Controllers\Setting\SettingAccountController;

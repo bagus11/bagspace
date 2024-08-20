@@ -271,12 +271,14 @@ class SignTransactionController extends Controller
         Auth::check();
         $signature_code = str_replace('_','/', $id);
         $head = SignatureHeader::where('signature_code',$signature_code)->first();
+        // dd($head);
         $data =[
             'head' =>$head
         ];
         return view('sign.validation_sign.validation_sign-index',$data);
    }
    function getValidationSign(Request $request) {
+   
         $data = SignatureDetail::with([
             'userRelation',
             'signatureRelation',
@@ -290,7 +292,7 @@ class SignTransactionController extends Controller
    }
    public function postValidationSign(Request $request, ValidationSignRequest $validationSignRequest)
    {
-       try {
+    //    try {
            // Validate and retrieve the validated data
            $validatedData = $validationSignRequest->validated();
    
@@ -302,7 +304,7 @@ class SignTransactionController extends Controller
            }
    
            $details = SignatureDetail::where('signature_code', $request->signature_code)
-               ->where('user_id', $head->step_approval_id)
+               ->where('step', $head->step_approval_id)
                ->get();
    
            if ($details->isEmpty()) {
@@ -327,29 +329,55 @@ class SignTransactionController extends Controller
            // Import existing PDF content
            $pageCount = $pdf->setSourceFile($pdfPath);
            $templateIds = [];
+   
+           // Default page format, can be changed based on your requirements
+           $defaultPageFormat = 'test';
+   
+           // Detect and set page format dynamically based on existing PDF
            for ($i = 1; $i <= $pageCount; $i++) {
                $templateIds[$i] = $pdf->importPage($i);
    
-               // Check orientation of each page and set it accordingly
+               // Get the size of the imported page
                $size = $pdf->getTemplateSize($templateIds[$i]);
+   
+               // Set the page format based on dimensions
+               $pageWidth = $size['width'];
+               $pageHeight = $size['height'];
+               $pageWidthTest = round($size['width'] * (72 / 25.4), 2);
+               $pageHeightTest = round($size['height'] * (72 / 25.4), 2);
+   
+               if ($pageWidthTest >= 595.276 && $pageHeightTest >= 841.890) { // A4 size in points
+                   $pageFormat = 'A4';
+               } elseif ($pageWidthTest >= 612 && $pageHeightTest >= 792) { // Letter size in points
+                   $pageFormat = 'Letter';
+               } elseif ($pageWidthTest >= 420 && $pageHeightTest >= 595) { // A5 size in points
+                   $pageFormat = 'A5';
+               } else {
+                   $pageFormat = $defaultPageFormat; // Fallback
+               }
+            //    dd($pageFormat. ' == ' . $pageHeightTest . ' + '. $pageWidthTest );
+               // Add a new page with the detected format and orientation
                if ($size['width'] > $size['height']) {
-                   $pdf->AddPage('L', [$size['width'], $size['height']]); // Landscape
+                   $pdf->AddPage('L', $pageFormat); // Landscape
                    $imageWidth = 45;
                    $imageHeight = 15;
+                   $canvasWidth = 1250;
+                   $canvasHeight = 800;
                } else {
-                   $pdf->AddPage('P', [$size['width'], $size['height']]); // Portrait
-                   $imageWidth = 30;
-                   $imageHeight = 10;
+                   $pdf->AddPage('P', $pageFormat); // Portrait
+                   $imageWidth = 35;
+                   $imageHeight = 17;
+                   $canvasWidth = 850;
+                   $canvasHeight = 1250;
                }
    
                $pdf->useTemplate($templateIds[$i]);
-               $pageWidth = $size['width'];
-               $pageHeight = $size['height'];
    
                // Check if there are details for this page
                foreach ($details as $row) {
                    if ($row->page_number == $i) {
-                       $validation = ApprovalSign::where('user_id', $head->step_approval_id)->first();
+                       
+                       $validation = ApprovalSign::where('user_id', $row->user_id)->first();
                        $signature = MasterSignature::where('user_id', $validation->user_id)->first();
    
                        if ($signature && $signature->signature) {
@@ -379,14 +407,11 @@ class SignTransactionController extends Controller
    
                            // Save the decoded image to a file
                            $result = file_put_contents($tempImagePath, $decodedImage);
+                           
                            if ($result !== false) {
                                Log::info('File written successfully. Bytes written: ' . $result);
    
                                // Convert web coordinates to PDF coordinates
-                               $canvasWidth = 1200;  // Set these according to the actual dimensions of the web canvas
-                               $canvasHeight = 800;  // Set these according to the actual dimensions of the web canvas
-   
-                               // Calculate precision factors for coordinate conversion
                                $xFactor = $pageWidth / $canvasWidth;
                                $yFactor = $pageHeight / $canvasHeight;
    
@@ -419,7 +444,8 @@ class SignTransactionController extends Controller
    
            // Save the updated PDF
            $replaceName = str_replace('/', '-', $request->signature_code);
-           $updatedPdfPath = $directory . '/' . $replaceName . date('YmdHis') . '.pdf';
+        //    $updatedPdfPath = $directory . '/' . $replaceName .date('YmdHis'). '.pdf';
+           $updatedPdfPath = $directory . '/' . $replaceName. '.pdf';
            $pdf->Output($updatedPdfPath, 'F');
    
            // Update the head attachment with the new file path
@@ -427,11 +453,9 @@ class SignTransactionController extends Controller
            $head->save();
    
            return ResponseFormatter::success($updatedPdfPath, 'Approver successfully updated');
-       } catch (\Throwable $th) {
-           Log::error('Throwable: ' . $th->getMessage());
-           return ResponseFormatter::error($th->getMessage(), 'Approver failed to update', 500);
-       }
+    //    } catch (\Throwable $th) {
+    //        Log::error('Throwable: ' . $th->getMessage());
+    //        return ResponseFormatter::error($th->getMessage(), 'Approver failed to update', 500);
+    //    }
    }
-   
-   
 }

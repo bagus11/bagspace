@@ -698,7 +698,7 @@
             });
 
             // Create a worksheet
-            var ws = XLSX.utils.json_to_sheet(excelData);
+            var ws = btn_update_module.json_to_sheet(excelData);
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Gantt Chart");
 
@@ -1244,6 +1244,7 @@
                             } else {
                                 // Create new chart
                                 var data_percentage = `
+                                  <input type="hidden" id="percentage_value" value="${response.detail.percentage}">
                                     <div class="single-chart" style="display: flex; justify-content: left; align-items: left; padding-left: 15px !important">
                                         <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height: 100px; width: 100%; min-width: 150px !important">
                                             <path class="circle-bg"
@@ -1494,9 +1495,11 @@
                         $('#task_subdetail_table').DataTable().clear();
                         $('#task_subdetail_table').DataTable().destroy();
                         $('#log_module_table').DataTable().destroy();
-                        
                         $('#chat_container').empty()
-                        $('#percentage_task_container').empty()
+                        var percentage_value = $('#percentage_value').val()
+                        if(percentage_value != response.detail.percentage){
+                                $('#percentage_task_container').empty()
+                            }
                         var chat = ''
                         var data_table = ''
                         var auth_id = $('#authId').val()
@@ -1519,6 +1522,7 @@
                             } else {
                                 // Create new chart
                                 var data_percentage = `
+                                  <input type="hidden" id="percentage_value" value="${response.detail.percentage}">
                                     <div class="single-chart" style="display: flex; justify-content: left; align-items: left; padding-left: 15px !important">
                                         <svg viewBox="0 0 36 36" class="circular-chart ${color}" style="min-height: 100px; width: 100%; min-width: 150px !important">
                                             <path class="circle-bg"
@@ -1526,7 +1530,8 @@
                                                     a 15.9155 15.9155 0 0 1 0 31.831
                                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                             />
-                                            <path class="circle"
+                                          
+                                            <path class="circle" 
                                                 stroke-dasharray="${response.detail.percentage}, 100"
                                                 d="M18 2.0845
                                                     a 15.9155 15.9155 0 0 1 0 31.831
@@ -1537,7 +1542,11 @@
                                     </div>
                                 `;
                             }
+                          
+
+                            if(percentage_value != response.detail.percentage){
                                 $('#percentage_task_container').html(data_percentage);
+                            }
                                 for(i=0 ; i < response.data.length; i ++){
                            
                            

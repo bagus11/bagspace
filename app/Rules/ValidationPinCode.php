@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Models\Sign\MasterSignature;
+use App\Models\SignatureDetail;
 use App\Models\SignatureHeader;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
@@ -34,10 +35,12 @@ class ValidationPinCode implements Rule
      */
     public function passes($attribute, $value)
     {
-        
+      
         $head= SignatureHeader::where('signature_code',$this->signature_code)->first();
+        $user = SignatureDetail::where('signature_code', $this->signature_code)->where('step',$head->step_approval_id)->first();
+        // dd($user);
         $result = false;
-        $detail =User::where('id', $head->step_approval_id)
+        $detail =User::where('id', $user->user_id)
                     ->first();        
         $result = $detail->pincode == $this->pincode ? true : false;
         return $result;
