@@ -236,11 +236,17 @@
                         $('#detail_sign_table').DataTable().destroy();
                         for(i = 0; i < res.data.length ; i++){
                             var status = res.data[i].status == 0 ? 'Not yet' : 'Finished'
+                            const d = new Date(res.data[i].updated_at)
+                            const date = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? convertDate(d.toISOString().split('T')[0]) : '';
+                            const datevalidate = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? d.toISOString().split('T')[0] : '';
+                            const time = d != 'Thu Jan 01 1970 07:00:00 GMT+0700 (Western Indonesia Time)' ? d.toTimeString().split(' ')[0] : '';
+                            const date_time = date + ' ' + time;
                             data +=`
                                 <tr>
                                     <td style="width: 5%; text-align:center">${res.data[i].step}</td>
                                     <td>${res.data[i].user_relation.name}</td>
                                     <td style="width: 10%; text-align:center">${status}</td>
+                                    <td style="width: 20%; text-align:left">${res.data[i].updated_at == null ?'-' : date_time}</td>
                                 </tr>
                             `
                         }

@@ -57,6 +57,7 @@
                                 <th scope="col" class="sort" style="text-align: center" data-sort="name">Step</th>
                                 <th scope="col" class="sort" style="text-align: center" data-sort="name">Name</th>
                                 <th scope="col" class="sort" style="text-align: center" data-sort="name">Status</th>
+                                <th scope="col" class="sort" style="text-align: center" data-sort="name">Finished At</th>
                             </tr>
                         </thead>
                     </table>

@@ -247,14 +247,14 @@
   <script src="{{asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
   <script src="{{ asset('assets/sweetalert2/sweetalert.min.js') }}"></script>
   <script src="{{ asset('assets/select2/select2.full.min.js') }}"></script>
-  {{-- <script src="{{ asset('assets/select2/select2.min.js') }}"></script> --}}
   <script src="{{ asset('assets/select2/select2.full.min.js') }}"></script>
+  {{-- <script src="{{ asset('assets/select2/select2.min.js') }}"></script> --}}
 
 
     <!-- Core -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>  --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sf-bootstrap-pincode-input@1.5.0/js/bootstrap-pincode-input.min.js"></script>

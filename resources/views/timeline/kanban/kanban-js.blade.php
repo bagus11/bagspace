@@ -775,12 +775,14 @@
                 contentType: false,
                 data: formData,
                 beforeSend: function() {
-                    // SwalLoading('Inserting progress, please wait .');
-                    $('#send_chat').prop('disabled',true)
+                    SwalLoading('Inserting progress, please wait .');
+                    // $('#send_chat').prop('disabled',true)
                 },
                 success: function(response) {
+                        swal.close()
                         $('.message_error').html('')
                         $('#taskDoneModal').modal('hide')
+                        $('#attachment_done').val('');
                         toastr['success'](response.message);
                         showNoSwal(detail_code)
             
