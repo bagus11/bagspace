@@ -804,7 +804,7 @@
             $('#kanban_pending').empty();
             $('#kanban_done').empty();
             $('#moduleContainerLabel').empty();
-
+         
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -837,7 +837,6 @@
                         } else if (response.data[i].percentage >= 76) {
                             color = 'rgba(75, 192, 192, 1)'; // Green
                         }
-                      
                         if(header_type == 1){
                                         card =`
                                             <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
@@ -849,7 +848,7 @@
                                                     <div class="progress" style="height: 5px;">
                                                     <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                                     </div>
-                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i].status !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                     <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
                                                     </div>
                                                 </div>
@@ -874,7 +873,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i].status !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                 <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
                                             </div>
                                         </div>
@@ -1061,6 +1060,7 @@
                         } else if (response.data[i].percentage >= 76) {
                             color = 'rgba(75, 192, 192, 1)'; // Green
                         }
+                      
                         if(header_type == 1){
                                         card =`
                                     <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
@@ -1072,7 +1072,7 @@
                                             <div class="progress" style="height: 5px;">
                                             <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
                                             </div>
-                                             <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                             <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i].status !=3 ? '#EE4E4E' : '#41B06E'}};border-radius:5px;color:white !important">
                                                     <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
                                                     </div>
                                         </div>
@@ -1099,7 +1099,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-0 mx-2" style="margin-top:-15px !important">
-                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i] !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
+                                            <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center" style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i].status !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                 <i class="fa-solid fa-clock mr-1"></i> ${convertDate(response.data[i].start_date)} - ${convertDate(response.data[i].end_date)}
                                             </div>
                                         </div>

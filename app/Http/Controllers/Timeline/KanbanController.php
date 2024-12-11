@@ -270,9 +270,15 @@ class KanbanController extends Controller
                 'user_id'       => auth()->user()->id,
                 'remark'        =>'Has create this module',
             ];
+            $text = auth()->user()->name." has create module : ".$request->name_module;
             // dd($post);
              TimelineDetail::insert($post);
              TimelineDetailLog::create($postLog);
+             Telegram::sendMessage([
+                'chat_id' => $header->id_channel,
+                'parse_mode' => 'HTML',
+                'text' => $text
+            ]);
             //  ChatTimelineModel::insert($post_chat);
              
             return ResponseFormatter::success(   
