@@ -123,7 +123,7 @@
         /* background-color: #35374B !important; */
         /* background-color: #61677A !important; */
         /* background-image:url('{{ asset('bg-kanban-1.png')}}'); */
-        background-image:url('{{ asset('login.png')}}');
+        background-image:url('{{ asset('bg-4.jpg')}}');
         &::after {
             content: '';
             opacity: 3.8;
