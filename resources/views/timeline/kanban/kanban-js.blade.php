@@ -4,6 +4,8 @@
   var dataStart ={
     'request_code' : request_code
   }
+  alert('socket io is activated, happy coding :)')
+  toastr['info']('here we go again :)')
   $(document).ready(function () {
         $('#addTaskModal').on('show.bs.modal', function () {
             $('#detailCardModal').css('z-index', 1039);

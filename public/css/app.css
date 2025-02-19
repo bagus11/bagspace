@@ -735,6 +735,14 @@ select {
 .m-8 {
   margin: 2rem;
 }
+.mx-0 {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -751,6 +759,18 @@ select {
   margin-left: auto;
   margin-right: auto;
 }
+.-my-3 {
+  margin-top: -0.75rem;
+  margin-bottom: -0.75rem;
+}
+.my-0 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -758,6 +778,10 @@ select {
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
+}
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 .my-6 {
   margin-top: 1.5rem;
@@ -786,6 +810,9 @@ select {
 }
 .mb-4 {
   margin-bottom: 1rem;
+}
+.mb-5 {
+  margin-bottom: 1.25rem;
 }
 .mb-8 {
   margin-bottom: 2rem;
@@ -825,6 +852,9 @@ select {
 }
 .ms-3 {
   margin-inline-start: 0.75rem;
+}
+.-mt-6 {
+  margin-top: -1.5rem;
 }
 .mt-0 {
   margin-top: 0px;
@@ -1017,6 +1047,9 @@ select {
 .overflow-hidden {
   overflow: hidden;
 }
+.text-nowrap {
+  text-wrap: nowrap;
+}
 .rounded {
   border-radius: 0.25rem;
 }
@@ -1036,6 +1069,9 @@ select {
 }
 .border {
   border-width: 1px;
+}
+.border-0 {
+  border-width: 0px;
 }
 .border-2 {
   border-width: 2px;
@@ -1133,6 +1169,10 @@ select {
 .p-6 {
   padding: 1.5rem;
 }
+.px-0 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -1173,18 +1213,20 @@ select {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
-.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
 .pb-0 {
   padding-bottom: 0px;
 }
 .pb-1 {
   padding-bottom: 0.25rem;
 }
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
 .pb-3 {
   padding-bottom: 0.75rem;
+}
+.pb-6 {
+  padding-bottom: 1.5rem;
 }
 .pl-3 {
   padding-left: 0.75rem;
@@ -1197,6 +1239,9 @@ select {
 }
 .pr-4 {
   padding-right: 1rem;
+}
+.pt-0 {
+  padding-top: 0px;
 }
 .pt-1 {
   padding-top: 0.25rem;
@@ -1271,6 +1316,9 @@ select {
 .uppercase {
   text-transform: uppercase;
 }
+.lowercase {
+  text-transform: lowercase;
+}
 .italic {
   font-style: italic;
 }
@@ -1331,10 +1379,6 @@ select {
 .text-green-600 {
   --tw-text-opacity: 1;
   color: rgb(22 163 74 / var(--tw-text-opacity));
-}
-.text-indigo-600 {
-  --tw-text-opacity: 1;
-  color: rgb(79 70 229 / var(--tw-text-opacity));
 }
 .text-indigo-700 {
   --tw-text-opacity: 1;
@@ -1402,10 +1446,6 @@ select {
 }
 .blur {
   --tw-blur: blur(8px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-.drop-shadow {
-  --tw-drop-shadow: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .grayscale {
