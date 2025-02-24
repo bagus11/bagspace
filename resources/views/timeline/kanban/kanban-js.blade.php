@@ -4,8 +4,6 @@
   var dataStart ={
     'request_code' : request_code
   }
-  alert('socket io is activated, happy coding :)')
-  toastr['info']('here we go again :)')
   $(document).ready(function () {
         $('#addTaskModal').on('show.bs.modal', function () {
             $('#detailCardModal').css('z-index', 1039);
@@ -147,28 +145,31 @@
     $('.btn_module').on('click',function(){
         $('#name_module').val('')
         $('#description_module').val('')
-        if(header_type != 1){
-            $('#purchase_container').prop('hidden', false)
-        }else{
-            $('#purchase_container').prop('hidden', true)
-        }
+        $('#purchase_container').prop('hidden', true)
     })
-    $("#plan_amount").on({
-                keyup: function() {
-                formatCurrency($(this));
-                },
-                blur: function() { 
-                formatCurrency($(this), "blur");
-                }
-    });
-    $("#plan_amount_edit").on({
-                keyup: function() {
-                formatCurrency($(this));
-                },
-                blur: function() { 
-                formatCurrency($(this), "blur");
-                }
-    });
+    onChange('select_module_type','type_module')
+   $('#select_module_type').on('change', function(){
+
+       var type_module = $('#type_module').val()
+       if(type_module == 2){
+          
+           $('#purchase_container').prop('hidden', false)
+           $("#plan_amount").on({
+               keyup: function() {
+                   formatCurrency($(this));
+               },
+               blur: function() { 
+                   formatCurrency($(this), "blur");
+               }
+           });
+       }else if(type_module == 1){
+         
+           $('#purchase_container').prop('hidden', true)
+       }else if(type_module == 3){
+          
+           $('#purchase_container').prop('hidden', false)
+       }
+   })
     $("#actual_amount").on({
                 keyup: function() {
                 formatCurrency($(this));
@@ -196,6 +197,7 @@
             'description_module' : $('#description_module').val(),
             'status_module' : $('#status_module').val(),
             'plan_amount' : plan_amount_convert,
+            'type_module' : $('#type_module').val(),
         }
         $.ajax({
             headers: {
@@ -341,18 +343,31 @@
         var id      = $(this).data('id')
         var status  = $(this).data('status')
         var detail_code = $('#detail_code_chat').val()
+        var type = $('#module_type_id').val()
         $('#done_status').val(status)
         $('#done_id').val(id)
         $('#taskDoneModal').modal('show')
-      
-        if(status == 1){
-            $('#reason_done_label').prop('hidden', false)
+        // if(status == 1){
+          
+        // }else{
+        //     if(type == 1){
+        //         $('#reason_done_label').prop('hidden', false)
+        //         $('#actual_done_label').prop('hidden', true)
+        //         $('#attachment_done_label').prop('hidden', true)
+        //     }else{
+        //         $('#reason_done_label').prop('hidden', true)
+        //         $('#actual_done_label').prop('hidden', false)
+        //         $('#attachment_done_label').prop('hidden', false)
+        //     }
+        // }
+        if(type == 1){
             $('#actual_done_label').prop('hidden', true)
-            $('#attachment_done_label').prop('hidden', true)
-        }else{
-            $('#reason_done_label').prop('hidden', true)
-            $('#actual_done_label').prop('hidden', false)
-            $('#attachment_done_label').prop('hidden', false)
+        }else if(type == 2 || type == 3){
+            if(status == 1){
+                $('#actual_done_label').prop('hidden', true)
+            }else{
+                $('#actual_done_label').prop('hidden', false)
+            }
         }
 
     })
@@ -565,6 +580,25 @@
         }
     });  
     })
+    onChange('select_module_type_edit','type_module_edit')
+    $('#select_module_type_edit').on('change', function(){
+        var type_module = $('#type_module_edit').val()
+        if(type_module == 2){
+            $('#purchase_container_edit').prop('hidden', false)
+            $("#plan_amount_edit").on({
+                keyup: function() {
+                    formatCurrency($(this));
+                },
+                blur: function() { 
+                    formatCurrency($(this), "blur");
+                }
+            });
+        }else if(type_module == 1){
+            $('#purchase_container_edit').prop('hidden', true)  
+        }else if(type_module == 3){
+            $('#purchase_container_edit').prop('hidden', false)
+        }
+    })
     $('#btn_update_module').on('click', function(){
     var detail_code =  $('#detail_code_chat').val()
     var plan        = $('#plan_amount_edit').val()
@@ -576,7 +610,8 @@
         'description_module_edit'       : $('#description_module_edit').val(),
         'plan_amount_edit'              : plan_convert,
         'reason_module_edit'            : $('#reason_module_edit').val(),
-        'detail_code'                   : detail_code
+        'detail_code'                   : detail_code,
+        'type_module_edit'              : $('#type_module_edit').val()
     }
     $.ajax({
         url: "{{route('updateModule')}}",
@@ -839,7 +874,7 @@
                         } else if (response.data[i].percentage >= 76) {
                             color = 'rgba(75, 192, 192, 1)'; // Green
                         }
-                        if(header_type == 1){
+                        if(response.data[i].type == 1){
                                         card =`
                                             <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
                                                 <div class="card-body detail_kanban p-2">
@@ -962,52 +997,96 @@
                     
 
                     // Initialize the charts
-                    if(header_type ==2){
                         response.array.forEach(function(item) {
-                            var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
-                            new Chart(ctx, {
-                                type: 'bar',
-                                data: {
-                                    labels: ['Plan', 'Actual'],
-                                    datasets: [{
-                                        label: 'Plan',
-                                        data: [item.plan],
-                                        backgroundColor: '#E88D67',
-                                        borderColor: 'white',
-                                        borderWidth: 1
-                                    },
-                                    {
-                                        label: 'Actual',
-                                        data: [item.actual],
-                                        backgroundColor: '#F3F7EC',
-                                        borderColor: 'white',
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    maintainAspectRatio: false,
-                                    aspectRatio: 3, // Adjust aspect ratio
-                                    scales: {
-                                        x: {
-                                            display: false // Hide x-axis labels
+                            console.log(item)
+                            if(item.type == 2 ){
+                                var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Plan', 'Actual'],
+                                        datasets: [{
+                                            label: 'Plan',
+                                            data: [item.plan],
+                                            backgroundColor: '#E88D67',
+                                            borderColor: 'white',
+                                            borderWidth: 1
                                         },
-                                        y: {
-                                            display: true // Hide y-axis labels
-                                        }
+                                        {
+                                            label: 'Actual',
+                                            data: [item.actual],
+                                            backgroundColor: '#F3F7EC',
+                                            borderColor: 'white',
+                                            borderWidth: 1
+                                        }]
                                     },
-                                    plugins: {
-                                        tooltip: {
-                                            enabled: true // Enable tooltips on hover
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        aspectRatio: 3, // Adjust aspect ratio
+                                        scales: {
+                                            x: {
+                                                display: false // Hide x-axis labels
+                                            },
+                                            y: {
+                                                display: true // Hide y-axis labels
+                                            }
                                         },
-                                        legend: {
-                                            display: false // Hide legend
+                                        plugins: {
+                                            tooltip: {
+                                                enabled: true // Enable tooltips on hover
+                                            },
+                                            legend: {
+                                                display: false // Hide legend
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }else if(item.type == 3){
+                                var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Plan', 'Actual'],
+                                        datasets: [{
+                                            label: 'Plan',
+                                            data: [item.plan],
+                                            backgroundColor: '#0B8494',
+                                            borderColor: 'white',
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Actual',
+                                            data: [item.actual],
+                                            backgroundColor: '#F05A7E',
+                                            borderColor: 'white',
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        aspectRatio: 3, // Adjust aspect ratio
+                                        scales: {
+                                            x: {
+                                                display: false // Hide x-axis labels
+                                            },
+                                            y: {
+                                                display: true // Hide y-axis labels
+                                            }
+                                        },
+                                        plugins: {
+                                            tooltip: {
+                                                enabled: true // Enable tooltips on hover
+                                            },
+                                            legend: {
+                                                display: false // Hide legend
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                         });
 
-                    }
+                    
 
                 },
                 error: function(xhr, status, error) {
@@ -1045,12 +1124,13 @@
                     // SwalLoading('Please wait ...');
                 },
                 success: function(response) {
-                    // swal.close();
                     var data_new = '';
                     var data_progress = '';
                     var data_pending = '';
                     var data_done = '';
-
+                    var module_container = ''
+                    var cssModule =''
+                    
                     for (i = 0; i < response.data.length; i++) {
                         var color = '';
                         if (response.data[i].percentage > 0 && response.data[i].percentage <= 25) {
@@ -1062,29 +1142,26 @@
                         } else if (response.data[i].percentage >= 76) {
                             color = 'rgba(75, 192, 192, 1)'; // Green
                         }
-                      
-                        if(header_type == 1){
+                        if(response.data[i].type == 1){
                                         card =`
-                                    <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')">
-                                        <div class="card-body detail_kanban p-2">
-                                              <p class="mb-0 hover" style="font-weight:bold;font-size:12px; !important">${response.data[i].name}</p>
-                                            <div class="text-right p-0">
-                                            <small class="text-muted mb-1 d-inline-block" style="font-size:9px;font-weight:bold;">${response.data[i].percentage}%</small>
-                                            </div>
-                                            <div class="progress" style="height: 5px;">
-                                            <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
-                                            </div>
-                                             <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i].status !=3 ? '#EE4E4E' : '#41B06E'}};border-radius:5px;color:white !important">
+                                            <div class="card cursor-grab mb-2 card-child"  id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
+                                                <div class="card-body detail_kanban p-2">
+                                                     <p class="mb-0 hover" style="font-weight:bold;font-size:12px; !important">${response.data[i].name}</p>
+                                                    <div class="text-right p-0">
+                                                    <small class="text-muted mb-1 d-inline-block hover" style="font-size:9px;font-weight:bold;color:black !important">${response.data[i].percentage}%</small>
+                                                    </div>
+                                                    <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar ${color}" role="progressbar" style="width: ${response.data[i].percentage}%;" aria-valuenow="${response.data[i].percentage}" aria-valuemin="0" aria-valuemax="100"></div>                            
+                                                    </div>
+                                                    <div class="mt-1 mx-4 pt-1 pb-1 justify-content-center"style="font-size:9px;text-align:center;background-color:${isDateLate(response.data[i].end_date) == true && response.data[i].status !=3 ? '#EE4E4E' : '#41B06E'};border-radius:5px;color:white !important">
                                                     <i class="fa-solid fa-clock mr-1"></i>  ${convertDate(response.data[i].start_date)} -  ${convertDate(response.data[i].end_date)}
                                                     </div>
-                                        </div>
-                                        </div>
-                                    `
-                        }else{
-
-                                    
-                        var card = `
-                          <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
+                                                </div>
+                                                </div>
+                                            `
+                        }else{         
+                            var card = `
+                                <div class="card cursor-grab mb-2 card-child" id="${response.data[i].detail_code}" onclick="show('${response.data[i].detail_code}','${response.data[i].name}')" >
                                     <div class="card-body detail_kanban p-2">
                                         <div class="row mb-4">
                                             <div class="col-12">
@@ -1107,8 +1184,61 @@
                                         </div>
                                     </div>
                                 </div>
-                        `;
+                            `;
                         }
+                        if(response.data[i].sub_detail_relation){
+                             var taskLabel =''
+                            for(j =0 ; j < response.data[i].sub_detail_relation.length; j++ ){
+                               
+                                    taskLabel +=`
+                                                    <li class="list-group-item" style="font-size:10px;font-family:Poppins" onclick="changeLabel('${response.data[i].sub_detail_relation[j].subdetail_code}')"> ${response.data[i].sub_detail_relation[j].name}</li>
+                                              
+                                                    
+                                    `
+                            }
+                          var plan = response.data[i].plan > 0 ? formatRupiah(response.data[i].plan) : '-'
+                        module_container +=`
+                            <div class="card  mx-2 mb-1" style="box-shadow:none !important;border-radius:30px !important;${cssModule};">
+                                <div class="card-header   collapsed p-0 mb-0 mt-2" id="heading${i}" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}" style="border-radius:30px !important">
+                                    <b class="p-0 ml-3 mb-0" style="font-size:12px">${response.data[i].name}</b>
+                                </div>
+                                <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
+                                    <div class="card-body p-0">
+                                            <fieldset class="legend1 mt-4">
+                                                <legend>General Information</legend>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <span style ="font-size:11px">${response.data[i].description}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                        <div class="col-12">
+                                                            <span style ="font-size:11px" >Progress : ${response.data[i].percentage} %</span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span style ="font-size:11px" >Start Date : ${convertDate(response.data[i].start_date)}</span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span style ="font-size:11px" >Dateline: ${convertDate(response.data[i].end_date)}</span>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span style ="font-size:11px" >Plan : ${plan}</span>
+                                                        </div>
+                                                </div>
+                                            </fieldset>
+                                              <fieldset class="legend1">
+                                                <legend>Task List</legend>
+                                                <ul class="list-group ">
+                                                    ${taskLabel}
+                                                </ul>
+                                                </fieldset>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                        }
+                     
                         if (response.data[i].status == 0) {
                             data_new += card;
                         } else if (response.data[i].status == 1) {
@@ -1118,59 +1248,113 @@
                         } else if (response.data[i].status == 3) {
                             data_done += card;
                         }
+                       
+                        if(response.data[0].name == response.data[i].name){
+                            cssModule = 'margin-top=-35px !important'
+                        }else{
+                            cssModule = 'margin-top=5px !important'
+                        }
+                       
                     }
 
                     $('#kanban_new').append(data_new);
                     $('#kanban_progress').append(data_progress);
                     $('#kanban_pending').append(data_pending);
                     $('#kanban_done').append(data_done);
-                    if(header_type == 2){
+                    $('#moduleContainerLabel').html(module_container);
+                    
 
-                        // Initialize the charts
+                    // Initialize the charts
                         response.array.forEach(function(item) {
-                            var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
-                            new Chart(ctx, {
-                                type: 'bar',
-                                data: {
-                                    labels: ['Plan', 'Actual'],
-                                    datasets: [{
-                                        label: 'Plan',
-                                        data: [item.plan],
-                                        backgroundColor: '#E88D67',
-                                        borderColor: 'white',
-                                        borderWidth: 1
-                                    },
-                                    {
-                                        label: 'Actual',
-                                        data: [item.actual],
-                                        backgroundColor: '#F3F7EC',
-                                        borderColor: 'white',
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    maintainAspectRatio: false,
-                                    aspectRatio: 3, // Adjust aspect ratio
-                                    scales: {
-                                        x: {
-                                            display: false // Hide x-axis labels
+                            console.log(item)
+                            if(item.type == 2 ){
+                                var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Plan', 'Actual'],
+                                        datasets: [{
+                                            label: 'Plan',
+                                            data: [item.plan],
+                                            backgroundColor: '#E88D67',
+                                            borderColor: 'white',
+                                            borderWidth: 1
                                         },
-                                        y: {
-                                            display: true // Hide y-axis labels
-                                        }
+                                        {
+                                            label: 'Actual',
+                                            data: [item.actual],
+                                            backgroundColor: '#F3F7EC',
+                                            borderColor: 'white',
+                                            borderWidth: 1
+                                        }]
                                     },
-                                    plugins: {
-                                        tooltip: {
-                                            enabled: true // Enable tooltips on hover
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        aspectRatio: 3, // Adjust aspect ratio
+                                        scales: {
+                                            x: {
+                                                display: false // Hide x-axis labels
+                                            },
+                                            y: {
+                                                display: true // Hide y-axis labels
+                                            }
                                         },
-                                        legend: {
-                                            display: false // Hide legend
+                                        plugins: {
+                                            tooltip: {
+                                                enabled: true // Enable tooltips on hover
+                                            },
+                                            legend: {
+                                                display: false // Hide legend
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }else if(item.type == 3){
+                                var ctx = document.getElementById('chart-' + item.detail_code).getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Plan', 'Actual'],
+                                        datasets: [{
+                                            label: 'Plan',
+                                            data: [item.plan],
+                                            backgroundColor: '#0B8494',
+                                            borderColor: 'white',
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Actual',
+                                            data: [item.actual],
+                                            backgroundColor: '#F05A7E',
+                                            borderColor: 'white',
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        aspectRatio: 3, // Adjust aspect ratio
+                                        scales: {
+                                            x: {
+                                                display: false // Hide x-axis labels
+                                            },
+                                            y: {
+                                                display: true // Hide y-axis labels
+                                            }
+                                        },
+                                        plugins: {
+                                            tooltip: {
+                                                enabled: true // Enable tooltips on hover
+                                            },
+                                            legend: {
+                                                display: false // Hide legend
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                         });
-                    }
+
+                    
                 },
                 error: function(xhr, status, error) {
                     swal.close();
@@ -1208,13 +1392,11 @@
                         $('#start_date_module_edit').val(response.detail.start_date)
                         $('#end_date_module_edit').val(response.detail.end_date)
                         $('#name_module_edit').val(response.detail.name)
+                        $('#select_module_type_edit').val(response.detail.type)
+                        $('#select_module_type_edit').select2().trigger('change')
+                        $('#type_module_edit').val(response.detail.type)
                         $('#description_module_edit').val(response.detail.description)
-                        if(header_type == 1){
-                            $('#purchase_container_edit').prop('hidden', true)
-                        }else{
-                            $('#purchase_container_edit').prop('hidden', false)
-                            $('#plan_amount_edit').val(convertToRupiah(response.detail.plan))
-                        }
+                        $('#purchase_container_edit').prop('hidden', true)
                         // Mapping Activity
                         $('#task_subdetail_table').DataTable().clear();
                         $('#task_subdetail_table').DataTable().destroy();
@@ -1364,6 +1546,7 @@
                         // Mapping Activity
 
                         // Mapping Chat
+                        if(response.chat.length > 0){
                             for (j = 0; j < response.chat.length; j++) {
                                 const d = new Date(response.chat[j].created_at);
                                 const date = d.toISOString().split('T')[0];
@@ -1403,6 +1586,10 @@
                                 chat += remark;
                             }
                             $('#chat_container').append(chat);
+                            $('.chat_container').prop('hidden', false);
+                        }else{
+                            $('.chat_container').prop('hidden', true);
+                        }
                         // Mapping Chat
 
                         // Mapping Detail
@@ -1430,6 +1617,12 @@
                         $('#module_name_label').html(': ' + response.detail.name)
                         $('#module_description_label').html(': ' + response.detail.description)
                         $('#module_status_label').html(': '+ status_detail)
+                        $('#module_type_label').html(
+                            response.detail.type == 1 ? ': General' : 
+                            response.detail.type == 2 ? ': Purchase' : 
+                            ': Tonase'
+                        );
+                        $('#module_type_id').val(response.detail.type)
                         $('#module_start_date_label').val(response.detail.start_date)
                         $('#module_end_date_label').val(response.detail.end_date)
                         $('#request_code_chat').val(response.detail.request_code)
@@ -1650,43 +1843,49 @@
                         // Mapping Activity
 
                         // Mapping Chat
-                        for (j = 0; j < response.chat.length; j++) {
-                            const d = new Date(response.chat[j].created_at);
-                            const date = d.toISOString().split('T')[0];
-                            const time = d.toTimeString().split(' ')[0];
-                            var auth = $('#authId').val();
-                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
-                            var attachment = response.chat[j].attachment ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.chat[j].attachment}')}}" target="_blank">
-                                <i class="fa-solid fa-file-pdf"></i> Click Here
-                                </a>` : '';
-                            if (response.chat[j].user_relation.id == 999) {
-                                remark = `
-                                    <div class="direct-chat-msg">
-                                        <div class="direct-chat-infos clearfix">
-                                            <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
+                        if(response.chat.length > 0){
+                            for (j = 0; j < response.chat.length; j++) {
+                                const d = new Date(response.chat[j].created_at);
+                                const date = d.toISOString().split('T')[0];
+                                const time = d.toTimeString().split(' ')[0];
+                                var auth = $('#authId').val();
+                                var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
+                                var attachment = response.chat[j].attachment ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.chat[j].attachment}')}}" target="_blank">
+                                    <i class="fa-solid fa-file-pdf"></i> Click Here
+                                    </a>` : '';
+                                if (response.chat[j].user_relation.id == 999) {
+                                    remark = `
+                                        <div class="direct-chat-msg">
+                                            <div class="direct-chat-infos clearfix">
+                                                <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
+                                            </div>
+                                            <div class="desk" style="width=100px !important">
+                                                <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                            </div>
+                                            ${attachment}
                                         </div>
-                                        <div class="desk" style="width=100px !important">
-                                            <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                    `;
+                                } else {
+                                    remark = `
+                                        <div class="person-a">
+                                            <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');"></div>
+                                            <div class="message">
+                                                <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
+                                                <br>
+                                                <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
+                                            </div>
+                                           
                                         </div>
-                                        ${attachment}
-                                    </div>
-                                `;
-                            } else {
-                                remark = `
-                                    <div class="person-a">
-                                        <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');"></div>
-                                        <div class="message">
-                                            <span><b>${response.chat[j].user_relation.name}</b>  ${attachment} ${response.chat[j].remark}</span>
-                                            <br>
-                                            <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
-                                        </div>
-                                       
-                                    </div>
-                                `;
+                                    `;
+                                }
+                                chat += remark;
                             }
-                            chat += remark;
+                            $('#chat_container').append(chat);
+                            $('.chat_container').prop('hidden', false);
+                        }else{
+                            $('.chat_container').prop('hidden', true);
+
                         }
-                        $('#chat_container').append(chat);
                         // Mapping Chat
                         var status_detail = ''
                         switch(response.detail.status){
@@ -1771,45 +1970,50 @@
                 
                     var chat = ''
                     $('#chat_container').empty()
-                    for(j = 0; j < response.chat.length; j++){
-                                        const d = new Date(response.chat[j].created_at)
-                                        const date = d.toISOString().split('T')[0];
-                                        const time = d.toTimeString().split(' ')[0];
-                                        var auth = $('#authId').val()
-                                        var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
-                                                if(response.chat[j].user_relation.id == 999){
-                                            
-                                                remark = `
-                                                    <div class="direct-chat-msg">
-                                                            <div class="direct-chat-infos clearfix">
-                                                                <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
-                                                            </div>
-                                                        <div class="desk" style="width=100px !important">
-                                                            <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
-                                                            </div>
-                                                            
-                                                        </div>
-
-                                                `
-                                                }else{
-                                                    remark =`
-                                                    <div class="person-a">
-                                                                <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');">
-                                                                </div> 
-                                                                <div class="message">
-                                                                
-                                                                    <span>
-                                                                        <b>${response.chat[j].user_relation.name}</b> ${response.chat[j].remark}
-                                                                    </span>
-                                                                    <br>
-                                                                    <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
+                    if(response){
+                        for(j = 0; j < response.chat.length; j++){
+                                            const d = new Date(response.chat[j].created_at)
+                                            const date = d.toISOString().split('T')[0];
+                                            const time = d.toTimeString().split(' ')[0];
+                                            var auth = $('#authId').val()
+                                            var name_img = response.chat[j].user_relation.gender == 1 ? 'profile.png' : 'female_final.png';
+                                                    if(response.chat[j].user_relation.id == 999){
+                                                
+                                                    remark = `
+                                                        <div class="direct-chat-msg">
+                                                                <div class="direct-chat-infos clearfix">
+                                                                    <span style='font-size:9px;' class="direct-chat-timestamp">${formatDate(date)} ${time}</span>
                                                                 </div>
-                                                            </div>     
-                                                    `;
-                                                }
-                                                chat += remark;
+                                                            <div class="desk" style="width=100px !important">
+                                                                <span style="font-size:9px !important;color:black;font-weight:normal !important; margin-left:auto;margin-right:auto;text-align:center !important;background-color:#d2d6de" class="badge badge-secondary p-2">${response.chat[j].remark}</span>
+                                                                </div>
+                                                                
+                                                            </div>
+    
+                                                    `
+                                                    }else{
+                                                        remark =`
+                                                        <div class="person-a">
+                                                                    <div class="icon" style=" background-image:url('{{ asset('storage/users-avatar/${response.chat[j].user_relation.avatar}')}}');">
+                                                                    </div> 
+                                                                    <div class="message">
+                                                                    
+                                                                        <span>
+                                                                            <b>${response.chat[j].user_relation.name}</b> ${response.chat[j].remark}
+                                                                        </span>
+                                                                        <br>
+                                                                        <span style="font-size:9px !important;color:#31363F">${convertDate(date)}, ${time}</span>
+                                                                    </div>
+                                                                </div>     
+                                                        `;
+                                                    }
+                                                    chat += remark;
+                        }
+                        $('#chat_container').append(chat)
+                        $('.chat_container').prop('hidden', false)
+                    }else{
+                        $('.chat_container').prop('hidden', true)
                     }
-                    $('#chat_container').append(chat)
 
                 },
                 error: function(xhr, status, error) {

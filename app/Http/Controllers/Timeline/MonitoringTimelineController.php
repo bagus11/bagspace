@@ -114,7 +114,7 @@ class MonitoringTimelineController extends Controller
                 'team_id'=>$request->team_id,
                 'user_id'=>auth()->user()->id,
                 'status'=>0,
-                'type_id'=>$request->type_id,
+                // 'type_id'=>$request->type_id,
                 'percentage'=>0,
                 'token'=>'6586388951:AAFftrLrMijUCYVhiQjCY0EesZDxjzYSHUA',
                 'link'=>'',
@@ -211,15 +211,16 @@ class MonitoringTimelineController extends Controller
         ];
         // dd($request->channel);
        // Menambahkan nilai $request->channel ke dalam file .env
-       $envFile = app()->environmentFilePath();
+        $envFile = app()->environmentFilePath();
         $str = file_get_contents($envFile);
+        
 
         // Extract the existing TELEGRAM_CHANNEL_ID value from the .env file
         preg_match('/TELEGRAM_CHANNEL_ID\s*=\s*\[(.*?)\]/', $str, $matches);
         $existingChannels = isset($matches[1]) ? $matches[1] : '';
         
         $newChannelId = $request->channel;
-        
+      
         // If there are existing channel IDs, append the new channel ID
         if ($existingChannels) {
             // Append the new channel ID to the existing array
@@ -231,7 +232,7 @@ class MonitoringTimelineController extends Controller
         
         // Extract channel IDs into an array
         $channelIdsArray = explode(',', $newChannels);
-        
+      
         // Set chat_id to the last channel ID in the array
         $lastChannelId = end($channelIdsArray);
         
@@ -242,6 +243,7 @@ class MonitoringTimelineController extends Controller
         
         \Dotenv\Dotenv::createImmutable(base_path())->load();
         // Send Telegram message to the last channel ID
+        
         $send = Telegram::sendMessage([
             'chat_id' => $lastChannelId,
             'parse_mode' => 'HTML',

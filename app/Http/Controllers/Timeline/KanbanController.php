@@ -68,6 +68,7 @@ class KanbanController extends Controller
                 $sum = [
                     'actual'    => $done->sum == null ?0 : $done->sum,
                     'plan'      => $row->plan,
+                    'type'      =>$row->type,
                     'detail_code'=>$row->detail_code
                 ];
                 array_push($array, $sum);
@@ -250,6 +251,7 @@ class KanbanController extends Controller
                 'start_date'            => $request->start_date_module,
                 'end_date'              => $request->end_date_module,
                 'status'                => $request->status_module,
+                'type'                  => $request->type_module,
                 'is_payment'            =>0,
                 'is_taxt'               =>0,
                 'is_negotiate'          =>0,
@@ -258,7 +260,7 @@ class KanbanController extends Controller
                 'payment_status'        =>0,
                 'plan'                  => $header->type_id ==1 ?0: $request->plan_amount
             ];
-            // dd($post);
+         
             $postLog = [
                 'request_code'  => $request->request_code,
                 'detail_code'   => $ticket_code,
@@ -741,6 +743,7 @@ class KanbanController extends Controller
                     'end_date'      => $request->end_date_module_edit,
                     'name'          => $request->name_module_edit,
                     'plan'          => $request->plan_amount_edit,
+                    'type'          => $request->type_module_edit,
                     'description'   => $request->description_module_edit,
                 ];
                 $postLog = [

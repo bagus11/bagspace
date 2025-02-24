@@ -13,9 +13,7 @@
             <div class="modal-body p-0 mx-2">
                 <input type="hidden" id="detail_code_chat">
                 <input type="hidden" id="request_code_chat">
-                
-                <!-- General Module Fieldset -->
-                <fieldset class="legend1">
+                <fieldset class="legend1" style="border-radius:15px !important">
                     <legend>General Module</legend>
                     <div class="row">
                         <div class="col-12">
@@ -34,27 +32,39 @@
                             </div>
                         </div>
                         <div class="col-md-9">
-                            <div class="row mx-2">
-                                <div class="col-3 mt-2"><p>Request Code</p></div>
-                                <div class="col-3 mt-2"><p id="module_request_code_label"></p></div>
-                                <div class="col-3 mt-2"><p>Detail Code</p></div>
-                                <div class="col-3 mt-2"><p id="module_detail_code_label"></p></div>
-                                <div class="col-3 mt-2"><p>Start Date</p></div>
-                                <div class="col-3"><input type="date" class="form-control" id="module_start_date_label"></div>
-                                <div class="col-3 mt-2"><p>End Date</p></div>
-                                <div class="col-3"><input type="date" class="form-control" id="module_end_date_label"></div>
-                                <div class="col-3 mt-2"><p>Module Name</p></div>
-                                <div class="col-9 mt-2"><p id="module_name_label"></p></div>
-                                <div class="col-3 mt-2"><p>Status</p></div>
-                                <div class="col-9 mt-2"><p id="module_status_label"></p></div>
-                              
-                                <div class="col-3 mt-2"><p>Plan</p></div>
-                                <div class="col-3 mt-2"><p id="plan_label"></p></div>
+                            <div class="card mt-2 rounded-6">
+                                <div class="card-header p-2 bg-list">
+                                    <strong style="font-weight: bold !important">Detail Module</strong>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="row mx-2">
+                                        <div class="col-3 mt-2"><p>Request Code</p></div>
+                                        <div class="col-3 mt-2"><p id="module_request_code_label"></p></div>
+                                        <div class="col-3 mt-2"><p>Detail Code</p></div>
+                                        <div class="col-3 mt-2"><p id="module_detail_code_label"></p></div>
+                                        <div class="col-3 mt-2"><p>Start Date</p></div>
+                                        <div class="col-3"><input type="date" class="form-control" id="module_start_date_label"></div>
+                                        <div class="col-3 mt-2"><p>End Date</p></div>
+                                        <div class="col-3"><input type="date" class="form-control" id="module_end_date_label"></div>
+                                        <div class="col-3 mt-2"><p>Status</p></div>
+                                        <div class="col-3 mt-2"><p id="module_status_label"></p></div>
+                                        <div class="col-3 mt-2"><p>Type</p></div>
+                                        <div class="col-3 mt-2"><p id="module_type_label"></p></div>
+                                        <input type="hidden" name="module_type_id" id="module_type_id">
+                                        <div class="col-3 mt-2"><p>Plan</p></div>
+                                        <div class="col-3 mt-2"><p id="plan_label"></p></div>
+                                    </div>
+                                    <div class="row mx-2">
+                                        <div class="col-3 mt-2"><p>Module Name</p></div>
+                                        <div class="col-9 mt-2"><p id="module_name_label"></p></div>
+                                    </div>
+                                    <div class="row mx-2">
+                                        <div class="col-3 mt-2"><p>Description</p></div>
+                                        <div class="col-9 mt-2"><p id="module_description_label"></p></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row mx-2">
-                                <div class="col-3 mt-2"><p>Description</p></div>
-                                <div class="col-9 mt-2"><p id="module_description_label"></p></div>
-                            </div>
+                          
                         </div>          
                         <!-- Task Section -->
                         <div class="col-md-12">
@@ -88,7 +98,7 @@
                 </fieldset>
                 
                 <!-- Discuss Section -->
-                <fieldset class="legend1">
+                <fieldset class="legend1" style="border-radius:15px !important">
                     <legend>Send Discuss Here</legend>
                     <div class="row mb-4">
                         <div class="col-1">
@@ -116,7 +126,7 @@
                 </fieldset>
                 
                 <!-- Activity Section -->
-                <fieldset class="legend1">
+                <fieldset class="legend1 chat_container" style="border-radius:15px !important">
                     <legend>Activity</legend>
                     <div class="box mx-2" id="chat_container"></div>
                 </fieldset>

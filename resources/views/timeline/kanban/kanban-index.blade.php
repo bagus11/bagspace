@@ -22,6 +22,10 @@
             background-color: #F9F2ED;
             border-color: transparent;
         }
+        .bg-list{
+            background-color: #F6995C;
+            color: white;
+        }
         .dropdown-menu {
             /* background-color: #31363F; */
             border-radius: 15px;
@@ -46,6 +50,12 @@
         }
         .card-parent{
             background-color: #DDDDDD !important
+        }
+        #percentage_task_container {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            height: 100%; /* Pastikan tinggi penuh */
         }
 </style>
 {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> --}}

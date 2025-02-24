@@ -42,7 +42,7 @@
             'office_id':$('#office_id').val(),
             'start_date':$('#start_date').val(),
             'end_date':$('#end_date').val(),
-            'type_id':$('#type_id').val(),
+            // 'type_id':$('#type_id').val(),
         }
        
         postCallback('saveTimelineHeader', data, function(response){
@@ -223,7 +223,7 @@
                         }
                             data += `<tr style="text-align: center;">
                                         <td style="text-align: center;width:15%">${response[i].request_code}</td>
-                                        <td style="text-align: left;width:10%">${response[i].type_relation.name}</td>
+                                        <td style="text-align: left;width:10%">-</td>
                                         <td style="text-align: left;width:15%">${response[i].team_relation.name}</td>
                                         <td style="text-align: center;width:30%">
                                             <div class="progress-group">

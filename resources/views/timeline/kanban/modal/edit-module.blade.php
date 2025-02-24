@@ -32,6 +32,19 @@
                         <input type="text" class="form-control" id="name_module_edit">
                         <span  style="color:red;" class="message_error text-red block name_module_edit_error"></span>
                     </div>
+                    <div class="col-2 mt-2">
+                        <p>Type</p>
+                    </div>
+                    <div class="col-4">
+                        <select name="select_module_type_edit" class="select2" id="select_module_type_edit">
+                            <option value="">Choose Type</option>
+                            <option value="1">General</option>
+                            <option value="2">Purchase</option>
+                            <option value="3">Tonase</option>
+                        </select>
+                        <input type="hidden" id="type_module_edit">
+                        <span  style="color:red;" class="message_error text-red block type_module_edit_error"></span>
+                    </div>
                 </div>
                 <div class="row" id="purchase_container_edit">
                         <div class="col-2 mt-2">
