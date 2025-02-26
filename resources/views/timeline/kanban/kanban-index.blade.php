@@ -33,7 +33,6 @@
         .list-group {
             /* background-color: #343a40; */
         }
-
         .list-group-item {
             /* background-color: #343a40; */
             color: black;

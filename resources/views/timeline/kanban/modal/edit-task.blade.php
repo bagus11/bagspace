@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body p-0 my-0 mx-2 ">
-                <fieldset class="legend1 mx-0 my-0">
+                <fieldset class="legend1 mx-0 my-0" style="border-radius: 15px !important;">
                     <legend>General Transaction</legend>
                     <div class="row">
                         <div class="col-2 mt-2">
@@ -36,11 +36,11 @@
                             <span style="color:red;" class="message_error text-red block name_edit_sub_module_error"></span>
                         </div>
                         <div class="col-2 mt-2" id="actual_label_edit">
-                            <p>Actual</p>
+                            <p>Plan</p>
                         </div>
                         <div class="col-4" id="amount_container_edit">
-                            <input type="text" class="form-control" id="actual_amount_edit">
-                            <span style="color:red;" class="message_error text-red block actual_amount_edit_error"></span>
+                            <input type="text" class="form-control" id="plan_sub_module_edit">
+                            <span style="color:red;" class="message_error text-red block plan_sub_module_edit_error"></span>
                         </div>
                     </div>
                     <div class="row">

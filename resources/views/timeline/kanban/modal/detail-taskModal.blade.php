@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body p-0">
-              <fieldset class="legend1 mx-2">
+              <fieldset class="legend1 mx-2" style="border-radius: 15px !important;">
                 <legend>Detail Task </legend>
                 <div class="row">
                     <div class="col-8">
@@ -35,6 +35,12 @@
                             <div class="col-4 mt-2">
                               <p style="font-size: 10px !important" id="name_task_label"></p>
                                
+                            </div>
+                            <div class="col-2 mt-2">
+                                <p style="font-size: 10px !important">Plan</p>
+                            </div>
+                            <div class="col-4 mt-2">
+                              <p style="font-size: 10px !important" id="plan_task_label"></p>
                             </div>
                             <div class="col-2 mt-2">
                                 <p style="font-size: 10px !important">Actual</p>
@@ -67,24 +73,25 @@
                     </div>
                 </div>
               </fieldset>
-              <fieldset class="legend1 mx-2 my-0 mt-2 px-0 mb-2">
+              <fieldset class="legend1 mx-2 my-0 mt-2 px-0 mb-2" style="border-radius: 15px !important;">
                 <legend>Log Transaction</legend>
                 <div class="row">
                     <div class="col-12">
                         <table class="datatable-stepper" id="log_task_table">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Created at</th>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Updated By</th>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">PIC</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="created_at">Created at</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="updated_by">Updated By</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="pic">PIC</th>
                                     <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Start Date</th>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">End Date</th>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Actual</th>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Remark</th>
-                                    <th scope="col" style="text-align: center" class="sort" data-sort="start_date">Status</th>
-                                   
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="end_date">End Date</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="plan">Plan</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="actual">Actual</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="remark">Remark</th>
+                                    <th scope="col" style="text-align: center" class="sort" data-sort="status">Status</th>
                                 </tr>
                             </thead>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>

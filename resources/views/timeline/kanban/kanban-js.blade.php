@@ -238,42 +238,55 @@
     $('#status_module').val(3)
     })
     $('#btn_add_task').on('click', function(){
-    var detail_code = $('#detail_code_chat').val()
-    $('#name_sub_module').val('')
-    $('#description_sub_module').val('')
-    $('#pic_id').val('')
-    $('#select_pic').val('')
-    $('#select_pic').select2().trigger('change')
-    $('#actual_amount').val('')
-    if(header_type == 1){
-        $('#actual_label').prop('hidden', true)
-        $('#amount_container').prop('hidden', true)
-    }else{
-        $('#actual_label').prop('hidden', false)
-        $('#amount_container').prop('hidden', false)
-    }
-        $.ajax({
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: "{{route('getTeam')}}",
-            type: "get",
-            dataType: 'json',
-            async: true,
-            data:{
-            'request_code' : $('#request_code').val(),
-            },
-            success: function(response) {
-                $('#select_pic').empty()
-                    $('#select_pic').append('<option value ="">Choose PIC</option>');
-                    $.each(response.data,function(i,data){
-                        $('#select_pic').append('<option data-name="'+ data.user_relation.name +'" value="'+data.user_id+'">' + data.user_relation.name +'</option>');
-                    });
-            },
-            error: function(xhr, status, error) {
-                toastr['error']('Failed to get data, please contact ICT Developer');
-            }
-        });
+        var detail_code = $('#detail_code_chat').val()
+        $('#name_sub_module').val('')
+        $('#description_sub_module').val('')
+        $('#pic_id').val('')
+        $('#select_pic').val('')
+        $('#select_pic').select2().trigger('change')
+        $('#plan_sub_module').val('')
+        $('#actual_amount').val('')
+        var module_type_id = $('#module_type_id').val()
+        if(module_type_id == 1){
+            $('.plan_container').prop('hidden', true)
+        }else if(module_type_id == 2)
+        {
+            $('.plan_container').prop('hidden', false)
+            $("#plan_sub_module").on({
+                keyup: function() {
+                    formatCurrency($(this));
+                },
+                blur: function() { 
+                    formatCurrency($(this), "blur");
+                }
+            });
+        }else{
+            $('.plan_container').prop('hidden', false)
+        
+        }
+      
+            $.ajax({
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('getTeam')}}",
+                type: "get",
+                dataType: 'json',
+                async: true,
+                data:{
+                'request_code' : $('#request_code').val(),
+                },
+                success: function(response) {
+                    $('#select_pic').empty()
+                        $('#select_pic').append('<option value ="">Choose PIC</option>');
+                        $.each(response.data,function(i,data){
+                            $('#select_pic').append('<option data-name="'+ data.user_relation.name +'" value="'+data.user_id+'">' + data.user_relation.name +'</option>');
+                        });
+                },
+                error: function(xhr, status, error) {
+                    toastr['error']('Failed to get data, please contact ICT Developer');
+                }
+            });
 
     })
     onChange('select_pic','pic_id')
@@ -289,6 +302,7 @@
             formData.append('end_date_sub_module',$('#end_date_sub_module').val())
             formData.append('description_sub_module',$('#description_sub_module').val())
             formData.append('pic_id',$('#pic_id').val())
+            formData.append('plan_sub_module',$('#plan_sub_module').val())
             // formData.append('actual_amount',actual_amount_convert)
             formData.append('attachment_task',$('#attachment_task')[0].files[0]);
 
@@ -371,97 +385,149 @@
         }
 
     })
-    $('#task_subdetail_table').on('click', '.detail', function(){
-    var id = $(this).data('id')
-    $('#log_task_table').DataTable().clear();
-    $('#log_task_table').DataTable().destroy();
-    $.ajax({
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{route('getSubDetailTimeline')}}",
-                type: "get",
-                dataType: 'json',
-                async: true,
-                data:{
-                    'id' :id
-                },
-                success: function(response) {
-                    $('#start_date_sub_task_label').val(response.detail.start_date)
-                    $('#end_date_task_label').val(response.detail.end_date)
-                    $('#name_task_label').html(': ' + response.detail.name)
-                    $('#select_pic_task').html(': ' + response.detail.user_relation.name)
-                    var attachment_label ='-'
-                    if(response.detail.attachment !==''){
-                        attachment_label =`<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.detail.attachment}')}}" target="_blank">
-                            <i class="fa-solid fa-file-pdf"></i> Click Here
-                            </a>`
-                    }
-                    $('#attachment_label').html(': ' + attachment_label)
-                    if(header_type != 1){
-                        $('#actual_amount_label').html(': ' + convertToRupiah(response.detail.amount))
-                    }else{
-                        $('#actual_amount_label').html(': - ')
-                    }
-                    $('#description_task_label').html(': ' + response.detail.description)
-                    
-                    var mapping_data =''
-        
-                            
-                    for(i = 0; i < response.log_task.length; i++ )
-                        {
-                            const d = new Date(response.log_task[i].created_at)
-                            const date = d.toISOString().split('T')[0];
-                            const time = d.toTimeString().split(' ')[0];
-                            var status =response.log_task[i].status == 1 ? "On Progress" : "DONE"
+    $('#task_subdetail_table').on('click', '.detail', function () {
+        var id = $(this).data('id');
 
-                            var attachment_remark = ''
-                            if(response.log_task[i].attachment !== null){
-                                attachment_remark =`<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" href="{{URL::asset('${response.log_task[i].attachment}')}}" target="_blank">
+        // Hancurkan DataTable sebelum memuat data baru
+        if ($.fn.DataTable.isDataTable('#log_task_table')) {
+            $('#log_task_table').DataTable().clear().destroy();
+        }
+
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{ route('getSubDetailTimeline') }}",
+            type: "GET",
+            dataType: 'json',
+            data: { 'id': id },
+            success: function (response) {
+                $('#start_date_sub_task_label').val(response.detail.start_date);
+                $('#end_date_task_label').val(response.detail.end_date);
+                $('#name_task_label').html(': ' + response.detail.name);
+                $('#select_pic_task').html(': ' + response.detail.user_relation.name);
+                $('#actual_amount_label').html(': ' + response.detail.amount);
+                var module_type_id = $('#module_type_id').val()
+                if(module_type_id == 1){
+                    $('#plan_task_label').html(': ' + response.detail.plan);
+                $('#plan_task_label').html(': ' + response.detail.plan);
+
+                let prevRow = null; // Simpan data sebelumnya
+
+                let data = ''; // Buat string untuk menyimpan tabel
+
+                for (var i = 0; i < response.log_task.length; i++) {
+                    const log = response.log_task[i];
+                    const d = new Date(log.created_at);
+                    const date = d.toISOString().split('T')[0];
+                    const time = d.toTimeString().split(' ')[0];
+                    const dateTime = `${date} ${time}`;
+                    let status = log.status == 1 ? "On Progress" : "DONE";
+
+                    let attachment_remark = log.attachment
+                        ? `<a style="color:#76ABAE !important;font-size:10px !important" title="Click Here For Attachment" 
+                            href="{{ asset('${log.attachment}') }}" target="_blank">
                             <i class="fa-solid fa-file-pdf"></i> Click Here
-                            </a>`
+                        </a>`
+                        : '';
+
+                    // Style perubahan warna merah jika ada perubahan dibanding baris sebelumnya
+                    var creatorStyle = '';
+                    var userStyle = '';
+                    var startDateStyle = '';
+                    var endDateStyle = '';
+                    var planStyle = '';
+                    var amountStyle = '';
+                    var statusStyle = '';
+                    if (i > 0) { // Bandingkan dengan baris sebelumnya
+                        if (response.log_task[i].creator_relation?.name !== response.log_task[i - 1].creator_relation?.name) 
+                            creatorStyle = 'color:red !important;';
+                        if (response.log_task[i].user_relation?.name !== response.log_task[i - 1].user_relation?.name) 
+                            userStyle = 'color:red !important;';
+                        if (response.log_task[i].start_date !== response.log_task[i - 1].start_date) 
+                            startDateStyle = 'color:red !important;';
+                        if (response.log_task[i].end_date !== response.log_task[i - 1].end_date) 
+                            endDateStyle = 'color:red !important;';
+                        if (response.log_task[i].plan !== response.log_task[i - 1].plan) 
+                            planStyle = 'color:red !important;';
+                        
+                        // Perbaikan untuk actual (pastikan dibandingkan sebagai angka)
+                        let actualCurrent = parseInt(response.log_task[i].actual) || 0;
+                        let actualPrevious = parseInt(response.log_task[i - 1].actual) || 0;
+                        if (actualCurrent !== actualPrevious) 
+                            amountStyle = 'color:red !important;';
+                        
+                        if (response.log_task[i].remark !== response.log_task[i - 1].remark) 
+                            remarkStyle = 'color:red !important;';
+                        if (response.log_task[i].status !== response.log_task[i - 1].status) 
+                            statusStyle = 'color:red !important;';
                     }
-                                mapping_data += `<tr style="text-align: center;">
-                                                    <td style="text-align:center;width:15%">${date} ${time}</td>
-                                                    <td style="text-align:left;width:15%">${response.log_task[i].creator_relation.name}</td>
-                                               
-                                                    <td style="text-align:left;width:10%">${response.log_task[i].user_relation.name}</td>
-                                                    <td style="text-align:center;">${convertDate(response.log_task[i].start_date)}</td>
-                                                    <td style="text-align:center;">${convertDate(response.log_task[i].end_date)}</td>
-                                                    <td style="text-align:right;width:10%">${convertToRupiah(response.log_task[i].amount)}</td>
-                                                    <td style="text-align:left;width:20%">${attachment_remark} ${response.log_task[i].remark}</td>
-                                                    <td style="text-align:left;width:10%">${status}</td>
-                                                </tr>
-                                        `;
-                        }
-                    $('#log_task_table > tbody:first').html(mapping_data);
-                    $('#log_task_table').DataTable({
-                        // scrollX  : true,
-                        ordering: true,
-                        language: {
-                                            'paginate': {
-                                                    'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
-                                                    'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
-                                            }
-                                        },
-                        columns: [
-                            { type: 'date' }, // Assuming the first column is date-like
-                            null, // Assuming other columns don't need special sorting
-                            null,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null
-                        ]
-                    }).columns.adjust()
-                },
-                error: function(xhr, status, error) {
-                    swal.close();
-                    toastr['warning']('Failed to get data, please contact ICT Developer');
+
+
+
+
+
+
+                    // Simpan row HTML
+                    data += `
+                        <tr style="text-align: center;">
+                            <td>${dateTime}</td> 
+                            <td style="text-align:left;width:15%;${creatorStyle}">${log.creator_relation.name}</td>
+                            <td style="text-align:left;width:10%;${userStyle}">${log.user_relation.name}</td>
+                            <td style="text-align:center;${startDateStyle}">${convertDate(log.start_date)}</td>
+                            <td style="text-align:center;${endDateStyle}">${convertDate(log.end_date)}</td>
+                            <td style="text-align:right;${planStyle}">${convertToRupiah(log.plan)}</td>
+                            <td style="text-align:right;width:10%;${amountStyle}">${convertToRupiah(log.amount)}</td>
+                            <td style="text-align:left;width:20%">${attachment_remark} ${log.remark}</td> 
+                            <td style="text-align:center;width:10%;${statusStyle}">
+                                <span class="badge w-100 rounded- bg-${status == 'On Progress' ? 'warning' : 'success'}">${status}</span>
+                            </td>
+
+                        </tr>
+                    `;
+
+                    // Simpan data saat ini untuk dibandingkan dengan baris be4rikutnya
+                    prevRow = {
+                        creator: log.creator_relation.name,
+                        user: log.user_relation.name,
+                        start_date: convertDate(log.start_date),
+                        end_date: convertDate(log.end_date),
+                        plan: convertToRupiah(log.plan),
+                        amount: convertToRupiah(log.amount),
+                        status: status
+                    };
                 }
-            });
-    })
+
+                $('#log_task_table > tbody').html(data);
+
+                $('#log_task_table').DataTable({
+                ordering: true,
+                order: [[0, 'desc']], // Urutkan berdasarkan kolom pertama (tanggal) secara descending
+                language: {
+                    'paginate': {
+                        'previous': '<span class="prev-icon"><i class="fa-solid fa-arrow-left"></i></span>',
+                        'next': '<span class="next-icon"><i class="fa-solid fa-arrow-right"></i></span>'
+                    }
+                },
+                columns: [
+                    { type: 'date' }, // Kolom tanggal tetap biasa
+                    null, null, null, null,
+                    { type: 'num' },
+                    { type: 'num' },
+                    null, null
+                ]
+            }).columns.adjust();
+
+            },
+            error: function () {
+                swal.close();
+                toastr['warning']('Failed to get data, please contact ICT Developer');
+            }
+        });
+    });
+
+
+
+
+
     $('#task_subdetail_table').on('click','.update', function(){
     $('#remark_edit').val('')
     $.ajax({
@@ -516,7 +582,7 @@
                     $('#start_date_edit_sub_module').val(response.detail.start_date)
                     $('#end_date_edit_sub_module').val(response.detail.end_date)
                     $('#name_edit_sub_module').val(response.detail.name)
-                    $('#actual_amount_edit').val(response.detail.amount)
+                    $('#plan_sub_module_edit').val(response.detail.plan)
                     $('#description_edit_sub_module').val(response.detail.description)
                     $('#select_pic_edit').val(response.detail.pic)
                     $('#select_pic_edit').select2().trigger('change')
@@ -540,7 +606,7 @@
         'name_edit_sub_module' : $('#name_edit_sub_module').val(),
         'start_date_edit_sub_module' : $('#start_date_edit_sub_module').val(),
         'end_date_edit_sub_module' : $('#end_date_edit_sub_module').val(),
-        'actual_amount_edit' : $('#actual_amount_edit').val(),
+        'plan_sub_module_edit' : $('#plan_sub_module_edit').val(),
         'description_edit_sub_module' : $('#description_edit_sub_module').val(),
         'remark_edit' : $('#remark_edit').val(),
         'pic_id_edit' : $('#pic_id_edit').val(),

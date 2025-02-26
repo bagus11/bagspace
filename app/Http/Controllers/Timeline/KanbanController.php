@@ -87,7 +87,7 @@ class KanbanController extends Controller
                                                 'userRelation',
                                                 'creatorRelation',
                                             ])->where('subdetail_code', $detail->subdetail_code)
-                                            ->orderBy('created_at','desc')
+                                            ->orderBy('created_at','asc')
                                             ->get();
         return response()->json([
             'detail'=>$detail,
@@ -334,6 +334,7 @@ class KanbanController extends Controller
                 'start_date'            => $request->start_date_sub_module,
                 'end_date'              => $request->end_date_sub_module,
                 'pic'                   => $request->pic_id,
+                'plan'                  => $request->plan_sub_module,
                 'status'                => 0,
                 'amount'                =>  0,
                 'attachment'            => $attachmentPath == ''?$attachmentPath : 'storage/'.$attachmentPath,
@@ -344,12 +345,14 @@ class KanbanController extends Controller
                 'description'           => $request->description_sub_module,
                 'start_date'            => $request->start_date_sub_module,
                 'end_date'              => $request->end_date_sub_module,
+                'plan'                  => $request->plan_sub_module,
                 'amount'                => 0,
                 'pic'                   => $request->pic_id, 
                 'created_at'            => date('Y-m-d H:i:s'),
                 'user_id'               => auth()->user()->id,
                 'remark'                => 'has created task : <b>'.$request->name_sub_module.'</b>',
             ];
+            
              TimelineSubDetail::insert($post);
              TimelineSubDetailLog::create($post_bot);
             //  ChatTimelineModel::insert($post_chat);
@@ -655,73 +658,83 @@ class KanbanController extends Controller
     function updateTask(Request $request) {
         $id     = TimelineSubDetail::with('userRelation')->find($request->id);
         $header = TimelineHeader::where('request_code', $id->request_code)->first();
+        $detail = TimelineDetail::where('detail_code', $id->detail_code)->first();
       
         $post =[
             'name'                  => $request->name_edit_sub_module,
             'description'           => $request->description_edit_sub_module,
             'start_date'            => $request->start_date_edit_sub_module,
             'end_date'              => $request->end_date_edit_sub_module,
-            'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount_edit,
+            'plan'                  => $detail->type_id ==1 ? 0 : $request->plan_sub_module_edit,
             'pic'                   => $request->pic_id_edit,
         ];
    
         $post_bot =[
-            'subdetail_code'       =>  $id->subdetail_code,
+            'subdetail_code'        =>  $id->subdetail_code,
             'name'                  => $request->name_edit_sub_module,
             'description'           => $request->description_edit_sub_module,
             'start_date'            => $request->start_date_edit_sub_module,
             'end_date'              => $request->end_date_edit_sub_module,
-            'amount'                => $header->type_id ==1 ? 0 : $request->actual_amount_edit,
+            'plan'                  => $header->type_id ==1 ? 0 : $request->plan_sub_module_edit,
+            'amount'                => $id->amount,
             'pic'                   => $request->pic_id_edit,
             'created_at'            => date('Y-m-d H:i:s'),
             'user_id'               => auth()->user()->id,
             'remark'                => $request->remark_edit
         ];
-       
+        // dd($post);
         
          $user = auth()->user()->name;
          $newPIC = User::find( $request->pic_id_edit);
         //  dd($user);
-        if($id->amount ==0){
-            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
-            ."Old Task : \n \n \n"
-            . "PIC          : " .$id->userRelation->name . "\n"
-            . "Task         :  <b>$id->name</b>  \n"
-            . "Start Date   :   $id->start_date \n"
-            . "End Date   :   $id->end_date \n"
-            . "Description   :   $id->description \n\n"
-            
-            ."New Task : \n \n \n "
-            . "PIC          : " . $newPIC->name . "\n"
-            . "Task         :  <b>$request->name_edit_sub_module</b>  \n"
-            . "Start Date   :   $request->start_date_edit_sub_module \n"
-            . "End Date   :   $request->end_date_edit_sub_module \n"
-            . "Description   :   $request->description_edit_sub_module \n\n"
-            
-            ."Updated By  : $user
-            ";
-
-        }else{
-            $text = "<b style='text-align:center'>" . $header->name . "</b>\n\n"
-            ."Old Task : \n \n \n"
-            . "PIC              : " .$id->userRelation->name . "\n"
-            . "Task             :  <b>$id->name</b>  \n"
-            . "Start Date       :   $id->start_date \n"
-            . "End Date         :   $id->end_date \n"
-            . "Actual           :   $id->amount \n"
-            . "Description      :   $id->description \n\n"
-            
-            ."New Task : \n \n \n "
-            . "PIC          : " . $newPIC->name . "\n"
-            . "Task         :  <b>$request->name_edit_sub_module</b>  \n"
-            . "Start Date   :   $request->start_date_edit_sub_module \n"
-            . "End Date   :   $request->end_date_edit_sub_module \n"
-            . "Actual           :   $request->actual_amount_edit \n"
-            . "Description   :   $request->description_edit_sub_module \n\n"
-            
-            ."Updated By  : $user
-            ";
+        if ($id->amount == 0) {
+            $text = "📢 <b>{$header->name}</b>\n\n"
+                  . "🔄 <b>Old Task</b> \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n"
+                  . "⠀⠀• PIC          : {$id->userRelation->name} \n"
+                  . "⠀⠀• Task         : <b>{$id->name}</b> \n"
+                  . "⠀⠀• Start Date   : {$id->start_date} \n"
+                  . "⠀⠀• End Date     : {$id->end_date} \n"
+                  . "⠀⠀• Description  : {$id->description} \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n\n"
+                  
+                  . "✨ <b>New Task</b> \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n"
+                  . "⠀⠀• PIC          : {$newPIC->name} \n"
+                  . "⠀⠀• Task         : <b>{$request->name_edit_sub_module}</b> \n"
+                  . "⠀⠀• Start Date   : {$request->start_date_edit_sub_module} \n"
+                  . "⠀⠀• End Date     : {$request->end_date_edit_sub_module} \n"
+                  . "⠀⠀• Description  : {$request->description_edit_sub_module} \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n\n"
+                  
+                  . "🛠️ Updated By  : $user\n\n"
+                  . "🤖 <i>Tejo Was Here</i>";
+        } else {
+            $text = "📢 <b>{$header->name}</b>\n\n"
+                  . "🔄 <b>Old Task</b> \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n"
+                  . "⠀⠀• PIC          : {$id->userRelation->name} \n"
+                  . "⠀⠀• Task         : <b>{$id->name}</b> \n"
+                  . "⠀⠀• Start Date   : {$id->start_date} \n"
+                  . "⠀⠀• End Date     : {$id->end_date} \n"
+                  . "⠀⠀• Actual       : {$id->amount} \n"
+                  . "⠀⠀• Description  : {$id->description} \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n\n"
+                  
+                  . "✨ <b>New Task</b> \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n"
+                  . "⠀⠀• PIC          : {$newPIC->name} \n"
+                  . "⠀⠀• Task         : <b>{$request->name_edit_sub_module}</b> \n"
+                  . "⠀⠀• Start Date   : {$request->start_date_edit_sub_module} \n"
+                  . "⠀⠀• End Date     : {$request->end_date_edit_sub_module} \n"
+                  . "⠀⠀• Actual       : {$request->actual_amount_edit} \n"
+                  . "⠀⠀• Description  : {$request->description_edit_sub_module} \n"
+                  . "━━━━━━━━━━━━━━━━━━━━\n\n"
+                  
+                  . "🛠️ Updated By  : $user\n\n"
+                  . "🤖 <i>Tejo Was Here</i>";
         }
+        
         Telegram::sendMessage([
              'chat_id' => $header->id_channel,
              'parse_mode' => 'HTML',
