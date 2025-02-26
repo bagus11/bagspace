@@ -1,8 +1,10 @@
 /node_modules
 /public/hot
 /public/storage
+/publi/.htaccess
 /storage/*.key
 /vendor
+composer.lock
 .env
 .env.backup
 .phpunit.result.cache

@@ -233,20 +233,48 @@ class BookingController extends Controller
         // }
     }
     function meetingRoom($id) {
-        // First Validation, set type, if type == 1, is public. without validation, else if the type is private next validation
-            $validation1 = BookingHeader::where('meeting_link',$id)->first();
-            if($validation1->meeting_code == 1){
-                dd('ok test');
-            }else{
-                // Second validation, if user not registerd, 403
-                    $validation2 = MeetingLink::where('meeting_id', $validation1->meeting_id)->where('user_id',auth()->user()->id)->first();
-                    if($validation2){
-                        return view('meetingPage.meeting_page-index');
-                    }else{
-                        return view('meetingPage.403');
-                    }
-                // Second validation, if user not registerd, 403
+        // Cek apakah meeting tersedia
+        $validation1 = BookingHeader::where('meeting_link', $id)->first();
+    
+        if (!$validation1) {
+            return view('meetingPage.403'); // Meeting tidak ditemukan
+        }
+    
+        if ($validation1->meeting_code == 1) {
+            // Meeting publik
+            MeetingLink::updateOrCreate(
+                ['meeting_id' => $validation1->meeting_id, 'user_id' => auth()->user()->id],
+                ['status' => 1] // Update status user jadi aktif
+            );
+        } else {
+            // Meeting privat, validasi user
+            $validation2 = MeetingLink::where('meeting_id', $validation1->meeting_id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+    
+            if (!$validation2) {
+                return view('meetingPage.403'); // User tidak terdaftar di meeting
             }
-        // First Validation, set type, if type == 1, is public. without validation, else if the type is private next validation
+    
+            // Update status user jadi aktif
+            $validation2->update(['status' => 1]);
+        }
+    
+        // Ambil daftar user yang sedang aktif dalam meeting
+        $activeUsers = MeetingLink::where('meeting_id', $validation1->meeting_id)
+            ->where('status', 1)
+            ->with('user') // Ambil data user terkait
+            ->get();
+    
+        return view('meetingPage.meeting_page-index', compact('activeUsers'));
     }
+    public function getActiveUsers(Request $request) {
+        $activeUsers = MeetingLink::where('meeting_id', $request->meeting_id)
+            ->where('status', 1) // Hanya user yang sedang aktif
+            ->with('user') // Ambil data user terkait
+            ->get();
+    
+        return response()->json($activeUsers);
+    }
+    
 }

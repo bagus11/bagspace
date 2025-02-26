@@ -128,7 +128,7 @@
             </div>
         </div>
     </nav>
-    
+    <ul id="active-users-list"></ul>
     <div class="video-container" id="videoContainer">
         <div class="user-video-container">
             <video id="localVideo" class="user-video" autoplay muted></video>
@@ -170,6 +170,7 @@
             </div>
         </div>
 </div>
+
 </body>
 
 <script src="{{asset('assets/vendor/jquery/dist/jquery.min.js')}}"></script>
@@ -178,195 +179,5 @@
 <script src="{{asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js')}}"></script>
 <script src="{{asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
 <script src="{{asset('assets/js/argon.js?v=1.2.0')}}"></script>
-<script>
-    console.log('socket io is connected, happy coding :)')
-    const startButton = $('#startButton');
-    const stopButton = $('#stopButton');
-    const muteButton = $('#muteButton');
-    const unmuteButton = $('#unmuteButton');
-    let localStream;
-    let analyser;
-    let talking = false;
-    let isStreaming = false;
-
-    startButton.on('click', startWebcam);
-    stopButton.on('click', stopWebcam);
-    muteButton.on('click', muteAudio);
-    unmuteButton.on('click', unmuteAudio);
-
-    startButton.prop('hidden', false);
-    stopButton.prop('hidden', true);
-    muteButton.prop('hidden', true);
-    unmuteButton.prop('hidden', true);
-    $('#btnStopShareScreen').prop('hidden', true)
-
-    async function startWebcam() {
-        if (isStreaming) return; // Prevent starting multiple streams
-        try {
-            const mediaStreamConstraints = { video: true, audio: true };
-            const mediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
-            
-            if (!mediaStream.getAudioTracks().length || !mediaStream.getVideoTracks().length) {
-                console.error('Either audio or video tracks are not available.');
-                // Display an error message or handle it gracefully
-                return;
-            }
-
-            localStream = mediaStream;
-            createVideoElement('local', localStream, true,'Bagus S Oetomo');
-            startButton.prop('hidden', true);
-            stopButton.prop('hidden', false);
-            muteButton.prop('hidden', false);
-            unmuteButton.prop('hidden', true);
-
-            createFakePeerConnections();
-
-            // Setup audio context for detecting audio activity
-            const audioContext = new AudioContext();
-            const mediaStreamSource = audioContext.createMediaStreamSource(localStream);
-            analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
-            mediaStreamSource.connect(analyser);
-            detectAudioActivity();
-
-            isStreaming = true;
-        } catch (error) {
-            console.error('Error accessing webcam:', error);
-        }
-    }
-
-    function createFakePeerConnections() {
-        // In a real application, you would handle signaling and create peer connections accordingly.
-        // For demonstration purposes, I'll just create some fake peer connections.
-        for (let i = 1; i <= 0; i++) { // Create 3 fake peer connections
-            const fakeStream = new MediaStream(); // Create a fake stream
-            createVideoElement(`remote${i}`, fakeStream, true); // Display fake remote video
-        }
-    }
-
-    function stopWebcam() {
-    if (localStream) {
-        const tracks = localStream.getTracks();
-        tracks.forEach(track => track.stop());
-
-        startButton.prop('hidden', false);
-        stopButton.prop('hidden', true);
-        muteButton.prop('hidden', true);
-        unmuteButton.prop('hidden', true);
-
-        isStreaming = false;
-    }
-
-    // peerConnections.forEach(pc => { // Remove this line
-    //     pc.close();
-    // });
-    // peerConnections = []; // Remove this line
-
-    $('#videoContainer').empty(); // Remove all video elements
-}
-
-function createVideoElement(id, stream, isVideo, name) {
-    const videoContainer = $('#videoContainer');
-    videoContainer.empty(); // Remove previous video elements
-    
-    if (isVideo) {
-        const videoBox = $('<div>').addClass('video-box');
-        const videoElement = $('<video>').attr('id', id).addClass('screen-video').prop('autoplay', true);
-        videoBox.append(videoElement);
-        videoBox.append(`<div class="video-name">${name}</div>`);
-        videoContainer.append(videoBox);
-        videoElement[0].srcObject = stream;
-    } else {
-        const imageBox = $('<div>').addClass('video-box');
-        const authAvatar = "{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}";
-        imageBox.html(`<img id="${id}" src="${authAvatar}" alt="Avatar"><div class="video-name">${name}</div>`);
-        videoContainer.append(imageBox);
-    }
-}
-
-    function muteAudio() {
-        localStream.getAudioTracks().forEach(track => {
-            track.enabled = false;
-        });
-        muteButton.prop('hidden', true);
-        unmuteButton.prop('hidden', false);
-    }
-
-    function unmuteAudio() {
-        localStream.getAudioTracks().forEach(track => {
-            track.enabled = true;
-        });
-        muteButton.prop('hidden', false);
-        unmuteButton.prop('hidden', true);
-    }
-
-    function detectAudioActivity() {
-        const dataArray = new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteFrequencyData(dataArray);
-        const sum = dataArray.reduce((acc, val) => acc + val, 0);
-        const average = sum / dataArray.length;
-        if (average > 50) { // Adjust threshold as needed
-            console.log(average)
-            if (!talking) {
-                $('.video-box video').addClass('talking'); // Add talking class
-                talking = true;
-            }
-        } else {
-            if (talking) {
-                $('.video-box video').removeClass('talking'); // Remove talking class
-                talking = false;
-            }
-        }
-        requestAnimationFrame(detectAudioActivity);
-    }
-    $('#btnShareScreen').on('click', shareScreen);
-
-    async function shareScreen() {
-      
-        try {
-               // Set displayMediaOptions to prevent the stop sharing pop-up
-                const displayMediaOptions = { video: { mediaSource: 'screen' } };
-                
-                // Get the screen sharing stream
-                const screenStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-                
-                // Create the video element and add the screen sharing stream
-                createVideoElement('screen', screenStream, true, 'Screen Share');
-                
-                // Listen for the addition of tracks to the stream
-                screenStream.onaddtrack = () => {
-                    // Remove the screen sharing stream immediately
-                    screenStream.getTracks().forEach(track => track.stop());
-                };
-                screenStream.addEventListener('ended', () => {
-                    // When the screen sharing ends, show the webcam stream again
-                    startWebcam();
-                });
-                createVideoElement('screen', screenStream, true, 'Screen Share');
-            $('#btnStopShareScreen').prop('hidden', false)
-            $('#btnShareScreen').prop('hidden', true)
-        } catch (error) {
-            console.error('Error sharing screen:', error);
-        }
-    }
-    $('#btnStopShareScreen').on('click', stopScreenShare);
-    async function stopScreenShare() {
-      
-        try {
-            // Stop the screen sharing stream
-            const tracks = $('#screen')[0].srcObject.getTracks();
-            tracks.forEach(track => track.stop());
-
-            // Remove the screen sharing video element
-            $('#screen').remove();
-            $('#btnStopShareScreen').prop('hidden', true)
-            $('#btnShareScreen').prop('hidden', false)
-
-            // Start the webcam
-            await startWebcam();
-        } catch (error) {
-            console.error('Error stopping screen share:', error);
-        }
-    }
-</script>
+@include('meetingPage.meeting_page-js')
 </html>
